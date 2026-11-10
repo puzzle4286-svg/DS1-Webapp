@@ -341,3 +341,41 @@ test('central error handler returns 500 with a generic message', async (t) => {
   assert.equal(response.body.error, 'Something went wrong on the server. Please try again.');
   assert.equal(console.error.mock.callCount(), 1); // the real error was logged
 });
+
+// ---- Step 7 fix: "Report usage" also explains the removal (BUSINESS_CASE §3 step 6) ----
+
+test('a usage report with removalId explains that removal in the same step', async () => {
+  const agent = await signedInAgent();
+  const response = await agent.post('/api/requests')
+    .send(newRequest({ type: 'usage', quantity: 2, reason: 'Used in procedure', removalId: 1 }));
+  assert.equal(response.status, 201);
+
+  const explained = await agent.get('/api/removals?status=explained');
+  const removal = explained.body.find((r) => r.id === 1);
+  assert.equal(removal.reason, 'Used in procedure');
+  assert.equal(removal.note, 'Reported as usage request #' + response.body.id);
+});
+
+test('removalId: already explained is 409 and saves no request', async () => {
+  const agent = await signedInAgent();
+  const before = await agent.get('/api/requests');
+
+  const response = await agent.post('/api/requests') // removal #4 is explained in the seed
+    .send(newRequest({ type: 'usage', reason: 'Used in procedure', removalId: 4 }));
+  assert.equal(response.status, 409);
+
+  const after = await agent.get('/api/requests');
+  assert.equal(after.body.length, before.body.length);
+});
+
+test('removalId: unknown removal or wrong type is 400', async () => {
+  const agent = await signedInAgent();
+  const unknown = await agent.post('/api/requests')
+    .send(newRequest({ type: 'usage', reason: 'Used in procedure', removalId: 999 }));
+  assert.equal(unknown.status, 400);
+  assert.ok(unknown.body.fields.removalId);
+
+  const wrongType = await agent.post('/api/requests').send(newRequest({ type: 'replenishment', removalId: 1 }));
+  assert.equal(wrongType.status, 400);
+  assert.ok(wrongType.body.fields.type);
+});

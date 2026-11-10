@@ -10,6 +10,7 @@ const notesInput = document.getElementById('notes');
 const saveButton = document.getElementById('save');
 
 const editId = urlParam('id'); // null when creating a new request
+const removalId = urlParam('removalId'); // set when coming from "Report usage" on S7
 let products = [];
 
 // Reason choices depend on the type. Replenishment needs no reason.
@@ -35,11 +36,17 @@ async function setUpForm() {
     form.classList.remove('hidden');
   } catch (error) {
     document.getElementById('loading').classList.add('hidden');
+    if (error.status === 404) {
+      showError(error.message); // e.g. "Request not found." – trying again won't help
+      return;
+    }
     showError(error.message, setUpForm);
   }
 }
 
 function fillProductOptions() {
+  // Start from an empty list, so "Try again" doesn't add every product a second time.
+  productSelect.innerHTML = '<option value="">Choose a product…</option>';
   for (const product of products) {
     const option = document.createElement('option');
     option.value = product.id;
@@ -54,6 +61,9 @@ function prefillFromUrl() {
   productSelect.value = urlParam('productId') || '';
   quantityInput.value = urlParam('quantity') || '';
   showStockInfo();
+  if (removalId) {
+    document.getElementById('form-title').textContent = 'Report usage for a removal';
+  }
 }
 
 // Edit: load the saved request and put its values into the form.
@@ -134,6 +144,11 @@ form.addEventListener('submit', async (event) => {
     const saved = editId
       ? await api('PUT', '/api/requests/' + encodeURIComponent(editId), body)
       : await api('POST', '/api/requests', body);
+    if (body.removalId) {
+      const message = `Usage report #${saved.id} created, removal explained`;
+      window.location.href = 'removals.html?msg=' + encodeURIComponent(message);
+      return;
+    }
     const message = editId ? `Request #${saved.id} updated` : `Request #${saved.id} created`;
     window.location.href = 'requests.html?msg=' + encodeURIComponent(message);
   } catch (error) {
@@ -147,7 +162,7 @@ form.addEventListener('submit', async (event) => {
 // Turn the form into the JSON body the API expects.
 function readForm() {
   const type = selectedType();
-  return {
+  const body = {
     type,
     productId: productSelect.value === '' ? null : Number(productSelect.value),
     // An empty box becomes null (missing); "2.5" stays 2.5 so validation can reject it.
@@ -155,6 +170,11 @@ function readForm() {
     reason: REASONS_BY_TYPE[type].length > 0 ? reasonSelect.value : '',
     notes: notesInput.value,
   };
+  // From "Report usage": the server also marks that removal as explained.
+  if (removalId && !editId) {
+    body.removalId = Number(removalId);
+  }
+  return body;
 }
 
 // Put each message under its field, and clear the fields without errors.

@@ -46,24 +46,38 @@ function createRequestRoutes(db) {
   });
 
   // FR-06: create a request. It always starts with status Submitted.
+  // FR-11: a usage report can also resolve an open removal ("Report usage" on S7),
+  // when the form sends the removal's id as removalId.
   router.post('/requests', (req, res) => {
     const input = req.body ?? {};
     const fields = checkRequestInput(db, input);
+    if (input.removalId !== undefined) {
+      Object.assign(fields, checkRemovalLink(db, input));
+    }
     if (Object.keys(fields).length > 0) {
       res.status(400).json({ error: 'Please correct the marked fields.', fields });
       return;
     }
 
-    const now = new Date().toISOString();
-    const result = db.prepare(
-      `INSERT INTO requests (type, product_id, quantity, reason, notes, status, created_by, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, 'Submitted', ?, ?, ?)`
-    ).run(
-      input.type, input.productId, input.quantity, cleanText(input.reason), cleanText(input.notes),
-      req.session.userId, now, now
-    );
+    const removal = input.removalId === undefined ? null : findRemovalStatus(db, input.removalId);
+    if (removal && removal.status !== 'open') {
+      res.status(409).json({ error: 'This removal has already been explained.' });
+      return;
+    }
 
-    res.status(201).json(findRequest(db, result.lastInsertRowid));
+    // One transaction: the request and the removal are saved together, or not at all.
+    db.exec('BEGIN');
+    try {
+      const requestId = insertRequest(db, input, req.session.userId);
+      if (removal) {
+        explainRemovalAsUsage(db, removal.id, requestId);
+      }
+      db.exec('COMMIT');
+      res.status(201).json(findRequest(db, requestId));
+    } catch (error) {
+      db.exec('ROLLBACK');
+      throw error; // goes to the central error handler (500)
+    }
   });
 
   // FR-08: edit a request, only while it is still Submitted.
@@ -113,6 +127,42 @@ function createRequestRoutes(db) {
   });
 
   return router;
+}
+
+// Save a new request with status Submitted. Returns its id.
+function insertRequest(db, input, userId) {
+  const now = new Date().toISOString();
+  const result = db.prepare(
+    `INSERT INTO requests (type, product_id, quantity, reason, notes, status, created_by, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, 'Submitted', ?, ?, ?)`
+  ).run(
+    input.type, input.productId, input.quantity, cleanText(input.reason), cleanText(input.notes),
+    userId, now, now
+  );
+  return Number(result.lastInsertRowid);
+}
+
+// A removal can only be resolved by a usage report, and the removal must exist.
+function checkRemovalLink(db, input) {
+  const fields = {};
+  if (input.type !== 'usage') {
+    fields.type = 'Only a usage report can resolve a removal.';
+  }
+  if (!findRemovalStatus(db, input.removalId)) {
+    fields.removalId = 'Unknown removal.';
+  }
+  return fields;
+}
+
+function findRemovalStatus(db, removalId) {
+  return db.prepare('SELECT id, status FROM removals WHERE id = ?').get(Number(removalId));
+}
+
+// Mark the removal as explained, pointing to the usage request that accounts for it.
+function explainRemovalAsUsage(db, removalId, requestId) {
+  db.prepare(
+    "UPDATE removals SET status = 'explained', reason = ?, note = ?, explained_at = ? WHERE id = ?"
+  ).run('Used in procedure', `Reported as usage request #${requestId}`, new Date().toISOString(), removalId);
 }
 
 // One request by id, or undefined if there is none.

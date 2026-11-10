@@ -78,9 +78,12 @@ function explanationText(removal) {
   return `<br><span class="muted small">${escapeHtml(removal.reason)}${note} · explained ${formatDate(removal.explainedAt)}</span>`;
 }
 
-// "Report usage" opens the request form prefilled; "Explain" opens the dialog.
+// "Report usage" opens the request form prefilled (saving it also explains the removal);
+// "Explain" opens the dialog.
 function openActions(removal) {
-  const query = new URLSearchParams({ type: 'usage', productId: removal.productId, quantity: removal.quantity });
+  const query = new URLSearchParams({
+    type: 'usage', productId: removal.productId, quantity: removal.quantity, removalId: removal.id,
+  });
   return `
     <a class="button" href="request-form.html?${query}">Report usage</a>
     <button type="button" class="primary explain" data-id="${removal.id}">Explain</button>`;
