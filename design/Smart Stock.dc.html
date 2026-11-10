@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link rel="stylesheet" href="_ds/classical-de677001-19ba-4893-8530-33da5bbe60c7/styles.css"><script src="_ds/classical-de677001-19ba-4893-8530-33da5bbe60c7/_ds_bundle.js"></script><script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script><script src="assets/icons.js"></script><style>:root{--color-accent:#0391d1;--color-accent-100:#e6f6fe;--color-accent-200:#c2e8fc;--color-accent-300:#8dd4f9;--color-accent-400:#45bdf6;--color-accent-500:#04aaf4;--color-accent-600:#0280bb;--color-accent-700:#02699a;--color-accent-800:#03557b;--color-accent-900:#063a53}body{margin:0;background:var(--color-bg)}a{color:var(--color-accent-700)}a:hover{color:var(--color-accent-900)}.btn{white-space:nowrap}@keyframes ssPulse{0%{opacity:.55}50%{opacity:1}100%{opacity:.55}}</style></helmet>
+<div style="min-height:100vh;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)">
+<sc-if value="{{ is.login }}" hint-placeholder-val="{{ false }}">
+<div style="min-height:100vh;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))">
+<div style="display:flex;flex-direction:column;justify-content:space-between;gap:40px;padding:40px clamp(24px,5vw,72px)">
+<div style="display:flex;align-items:center;gap:12px"><img src="assets/bentley-logo.png" alt="Bentley" style="height:30px;width:auto"><span style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-neutral-700);padding-left:12px;border-left:1px solid var(--color-divider);line-height:30px">Smart Stock</span></div>
+<form onSubmit="{{ login.submit }}" style="width:100%;max-width:400px;display:flex;flex-direction:column;gap:20px">
+<div><h1 style="font-size:44px;font-weight:400;margin:0">Sign in</h1></div>
+<sc-if value="{{ login.hasErr }}"><div role="alert" style="display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-md);background:#f8e1dd;color:#861b11;font-size:14px"><lc-icon name="circle-alert" size="18"></lc-icon><span>{{ login.err }}</span></div></sc-if>
+<div class="field"><label>Email address</label><input class="input" type="email" autocomplete="username" value="{{ login.email }}" onChange="{{ login.onEmail }}" style="min-height:44px;font-size:15px"></div>
+<div class="field"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px"><label style="font-size:12px;color:var(--color-neutral-700)">Password</label><a href="#" onClick="{{ login.forgot }}" style="font-size:13px;white-space:nowrap">Forgot password?</a></div><input class="input" type="password" autocomplete="current-password" value="{{ login.pw }}" onChange="{{ login.onPw }}" style="min-height:44px;font-size:15px"></div>
+<label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer"><input type="checkbox" checked="{{ login.remember }}" onChange="{{ login.onRemember }}" style="width:18px;height:18px;accent-color:var(--color-accent)">Keep me signed in on this device</label>
+<button type="submit" class="btn btn-primary" disabled="{{ login.busy }}" style="min-height:46px;font-size:16px;width:100%">{{ login.label }}</button>
+<p class="text-muted" style="font-size:13px;margin:0">No account yet? Ask your clinic administrator to invite you.</p>
+</form>
+<div style="display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--color-neutral-700)"><span>© 2026 Bentley InnoMed GmbH</span><a href="#" style="color:inherit">Privacy</a><a href="#" style="color:inherit">Imprint</a><span>Demonstration data</span></div>
+</div>
+<div style="padding:20px;display:flex"><div style="position:relative;flex:1;min-height:520px;overflow:hidden;border-radius:var(--radius-md)"><div style="position:absolute;inset:0;background:#141b1f"></div><img src="assets/bentley-blue-mark.png" alt="" style="position:absolute;right:-8%;top:8%;width:62%;height:auto;opacity:.14"><div style="position:absolute;left:0;right:0;bottom:0;padding:40px;color:#f3f2f2"><div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.8;margin-bottom:10px">Bentley Smart Stock</div><div style="font-family:var(--font-heading);font-size:34px;line-height:1.15;max-width:520px">Consistency. Courage. Care.</div></div></div></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.app }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;min-height:100vh">
+<aside style="position:sticky;top:0;height:100vh;flex:none;width:{{ sideW }};display:flex;flex-direction:column;gap:4px;border-right:1px solid var(--color-divider);background:var(--color-surface);overflow-y:auto;overflow-x:hidden;scrollbar-width:none;transition:width .15s ease">
+<div style="display:flex;align-items:center;justify-content:{{ navJustify }};gap:10px;padding:18px {{ sidePad }} 14px;min-height:64px">
+<img src="assets/bentley-blue-mark.png" alt="Bentley" style="width:26px;height:auto;flex:none">
+<sc-if value="{{ expanded }}"><div style="display:flex;flex-direction:column;line-height:1.05;flex:1;min-width:0"><img src="assets/bentley-wordmark.png" alt="" style="height:22px;width:auto;align-self:flex-start;margin-bottom:4px"><span style="font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-neutral-700)">Smart Stock</span></div></sc-if>
+</div>
+<nav style="display:flex;flex-direction:column;gap:2px;padding:0 10px">
+<sc-for list="{{ nav.main }}" as="n" hint-placeholder-count="7"><button onClick="{{ n.go }}" title="{{ n.label }}" style="display:flex;align-items:center;gap:12px;width:100%;min-height:42px;padding:8px 12px;border:0;border-radius:var(--radius-md);background:{{ n.bg }};color:{{ n.fg }};font-family:var(--font-body);font-size:14px;text-align:left;cursor:pointer;white-space:nowrap;justify-content:{{ navJustify }}" style-hover="background:var(--color-accent-100)"><lc-icon name="{{ n.icon }}" size="18"></lc-icon><sc-if value="{{ expanded }}"><span style="flex:1">{{ n.label }}</span><sc-if value="{{ n.hasBadge }}"><span style="min-width:22px;padding:1px 7px;border-radius:10px;background:#f8e1dd;color:#861b11;font-size:11px;text-align:center;font-variant-numeric:tabular-nums">{{ n.badge }}</span></sc-if></sc-if></button></sc-for>
+</nav>
+<div style="height:1px;background:var(--color-divider);margin:10px 18px"></div>
+<nav style="display:flex;flex-direction:column;gap:2px;padding:0 10px">
+<sc-for list="{{ nav.more }}" as="n" hint-placeholder-count="2"><button onClick="{{ n.go }}" title="{{ n.label }}" style="display:flex;align-items:center;gap:12px;width:100%;min-height:42px;padding:8px 12px;border:0;border-radius:var(--radius-md);background:{{ n.bg }};color:{{ n.fg }};font-family:var(--font-body);font-size:14px;text-align:left;cursor:pointer;white-space:nowrap;justify-content:{{ navJustify }}" style-hover="background:var(--color-accent-100)"><lc-icon name="{{ n.icon }}" size="18"></lc-icon><sc-if value="{{ expanded }}"><span style="flex:1">{{ n.label }}</span><sc-if value="{{ n.hasBadge }}"><span style="min-width:22px;padding:1px 7px;border-radius:10px;background:var(--color-accent-100);color:var(--color-accent-800);font-size:11px;text-align:center;font-variant-numeric:tabular-nums">{{ n.badge }}</span></sc-if></sc-if></button></sc-for>
+</nav>
+<div style="flex:1"></div>
+<nav style="display:flex;flex-direction:column;gap:2px;padding:0 10px">
+<sc-for list="{{ nav.bottom }}" as="n" hint-placeholder-count="4"><button onClick="{{ n.go }}" title="{{ n.label }}" style="display:flex;align-items:center;gap:12px;width:100%;min-height:38px;padding:6px 12px;border:0;border-radius:var(--radius-md);background:{{ n.bg }};color:{{ n.fg }};font-family:var(--font-body);font-size:13px;text-align:left;cursor:pointer;white-space:nowrap;justify-content:{{ navJustify }}" style-hover="background:var(--color-accent-100)"><lc-icon name="{{ n.icon }}" size="17"></lc-icon><sc-if value="{{ expanded }}"><span>{{ n.label }}</span></sc-if></button></sc-for>
+</nav>
+<div style="display:flex;flex-direction:{{ userDir }};align-items:center;gap:10px;margin:8px 10px 0;padding:12px 8px;border-top:1px solid var(--color-divider)">
+<span style="width:34px;height:34px;flex:none;border-radius:50%;border:1px solid var(--color-accent);color:var(--color-accent-700);display:grid;place-items:center;font-size:13px">AK</span>
+<sc-if value="{{ expanded }}"><div style="flex:1;min-width:0;line-height:1.25"><div style="font-size:13px">Anna Keller</div><div style="font-size:11px;color:var(--color-neutral-700)">Inventory manager</div></div></sc-if>
+<button class="btn btn-ghost btn-icon" onClick="{{ toggleSide }}" title="Collapse or expand sidebar" style="color:var(--color-neutral-700)"><lc-icon name="{{ collapseIcon }}" size="18"></lc-icon></button>
+</div>
+</aside>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<header style="position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;padding:12px clamp(20px,3vw,36px);min-height:72px;border-bottom:1px solid var(--color-divider);background:var(--color-bg)">
+<div style="flex:1;min-width:0">
+<sc-if value="{{ hasCrumbs }}"><div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-neutral-700)"><sc-for list="{{ crumbs }}" as="c"><button onClick="{{ c.go }}" style="border:0;background:none;padding:0;font:inherit;color:var(--color-accent-700);cursor:pointer" style-hover="text-decoration:underline">{{ c.label }}</button><lc-icon name="chevron-right" size="13"></lc-icon></sc-for></div></sc-if>
+<h1 style="font-size:28px;font-weight:600;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ title }}</h1>
+</div>
+<div style="position:relative;width:min(300px,30vw);flex:none"><span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--color-neutral-600);display:flex"><lc-icon name="search" size="16"></lc-icon></span><input class="input" placeholder="Search products or IDs…" value="{{ gq }}" onChange="{{ onGq }}" onKeyDown="{{ gqKey }}" style="padding-left:34px;min-height:40px"></div>
+<button class="btn btn-secondary btn-icon" onClick="{{ goNotes }}" title="Notifications" style="position:relative;width:40px;height:40px"><lc-icon name="bell" size="18"></lc-icon><sc-if value="{{ hasUnread }}"><span style="position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#a3271b;color:#fff;font-family:var(--font-body);font-size:10.5px;display:grid;place-items:center">{{ unread }}</span></sc-if></button>
+<div style="position:relative;flex:none">
+<button onClick="{{ toggleMenu }}" style="display:flex;align-items:center;gap:8px;padding:4px 8px 4px 4px;border:1px solid var(--color-divider);border-radius:22px;background:transparent;cursor:pointer;font-family:var(--font-body);color:var(--color-text)" style-hover="background:var(--color-neutral-200)"><span style="width:30px;height:30px;border-radius:50%;background:var(--color-accent-100);color:var(--color-accent-800);display:grid;place-items:center;font-size:12px">AK</span><lc-icon name="chevron-down" size="15"></lc-icon></button>
+<sc-if value="{{ menu }}"><div style="position:absolute;right:0;top:calc(100% + 8px);width:260px;padding:8px;border:1px solid var(--color-divider);border-radius:var(--radius-lg);background:var(--color-bg);box-shadow:var(--shadow-md);z-index:30">
+<div style="padding:10px 10px 12px;border-bottom:1px solid var(--color-divider);margin-bottom:6px"><div style="font-size:14px">Anna Keller</div><div style="font-size:12px;color:var(--color-neutral-700)">anna.keller@st-elisabeth-klinik.de</div><div style="font-size:12px;color:var(--color-neutral-700);margin-top:4px">Inventory manager · St. Elisabeth Klinik</div></div>
+<button onClick="{{ goSettings }}" style="display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:0;background:none;border-radius:var(--radius-md);font-family:var(--font-body);font-size:14px;color:var(--color-text);cursor:pointer;text-align:left" style-hover="background:var(--color-neutral-200)"><lc-icon name="user" size="16"></lc-icon>Account & preferences</button>
+<button onClick="{{ goUsers }}" style="display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:0;background:none;border-radius:var(--radius-md);font-family:var(--font-body);font-size:14px;color:var(--color-text);cursor:pointer;text-align:left" style-hover="background:var(--color-neutral-200)"><lc-icon name="users" size="16"></lc-icon>User management</button>
+<button onClick="{{ signOut }}" style="display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:0;background:none;border-radius:var(--radius-md);font-family:var(--font-body);font-size:14px;color:var(--color-text);cursor:pointer;text-align:left" style-hover="background:var(--color-neutral-200)"><lc-icon name="log-out" size="16"></lc-icon>Sign out</button>
+</div></sc-if>
+</div>
+</header>
+
+<sc-if value="{{ sync.bad }}"><div role="status" style="display:flex;align-items:center;gap:14px;padding:12px clamp(20px,3vw,36px);background:{{ sync.bg }};color:{{ sync.fg }};border-bottom:1px solid var(--color-divider)"><lc-icon name="wifi-off" size="20"></lc-icon><div style="flex:1;font-size:14px"><strong style="font-weight:600">{{ sync.title }}.</strong> {{ sync.body }}</div><button class="btn btn-secondary" onClick="{{ sync.retry }}" style="color:inherit;border-color:currentColor"><lc-icon name="refresh-cw" size="15"></lc-icon>Retry sync</button></div></sc-if>
+
+<main style="flex:1;padding:28px clamp(20px,3vw,36px) 56px;width:100%;max-width:1440px;box-sizing:border-box">
+<sc-if value="{{ loading }}"><div style="display:flex;flex-direction:column;gap:18px" aria-busy="true"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px"><div style="height:110px;border-radius:var(--radius-md);background:var(--color-neutral-200);animation:ssPulse 1.2s infinite"></div><div style="height:110px;border-radius:var(--radius-md);background:var(--color-neutral-200);animation:ssPulse 1.2s infinite"></div><div style="height:110px;border-radius:var(--radius-md);background:var(--color-neutral-200);animation:ssPulse 1.2s infinite"></div><div style="height:110px;border-radius:var(--radius-md);background:var(--color-neutral-200);animation:ssPulse 1.2s infinite"></div></div><div style="height:320px;border-radius:var(--radius-md);background:var(--color-neutral-200);animation:ssPulse 1.2s infinite"></div><div style="font-size:13px;color:var(--color-neutral-700);display:flex;gap:8px;align-items:center"><lc-icon name="loader" size="15"></lc-icon>Loading the latest inventory data…</div></div></sc-if>
+<sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{ is.dashboard }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+<div><h2 style="font-size:36px;font-weight:400;margin:0">Good morning, Anna</h2><p class="text-muted" style="margin:4px 0 0">St. Elisabeth Klinik · Cardiology · Monday, 09 November 2026 · <span style="font-style:italic">demonstration data</span></p></div>
+<div style="display:flex;align-items:center;gap:10px;font-size:13px;padding:8px 14px;border:1px solid var(--color-divider);border-radius:22px"><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;background:{{ sync.tag.bg }};color:{{ sync.tag.fg }}"><lc-icon name="{{ sync.tag.icon }}" size="13"></lc-icon>{{ sync.tag.label }}</span><span style="white-space:nowrap">Last RFID scan <strong style="font-weight:600">{{ sync.last }}</strong></span></div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px">
+<sc-for list="{{ kpis }}" as="k" hint-placeholder-count="5"><button onClick="{{ k.go }}" style="display:flex;flex-direction:column;gap:10px;text-align:left;padding:18px;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;cursor:pointer;font-family:var(--font-body);color:var(--color-text)" style-hover="border-color:var(--color-accent);box-shadow:var(--shadow-sm)"><div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)"><span>{{ k.label }}</span><lc-icon name="{{ k.icon }}" size="17"></lc-icon></div><div style="font-family:var(--font-heading);font-size:40px;line-height:1;font-variant-numeric:tabular-nums;color:{{ k.fg }}">{{ k.value }}</div><div style="font-size:13px;color:var(--color-neutral-700)">{{ k.sub }}</div></button></sc-for>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:18px">
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Inventory status</div><h3 style="font-size:23px;margin:4px 0 0">Current vs recommended stock</h3></div><button class="btn btn-ghost" onClick="{{ go.vmi }}">Details<lc-icon name="arrow-right" size="15"></lc-icon></button></div>
+<div style="display:flex;gap:36px;flex-wrap:wrap;align-items:flex-end">
+<div><div style="font-family:var(--font-heading);font-size:44px;line-height:1;font-variant-numeric:tabular-nums">{{ inv.cur }}</div><div style="font-size:13px;color:var(--color-neutral-700)">units in stock now</div></div>
+<div><div style="font-family:var(--font-heading);font-size:30px;line-height:1;font-variant-numeric:tabular-nums">{{ inv.rec }}</div><div style="font-size:13px;color:var(--color-neutral-700)">recommended</div></div>
+<div><div style="font-family:var(--font-heading);font-size:30px;line-height:1;font-variant-numeric:tabular-nums">{{ inv.diff }}</div><div style="font-size:13px;color:var(--color-neutral-700)">overall difference</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="position:relative;height:14px;background:var(--color-neutral-200);border-radius:7px"><div style="height:100%;width:{{ inv.curW }};background:var(--color-accent);border-radius:7px"></div><div title="Recommended stock" style="position:absolute;top:-6px;bottom:-6px;left:{{ inv.recL }};width:2px;background:var(--color-text)"></div></div><div style="display:flex;gap:18px;font-size:12px;color:var(--color-neutral-700)"><span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:8px;border-radius:2px;background:var(--color-accent)"></span>Current stock</span><span style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:12px;background:var(--color-text)"></span>Recommended stock</span></div></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--color-divider)">
+<button onClick="{{ inv.goBelow }}" style="display:flex;flex-direction:column;gap:4px;padding:14px 12px 4px 0;border:0;background:none;text-align:left;cursor:pointer;font-family:var(--font-body);color:var(--color-text)" style-hover="color:var(--color-accent-700)"><span style="display:flex;align-items:center;gap:6px;font-size:13px;color:#6e4309"><lc-icon name="arrow-down" size="15"></lc-icon>Below target</span><span style="font-family:var(--font-heading);font-size:26px;font-variant-numeric:tabular-nums">{{ inv.below }} products</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ inv.shortU }} units short</span></button>
+<button onClick="{{ inv.goOn }}" style="display:flex;flex-direction:column;gap:4px;padding:14px 12px 4px;border:0;border-left:1px solid var(--color-divider);background:none;text-align:left;cursor:pointer;font-family:var(--font-body);color:var(--color-text)" style-hover="color:var(--color-accent-700)"><span style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--color-accent-700)"><lc-icon name="check" size="15"></lc-icon>On target</span><span style="font-family:var(--font-heading);font-size:26px;font-variant-numeric:tabular-nums">{{ inv.on }} products</span><span style="font-size:12px;color:var(--color-neutral-700)">within 15% of target</span></button>
+<button onClick="{{ inv.goAbove }}" style="display:flex;flex-direction:column;gap:4px;padding:14px 0 4px 12px;border:0;border-left:1px solid var(--color-divider);background:none;text-align:left;cursor:pointer;font-family:var(--font-body);color:var(--color-text)" style-hover="color:var(--color-accent-700)"><span style="display:flex;align-items:center;gap:6px;font-size:13px;color:#2c4252"><lc-icon name="arrow-up" size="15"></lc-icon>Above target</span><span style="font-family:var(--font-heading);font-size:26px;font-variant-numeric:tabular-nums">{{ inv.above }} products</span><span style="font-size:12px;color:var(--color-neutral-700)">{{ inv.surplusU }} units surplus</span></button>
+</div>
+</section>
+
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Expiry overview</div><h3 style="font-size:23px;margin:4px 0 0">{{ flaggedUnits }} units to use first</h3></div><span title="Bentley flags every unit with 12 months or less of shelf life left." style="color:var(--color-neutral-600);display:flex;cursor:help"><lc-icon name="info" size="18"></lc-icon></span></div>
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ bands }}" as="b" hint-placeholder-count="3"><button onClick="{{ b.go }}" style="display:flex;align-items:center;gap:14px;padding:14px 4px;border:0;border-top:1px solid var(--color-divider);background:none;text-align:left;cursor:pointer;font-family:var(--font-body);color:var(--color-text)" style-hover="background:var(--color-neutral-100)"><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;min-width:96px;background:{{ b.tag.bg }};color:{{ b.tag.fg }}"><lc-icon name="{{ b.tag.icon }}" size="13"></lc-icon>{{ b.tag.label }}</span><span style="flex:1;font-size:14px">{{ b.range }}<span style="display:block;font-size:12px;color:var(--color-neutral-700)">{{ b.products }} products</span></span><span style="font-family:var(--font-heading);font-size:28px;font-variant-numeric:tabular-nums">{{ b.units }}</span><span style="font-size:12px;color:var(--color-neutral-700);width:34px">units</span><lc-icon name="chevron-right" size="16"></lc-icon></button></sc-for>
+</div>
+<button class="btn btn-primary" onClick="{{ go.expiry }}" style="align-self:flex-start;margin-top:auto">Inspect all expiring products</button>
+</section>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:18px">
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Replenishment recommendations</div><h3 style="font-size:23px;margin:4px 0 0">Below recommended stock</h3></div><span style="font-size:12px;color:var(--color-neutral-700)">Updated 01 Nov 2026</span></div>
+<table class="table" style="font-size:14px"><thead><tr><th>Product</th><th style="text-align:right">Now / target</th><th style="text-align:right">Suggested</th></tr></thead><tbody>
+<sc-for list="{{ recsTop }}" as="r" hint-placeholder-count="4"><tr onClick="{{ r.open }}" style="cursor:pointer"><td>{{ r.name }}<sc-if value="{{ r.pending }}"><span style="display:block;font-size:12px;color:var(--color-neutral-700)">{{ r.pendLabel }}</span></sc-if></td><td style="text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap">{{ r.qty }} / {{ r.rec }}</td><td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--color-accent-700)">{{ r.sug }}</td></tr></sc-for>
+</tbody></table>
+<div style="display:flex;gap:10px;align-items:center;margin-top:auto"><button class="btn btn-primary" onClick="{{ go.repl }}">Review recommendations</button><span style="font-size:12px;color:var(--color-neutral-700)">Recommendations are not orders.</span></div>
+</section>
+
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Incentive progress</div><h3 style="font-size:23px;margin:4px 0 0">1% of 2% unlocked</h3></div><span style="font-size:11px;font-style:italic;color:var(--color-neutral-700)">Illustrative</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><div style="height:10px;border-radius:5px;background:var(--color-neutral-300)"></div><div style="height:10px;border-radius:5px;background:var(--color-accent)"></div></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:12px"><lc-icon name="layers" size="18"></lc-icon><div style="flex:1"><div style="font-size:14px">Lean stock · 1%</div><div style="font-size:12px;color:var(--color-neutral-700)">Stock at {{ incv.leanPct }} of recommended</div></div><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;background:#fbefd9;color:#6e4309"><lc-icon name="clock" size="13"></lc-icon>In progress</span></div>
+<div style="display:flex;align-items:center;gap:12px"><lc-icon name="package-search" size="18"></lc-icon><div style="flex:1"><div style="font-size:14px">Fewer lost items · 1%</div><div style="font-size:12px;color:var(--color-neutral-700)">Lost-item rate 3.4%, target below 5%</div></div><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;background:var(--color-accent-100);color:var(--color-accent-800)"><lc-icon name="circle-check" size="13"></lc-icon>Achieved</span></div>
+</div>
+<button class="btn btn-ghost" onClick="{{ go.incentives }}" style="align-self:flex-start;margin-top:auto">See how to unlock the full 2%<lc-icon name="arrow-right" size="15"></lc-icon></button>
+</section>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:18px">
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:6px">
+<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Recent stock activity</div>
+<sc-for list="{{ activity }}" as="a" hint-placeholder-count="6"><button onClick="{{ a.go }}" style="display:flex;align-items:center;gap:14px;padding:11px 4px;border:0;border-bottom:1px solid var(--color-divider);background:none;text-align:left;cursor:pointer;font-family:var(--font-body);color:var(--color-text)" style-hover="background:var(--color-neutral-100)"><span style="width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;background:{{ a.tag.bg }};color:{{ a.tag.fg }}"><lc-icon name="{{ a.icon }}" size="16"></lc-icon></span><span style="flex:1;min-width:0"><span style="display:block;font-size:14px">{{ a.title }}</span><span style="display:block;font-size:12px;color:var(--color-neutral-700)">{{ a.detail }}</span></span><span style="font-size:12px;color:var(--color-neutral-700);white-space:nowrap">{{ a.date }}</span></button></sc-for>
+</section>
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:14px;align-self:start">
+<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">RFID synchronisation</div><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;background:{{ sync.tag.bg }};color:{{ sync.tag.fg }}"><lc-icon name="{{ sync.tag.icon }}" size="13"></lc-icon>{{ sync.tag.label }}</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><div style="font-size:12px;color:var(--color-neutral-700)">Last successful scan</div><div style="font-family:var(--font-heading);font-size:21px">{{ sync.last }}</div></div><div><div style="font-size:12px;color:var(--color-neutral-700)">Next scheduled scan</div><div style="font-family:var(--font-heading);font-size:21px">{{ sync.next }}</div></div></div>
+<div style="display:flex;flex-direction:column;border-top:1px solid var(--color-divider)"><sc-for list="{{ sync.rooms }}" as="rm" hint-placeholder-count="2"><div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--color-divider);font-size:14px"><lc-icon name="scan-line" size="16"></lc-icon><span style="flex:1">{{ rm.name }}</span><span style="font-size:12px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ rm.units }} units</span><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;background:{{ rm.st.bg }};color:{{ rm.st.fg }}"><lc-icon name="{{ rm.st.icon }}" size="13"></lc-icon>{{ rm.st.label }}</span></div></sc-for></div>
+<p style="font-size:13px;color:var(--color-neutral-700);margin:0">Readers count every tagged product at midnight. Removed units = yesterday’s stock + deliveries − today’s stock. Removals you haven’t reported appear under Unreported removals.</p>
+</section>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.inventory }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+<div style="position:relative;flex:1 1 260px;max-width:380px"><span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--color-neutral-600);display:flex"><lc-icon name="search" size="16"></lc-icon></span><input class="input" placeholder="Search by product name, ID or barcode" value="{{ invt.q }}" onChange="{{ invt.onQ }}" style="padding-left:34px;min-height:42px"></div>
+<select class="input" value="{{ invt.cat }}" data-val="{{ invt.cat }}" onChange="{{ invt.onCat }}" style="width:auto;min-height:42px"><sc-for list="{{ invt.catOpts }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+<select class="input" value="{{ invt.expF }}" data-val="{{ invt.expF }}" onChange="{{ invt.onExp }}" style="width:auto;min-height:42px"><sc-for list="{{ invt.expOpts }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+<select class="input" value="{{ invt.stF }}" data-val="{{ invt.stF }}" onChange="{{ invt.onSt }}" style="width:auto;min-height:42px"><sc-for list="{{ invt.stOpts }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+<select class="input" value="{{ invt.avail }}" data-val="{{ invt.avail }}" onChange="{{ invt.onAvail }}" style="width:auto;min-height:42px"><sc-for list="{{ invt.avOpts }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+<sc-if value="{{ invt.filtersOn }}"><button class="btn btn-ghost" onClick="{{ invt.clear }}"><lc-icon name="x" size="15"></lc-icon>Clear filters</button></sc-if>
+<div style="flex:1"></div>
+<button class="btn btn-secondary" onClick="{{ invt.exportCsv }}" style="min-height:42px"><lc-icon name="download" size="16"></lc-icon>Export CSV</button>
+</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap;padding:14px 0;border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider)">
+<div><span style="font-family:var(--font-heading);font-size:26px;font-variant-numeric:tabular-nums">{{ invt.count }}</span> <span style="font-size:13px;color:var(--color-neutral-700);white-space:nowrap">products</span></div>
+<div><span style="font-family:var(--font-heading);font-size:26px;font-variant-numeric:tabular-nums">{{ invt.units }}</span> <span style="font-size:13px;color:var(--color-neutral-700);white-space:nowrap">units in stock</span></div>
+<div style="white-space:nowrap"><span style="font-family:var(--font-heading);font-size:26px;font-variant-numeric:tabular-nums">{{ invt.value }}</span> <span style="font-size:13px;color:var(--color-neutral-700)">inventory value</span></div>
+<div style="flex:1"></div><div style="font-size:12px;color:var(--color-neutral-700);align-self:center">Quantities from RFID scan {{ sync.last }}</div>
+</div>
+<sc-if value="{{ invt.has }}">
+<div style="overflow-x:auto;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9">
+<table class="table" style="min-width:1180px">
+<thead><tr>
+<th><button onClick="{{ invt.sort.name.go }}" style="display:inline-flex;align-items:center;gap:5px;border:0;background:none;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;color:{{ invt.sort.name.fg }}">Product<lc-icon name="{{ invt.sort.name.icon }}" size="13"></lc-icon></button></th>
+<th>Product ID / barcode</th><th>Category</th>
+<th style="text-align:right"><button onClick="{{ invt.sort.qty.go }}" style="display:inline-flex;align-items:center;gap:5px;border:0;background:none;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;color:{{ invt.sort.qty.fg }}">Qty<lc-icon name="{{ invt.sort.qty.icon }}" size="13"></lc-icon></button></th>
+<th style="text-align:right">Unit price</th>
+<th style="text-align:right"><button onClick="{{ invt.sort.value.go }}" style="display:inline-flex;align-items:center;gap:5px;border:0;background:none;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;color:{{ invt.sort.value.fg }}">Stock value<lc-icon name="{{ invt.sort.value.icon }}" size="13"></lc-icon></button></th>
+<th><button onClick="{{ invt.sort.arrival.go }}" style="display:inline-flex;align-items:center;gap:5px;border:0;background:none;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;color:{{ invt.sort.arrival.fg }}">Last arrival<lc-icon name="{{ invt.sort.arrival.icon }}" size="13"></lc-icon></button></th>
+<th><button onClick="{{ invt.sort.expiry.go }}" style="display:inline-flex;align-items:center;gap:5px;border:0;background:none;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;color:{{ invt.sort.expiry.fg }}">Next expiry<lc-icon name="{{ invt.sort.expiry.icon }}" size="13"></lc-icon></button></th>
+<th>Shelf life left</th><th>Stock status</th>
+</tr></thead>
+<tbody><sc-for list="{{ invt.rows }}" as="p" hint-placeholder-count="8"><tr onClick="{{ p.open }}" style="cursor:pointer">
+<td style="padding-top:12px;padding-bottom:12px"><span style="color:var(--color-accent-700)">{{ p.name }}</span><span style="display:block;font-size:12px;color:var(--color-neutral-700)">{{ p.lotsNote }}</span></td>
+<td style="font-size:13px;font-variant-numeric:tabular-nums">{{ p.code }}<span style="display:block;font-size:12px;color:var(--color-neutral-700)">{{ p.gtin }}</span></td>
+<td style="font-size:13px">{{ p.cat }}</td>
+<td style="text-align:right;font-variant-numeric:tabular-nums;font-size:15px">{{ p.qty }}</td>
+<td style="text-align:right;font-variant-numeric:tabular-nums;font-size:13px">{{ p.priceL }}</td>
+<td style="text-align:right;font-variant-numeric:tabular-nums;font-size:13px">{{ p.valueL }}</td>
+<td style="font-size:13px;white-space:nowrap">{{ p.arrL }}</td>
+<td style="font-size:13px;white-space:nowrap">{{ p.expL }}<span style="display:flex;margin-top:3px"><span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 7px;border-radius:3px;white-space:nowrap;background:{{ p.ex.bg }};color:{{ p.ex.fg }}"><lc-icon name="{{ p.ex.icon }}" size="12"></lc-icon>{{ p.ex.label }}</span></span></td>
+<td style="font-size:13px;white-space:nowrap">{{ p.shelfL }}</td>
+<td><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;white-space:nowrap;background:{{ p.st.bg }};color:{{ p.st.fg }}"><lc-icon name="{{ p.st.icon }}" size="13"></lc-icon>{{ p.st.label }}</span></td>
+</tr></sc-for></tbody>
+</table>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><span style="font-size:13px;color:var(--color-neutral-700)">Showing {{ invt.range }} products</span><div style="display:flex;gap:6px;align-items:center"><button class="btn btn-secondary btn-icon" onClick="{{ invt.prev }}" disabled="{{ invt.prevDis }}" title="Previous page"><lc-icon name="chevron-left" size="16"></lc-icon></button><sc-for list="{{ invt.pages }}" as="pg"><button onClick="{{ pg.go }}" style="width:36px;height:36px;border:1px solid {{ pg.bd }};border-radius:var(--radius-md);background:transparent;color:{{ pg.fg }};font-family:var(--font-body);cursor:pointer">{{ pg.n }}</button></sc-for><button class="btn btn-secondary btn-icon" onClick="{{ invt.next }}" disabled="{{ invt.nextDis }}" title="Next page"><lc-icon name="chevron-right" size="16"></lc-icon></button></div></div>
+</sc-if>
+<sc-if value="{{ invt.empty }}"><div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:64px 20px;border:1px dashed var(--color-divider);border-radius:var(--radius-md);text-align:center"><lc-icon name="package-search" size="32"></lc-icon><h3 style="font-size:24px;margin:0">No products match these filters</h3><p class="text-muted" style="margin:0;max-width:420px">Check the spelling of the product name or ID, or clear the filters to see your full inventory.</p><button class="btn btn-primary" onClick="{{ invt.clear }}">Clear filters</button></div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.product }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
+<div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span style="font-size:13px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ prod.code }} · GTIN {{ prod.gtin }} · {{ prod.cat }}</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;background:{{ prod.st.bg }};color:{{ prod.st.fg }}"><lc-icon name="{{ prod.st.icon }}" size="13"></lc-icon>{{ prod.st.label }}</span><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;background:{{ prod.ex.bg }};color:{{ prod.ex.fg }}"><lc-icon name="{{ prod.ex.icon }}" size="13"></lc-icon>{{ prod.ex.label }}</span></div></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" onClick="{{ prod.reqRepl }}" style="min-height:42px"><lc-icon name="package-plus" size="16"></lc-icon>Request replenishment</button><button class="btn btn-secondary" onClick="{{ prod.reqUsage }}" style="min-height:42px"><lc-icon name="clipboard-check" size="16"></lc-icon>Report usage</button><button class="btn btn-secondary" onClick="{{ prod.reqDisc }}" style="min-height:42px"><lc-icon name="flag" size="16"></lc-icon>Report a discrepancy</button></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px">
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:14px">
+<div style="height:150px;border-radius:var(--radius-md);border:6px solid var(--color-surface);outline:1px solid var(--color-divider);background:var(--color-neutral-100);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--color-neutral-600)"><lc-icon name="image" size="28"></lc-icon><span style="font-size:12px">Product image</span></div>
+<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Product information</div>
+<p style="font-size:14px;margin:0;text-align:justify;hyphens:auto">{{ prod.desc }}</p>
+<dl style="display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0;font-size:13px"><sc-for list="{{ prod.spec }}" as="sp" hint-placeholder-count="4"><dt style="color:var(--color-neutral-700)">{{ sp.k }}</dt><dd style="margin:0">{{ sp.v }}</dd></sc-for></dl>
+</section>
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:16px">
+<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Stock</div>
+<div style="display:flex;align-items:flex-end;gap:12px"><span style="font-family:var(--font-heading);font-size:60px;line-height:.9;font-variant-numeric:tabular-nums">{{ prod.qty }}</span><span style="font-size:14px;color:var(--color-neutral-700);padding-bottom:6px">units in stock</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="position:relative;height:12px;background:var(--color-neutral-200);border-radius:6px"><div style="height:100%;width:{{ prod.curW }};background:var(--color-accent);border-radius:6px"></div><div style="position:absolute;top:-5px;bottom:-5px;left:{{ prod.recLeft }};width:2px;background:var(--color-text)"></div></div><div style="font-size:13px;color:{{ prod.diffFg }}">{{ prod.diffL }}</div></div>
+<dl style="display:grid;grid-template-columns:1fr auto;gap:10px 16px;margin:0;font-size:14px;border-top:1px solid var(--color-divider);padding-top:14px">
+<dt style="color:var(--color-neutral-700)">Recommended stock <span title="Expected monthly usage plus safety stock, recalculated monthly by Bentley." style="cursor:help;vertical-align:-2px;display:inline-flex"><lc-icon name="info" size="14"></lc-icon></span></dt><dd style="margin:0;text-align:right;font-variant-numeric:tabular-nums">{{ prod.recL }} units</dd>
+<dt style="color:var(--color-neutral-700)">Unit price</dt><dd style="margin:0;text-align:right;font-variant-numeric:tabular-nums">{{ prod.priceL }}</dd>
+<dt style="color:var(--color-neutral-700)">Total stock value</dt><dd style="margin:0;text-align:right;font-variant-numeric:tabular-nums">{{ prod.valueL }}</dd>
+</dl>
+</section>
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:14px">
+<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Arrival and expiry</div>
+<sc-if value="{{ prod.hasNext }}">
+<div><div style="font-size:13px;color:var(--color-neutral-700)">Next expiry · lot {{ prod.nextLot }}</div><div style="font-family:var(--font-heading);font-size:34px;line-height:1.1">{{ prod.expL }}</div></div>
+<div style="padding:12px 14px;border-radius:var(--radius-md);background:{{ prod.ex.bg }};color:{{ prod.ex.fg }};display:flex;gap:10px;align-items:center"><lc-icon name="{{ prod.ex.icon }}" size="18"></lc-icon><div><div style="font-size:12px">Remaining shelf life</div><div style="font-size:18px">{{ prod.shelfL }}</div></div></div>
+<dl style="display:grid;grid-template-columns:1fr auto;gap:10px 16px;margin:0;font-size:14px;border-top:1px solid var(--color-divider);padding-top:14px"><dt style="color:var(--color-neutral-700)">Last arrival</dt><dd style="margin:0;text-align:right">{{ prod.arrL }}</dd><dt style="color:var(--color-neutral-700)">Lots in stock</dt><dd style="margin:0;text-align:right">{{ prod.lotsNote }}</dd></dl>
+<button class="btn btn-ghost" onClick="{{ prod.reqReturn }}" style="align-self:flex-start"><lc-icon name="undo-2" size="15"></lc-icon>Request return or pickup</button>
+</sc-if>
+<sc-if value="{{ prod.noNext }}"><div style="display:flex;flex-direction:column;gap:8px;align-items:flex-start;padding:20px 0"><lc-icon name="package-x" size="28"></lc-icon><div style="font-size:16px">No units in stock</div><p class="text-muted" style="margin:0;font-size:14px">There is nothing to track for expiry until the next delivery arrives.</p></div></sc-if>
+</section>
+</div>
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9">
+<div style="display:flex;gap:24px;padding:0 22px;border-bottom:1px solid var(--color-divider);overflow-x:auto"><button onClick="{{ prod.showLots }}" style="white-space:nowrap;flex:none;padding:14px 0;border:0;border-bottom:2px solid {{ prod.tLotsBd }};background:none;font-family:var(--font-heading);font-size:18px;font-weight:600;cursor:pointer;color:var(--color-text)">Lots on the shelf</button><button onClick="{{ prod.showHist }}" style="white-space:nowrap;flex:none;padding:14px 0;border:0;border-bottom:2px solid {{ prod.tHistBd }};background:none;font-family:var(--font-heading);font-size:18px;font-weight:600;cursor:pointer;color:var(--color-text)">Stock history</button></div>
+<sc-if value="{{ prod.tabLots }}"><div style="padding:8px 22px 18px;overflow-x:auto">
+<sc-if value="{{ prod.hasLots }}"><table class="table" style="min-width:760px"><thead><tr><th>Lot</th><th style="text-align:right">Qty</th><th>Arrival</th><th>Expiry</th><th>Shelf life left</th><th>Expiry status</th><th style="text-align:right">Priority use</th></tr></thead><tbody>
+<sc-for list="{{ prod.lotRows }}" as="l" hint-placeholder-count="2"><tr><td style="font-variant-numeric:tabular-nums">{{ l.lot }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ l.qty }}</td><td>{{ l.arr }}</td><td>{{ l.exp }}</td><td>{{ l.shelf }}</td><td><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;white-space:nowrap;background:{{ l.tag.bg }};color:{{ l.tag.fg }}"><lc-icon name="{{ l.tag.icon }}" size="13"></lc-icon>{{ l.tag.label }}</span></td><td style="text-align:right"><sc-if value="{{ l.flag }}"><sc-if value="{{ l.notPri }}"><button class="btn btn-secondary" onClick="{{ l.togglePri }}" style="font-size:13px"><lc-icon name="star" size="14"></lc-icon>Mark for priority use</button></sc-if><sc-if value="{{ l.pri }}"><button class="btn btn-primary" onClick="{{ l.togglePri }}" style="font-size:13px"><lc-icon name="star" size="14"></lc-icon>Priority for surgeries</button></sc-if></sc-if></td></tr></sc-for>
+</tbody></table></sc-if>
+<sc-if value="{{ prod.noLots }}"><p class="text-muted" style="padding:20px 0;margin:0">No lots in stock. Last unit removed on 02 Nov 2026.</p></sc-if>
+</div></sc-if>
+<sc-if value="{{ prod.tabHist }}"><div style="padding:8px 22px 18px;display:flex;flex-direction:column">
+<sc-for list="{{ prod.history }}" as="h" hint-placeholder-count="5"><div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--color-divider)"><span style="color:{{ h.fg }};display:flex"><lc-icon name="{{ h.icon }}" size="18"></lc-icon></span><span style="width:110px;font-size:13px;color:var(--color-neutral-700)">{{ h.dateL }}</span><span style="flex:1;font-size:14px">{{ h.title }}<span style="display:block;font-size:12px;color:var(--color-neutral-700)">{{ h.detail }}</span></span><span style="font-variant-numeric:tabular-nums;font-size:15px">{{ h.change }}</span></div></sc-for>
+</div></sc-if>
+</section>
+</div>
+</sc-if>
+<sc-if value="{{ is.expiry }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:20px">
+<p style="margin:0;max-width:760px;font-size:15px">Units with 12 months or less of shelf life are flagged by Bentley. Use them first when planning surgeries and filling BeBoxes. Mark a lot for priority use so the whole team sees it.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px">
+<sc-for list="{{ expv.cards }}" as="c" hint-placeholder-count="4"><button onClick="{{ c.go }}" style="display:flex;flex-direction:column;gap:10px;text-align:left;padding:18px;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;cursor:pointer;font-family:var(--font-body);color:var(--color-text)" style-hover="border-color:var(--color-accent)"><span style="display:inline-flex;align-self:flex-start;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;background:{{ c.tag.bg }};color:{{ c.tag.fg }}"><lc-icon name="{{ c.tag.icon }}" size="13"></lc-icon>{{ c.tag.label }}</span><span style="font-size:13px;color:var(--color-neutral-700)">{{ c.label }}</span><span style="display:flex;align-items:baseline;gap:8px"><span style="font-family:var(--font-heading);font-size:38px;line-height:1;font-variant-numeric:tabular-nums">{{ c.units }}</span><span style="font-size:13px;color:var(--color-neutral-700)">units · {{ c.n }} products</span></span></button></sc-for>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+<div style="display:inline-flex;flex-wrap:wrap;border:1px solid var(--color-divider);border-radius:var(--radius-md);overflow:hidden"><button onClick="{{ expv.w3.go }}" style="white-space:nowrap;flex:none;padding:9px 14px;border:0;box-shadow:inset 0 0 0 1px {{ expv.w3.bd }};background:transparent;color:{{ expv.w3.fg }};font-family:var(--font-body);font-size:14px;cursor:pointer">Within 3 months</button><button onClick="{{ expv.w6.go }}" style="white-space:nowrap;flex:none;padding:9px 14px;border:0;box-shadow:inset 0 0 0 1px {{ expv.w6.bd }};background:transparent;color:{{ expv.w6.fg }};font-family:var(--font-body);font-size:14px;cursor:pointer">Within 6 months</button><button onClick="{{ expv.w12.go }}" style="white-space:nowrap;flex:none;padding:9px 14px;border:0;box-shadow:inset 0 0 0 1px {{ expv.w12.bd }};background:transparent;color:{{ expv.w12.fg }};font-family:var(--font-body);font-size:14px;cursor:pointer">Within 12 months</button></div>
+<select class="input" value="{{ expv.xCat }}" data-val="{{ expv.xCat }}" onChange="{{ expv.onCat }}" style="width:auto;min-height:42px"><sc-for list="{{ expv.catOpts }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+<div style="position:relative;flex:0 1 300px"><span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--color-neutral-600);display:flex"><lc-icon name="search" size="16"></lc-icon></span><input class="input" placeholder="Filter by product name" value="{{ expv.xQ }}" onChange="{{ expv.onQ }}" style="padding-left:34px;min-height:42px"></div>
+<div style="flex:1"></div><span style="font-size:13px;color:var(--color-neutral-700)">{{ expv.lots }} lots · {{ expv.units }} units · <lc-icon name="star" size="13"></lc-icon> {{ expv.priCount }} marked for priority use</span>
+</div>
+<sc-if value="{{ expv.has }}"><div style="overflow-x:auto;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9">
+<table class="table" style="min-width:1080px"><thead><tr><th>Product</th><th>Product ID · lot</th><th style="text-align:right">Qty</th><th>Arrival</th><th>Expiry</th><th>Shelf life left</th><th>Expiry status</th><th style="text-align:right">Actions</th></tr></thead><tbody>
+<sc-for list="{{ expv.rows }}" as="r" hint-placeholder-count="6"><tr style="background:{{ r.rowBg }}"><td style="padding-top:12px;padding-bottom:12px">{{ r.name }}<sc-if value="{{ r.pri }}"><span style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--color-accent-700);margin-top:2px"><lc-icon name="star" size="12"></lc-icon>Priority for surgeries and BeBoxes</span></sc-if></td><td style="font-size:13px;font-variant-numeric:tabular-nums">{{ r.code }}<span style="display:block;font-size:12px;color:var(--color-neutral-700)">Lot {{ r.lot }}</span></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.qty }}</td><td style="font-size:13px;white-space:nowrap">{{ r.arr }}</td><td style="white-space:nowrap">{{ r.exp }}</td><td style="font-size:13px;white-space:nowrap">{{ r.shelf }}</td><td><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;white-space:nowrap;background:{{ r.tag.bg }};color:{{ r.tag.fg }}"><lc-icon name="{{ r.tag.icon }}" size="13"></lc-icon>{{ r.tag.label }}</span></td><td style="text-align:right;white-space:nowrap"><button class="btn btn-ghost" onClick="{{ r.togglePri }}" title="Mark this lot for priority use"><lc-icon name="star" size="15"></lc-icon><sc-if value="{{ r.notPri }}">Prioritise</sc-if><sc-if value="{{ r.pri }}">Unmark</sc-if></button><button class="btn btn-secondary" onClick="{{ r.open }}">Details</button></td></tr></sc-for>
+</tbody></table></div></sc-if>
+<sc-if value="{{ expv.empty }}"><div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:56px 20px;border:1px dashed var(--color-divider);border-radius:var(--radius-md);text-align:center"><lc-icon name="calendar-check" size="32"></lc-icon><h3 style="font-size:24px;margin:0">Nothing expires in this period</h3><p class="text-muted" style="margin:0">Try a longer time window or another category.</p></div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.vmi }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px">
+<div style="padding:18px;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9"><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Current stock</div><div style="font-family:var(--font-heading);font-size:38px;font-variant-numeric:tabular-nums;margin-top:8px">{{ inv.cur }}</div><div style="font-size:13px;color:var(--color-neutral-700)">units</div></div>
+<div style="padding:18px;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9"><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Recommended stock</div><div style="font-family:var(--font-heading);font-size:38px;font-variant-numeric:tabular-nums;margin-top:8px">{{ inv.rec }}</div><div style="font-size:13px;color:var(--color-neutral-700)">units · November 2026</div></div>
+<button onClick="{{ inv.goBelow }}" style="text-align:left;padding:18px;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;cursor:pointer;font-family:var(--font-body);color:var(--color-text)" style-hover="border-color:var(--color-accent)"><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6e4309">Below target</div><div style="font-family:var(--font-heading);font-size:38px;font-variant-numeric:tabular-nums;margin-top:8px">{{ inv.below }}</div><div style="font-size:13px;color:var(--color-neutral-700)">products · {{ inv.shortU }} units short</div></button>
+<button onClick="{{ inv.goAbove }}" style="text-align:left;padding:18px;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;cursor:pointer;font-family:var(--font-body);color:var(--color-text)" style-hover="border-color:var(--color-accent)"><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#2c4252">Above target</div><div style="font-family:var(--font-heading);font-size:38px;font-variant-numeric:tabular-nums;margin-top:8px">{{ inv.above }}</div><div style="font-size:13px;color:var(--color-neutral-700)">products · {{ inv.surplusU }} units surplus</div></button>
+<div style="padding:18px;border:1px solid var(--color-accent);border-radius:var(--radius-md);background:#faf9f9"><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-700)">Target coverage</div><div style="font-family:var(--font-heading);font-size:38px;font-variant-numeric:tabular-nums;margin-top:8px">{{ inv.coverage }}</div><div style="font-size:13px;color:var(--color-neutral-700)">Availability floor: 97%</div></div>
+</div>
+<div style="border:1px solid var(--color-divider);border-radius:var(--radius-md);padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+<button onClick="{{ vmi.toggleInfo }}" style="display:flex;align-items:center;gap:10px;border:0;background:none;padding:0;cursor:pointer;font-family:var(--font-body);font-size:15px;color:var(--color-text);text-align:left"><lc-icon name="info" size="18"></lc-icon><span style="flex:1">Recommended stock is calculated using expected product usage and safety stock. Stock recommendations are updated monthly.</span><span style="font-size:13px;color:var(--color-accent-700);white-space:nowrap">How it works</span><lc-icon name="{{ vmi.infoIcon }}" size="16"></lc-icon></button>
+<sc-if value="{{ vmi.info }}"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;padding:10px 0 4px 28px;font-size:14px">
+<div><div style="font-family:var(--font-heading);font-size:18px">Expected usage</div><p class="text-muted" style="margin:4px 0 0">How many units your clinic typically uses in a month, based on RFID data.</p></div>
+<div><div style="font-family:var(--font-heading);font-size:18px">+ Safety stock</div><p class="text-muted" style="margin:4px 0 0">A buffer for busy weeks and emergencies.</p></div>
+<div><div style="font-family:var(--font-heading);font-size:18px">= Recommended stock</div><p class="text-muted" style="margin:4px 0 0">Bentley keeps availability at 97% or higher. Recalculated on the 1st of each month.</p></div>
+</div></sc-if>
+</div>
+<div style="display:flex;gap:24px;border-bottom:1px solid var(--color-divider);overflow-x:auto"><button onClick="{{ vmi.showCompare }}" style="white-space:nowrap;flex:none;padding:12px 0;border:0;border-bottom:2px solid {{ vmi.tcBd }};background:none;font-family:var(--font-heading);font-size:19px;font-weight:600;cursor:pointer;color:var(--color-text)">Current vs recommended</button><button onClick="{{ vmi.showRepl }}" style="white-space:nowrap;flex:none;display:flex;align-items:center;gap:8px;padding:12px 0;border:0;border-bottom:2px solid {{ vmi.trBd }};background:none;font-family:var(--font-heading);font-size:19px;font-weight:600;cursor:pointer;color:var(--color-text)">Replenishment recommendations<span style="font-family:var(--font-body);font-size:11px;font-weight:400;padding:1px 7px;border-radius:10px;background:#fbefd9;color:#6e4309">{{ vmi.recCount }}</span></button></div>
+
+<sc-if value="{{ vmi.tabCompare }}">
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+<button onClick="{{ vmi.fAll.go }}" style="padding:7px 14px;border:1px solid {{ vmi.fAll.bd }};border-radius:18px;background:transparent;color:{{ vmi.fAll.fg }};font-family:var(--font-body);font-size:13px;cursor:pointer">All products</button>
+<button onClick="{{ vmi.fBelow.go }}" style="display:flex;gap:5px;align-items:center;padding:7px 14px;border:1px solid {{ vmi.fBelow.bd }};border-radius:18px;background:transparent;color:{{ vmi.fBelow.fg }};font-family:var(--font-body);font-size:13px;cursor:pointer"><lc-icon name="arrow-down" size="14"></lc-icon>Below target</button>
+<button onClick="{{ vmi.fOn.go }}" style="display:flex;gap:5px;align-items:center;padding:7px 14px;border:1px solid {{ vmi.fOn.bd }};border-radius:18px;background:transparent;color:{{ vmi.fOn.fg }};font-family:var(--font-body);font-size:13px;cursor:pointer"><lc-icon name="check" size="14"></lc-icon>On target</button>
+<button onClick="{{ vmi.fAbove.go }}" style="display:flex;gap:5px;align-items:center;padding:7px 14px;border:1px solid {{ vmi.fAbove.bd }};border-radius:18px;background:transparent;color:{{ vmi.fAbove.fg }};font-family:var(--font-body);font-size:13px;cursor:pointer"><lc-icon name="arrow-up" size="14"></lc-icon>Above target</button>
+<div style="flex:1"></div>
+<span style="display:flex;gap:14px;font-size:12px;color:var(--color-neutral-700)"><span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:8px;border-radius:2px;background:var(--color-accent)"></span>Current</span><span style="display:flex;align-items:center;gap:6px"><span style="width:2px;height:12px;background:var(--color-text)"></span>Recommended</span></span>
+</div>
+<div style="overflow-x:auto;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9">
+<table class="table" style="min-width:1000px"><thead><tr><th>Product</th><th style="width:30%">Current vs recommended</th><th style="text-align:right">Current</th><th style="text-align:right">Recommended</th><th style="text-align:right">Difference</th><th>Status</th><th style="text-align:right">Suggested refill</th><th></th></tr></thead><tbody>
+<sc-for list="{{ vmi.rows }}" as="r" hint-placeholder-count="8"><tr><td style="padding-top:12px;padding-bottom:12px"><button onClick="{{ r.open }}" style="border:0;background:none;padding:0;font:inherit;color:var(--color-accent-700);cursor:pointer;text-align:left" style-hover="text-decoration:underline">{{ r.name }}</button><span style="display:block;font-size:12px;color:var(--color-neutral-700)">{{ r.cat }}</span></td><td><div style="position:relative;height:10px;background:var(--color-neutral-200);border-radius:5px"><div style="height:100%;width:{{ r.curW }};background:{{ r.barC }};border-radius:5px"></div><div style="position:absolute;top:-4px;bottom:-4px;left:{{ r.recLeft }};width:2px;background:var(--color-text)"></div></div></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.qty }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.rec }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.diffL }}</td><td><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;white-space:nowrap;background:{{ r.st.bg }};color:{{ r.st.fg }}"><lc-icon name="{{ r.st.icon }}" size="13"></lc-icon>{{ r.st.label }}</span></td><td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--color-accent-700)">{{ r.sugL }}</td><td style="text-align:right"><sc-if value="{{ r.canReq }}"><button class="btn btn-secondary" onClick="{{ r.request }}" style="font-size:13px;white-space:nowrap">Request</button></sc-if></td></tr></sc-for>
+</tbody></table></div>
+</sc-if>
+
+<sc-if value="{{ vmi.tabRepl }}">
+<div style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:14px"><lc-icon name="shield-check" size="18"></lc-icon><span>These are <strong style="font-weight:600">automated recommendations</strong>, not orders. Nothing is shipped until you submit a replenishment request and Bentley confirms it.</span></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ vmi.recs }}" as="r" hint-placeholder-count="5"><div style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9">
+<div style="display:grid;grid-template-columns:minmax(220px,2fr) repeat(3,minmax(90px,1fr)) minmax(240px,auto);gap:16px;align-items:center;padding:16px 18px">
+<div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="font-family:var(--font-heading);font-size:19px">{{ r.name }}</span><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;background:{{ r.tag.bg }};color:{{ r.tag.fg }}"><lc-icon name="{{ r.tag.icon }}" size="13"></lc-icon>{{ r.tag.label }}</span></div><div style="font-size:13px;color:var(--color-neutral-700);margin-top:4px">{{ r.reason }}</div></div>
+<div><div style="font-size:12px;color:var(--color-neutral-700)">Current</div><div style="font-family:var(--font-heading);font-size:26px;font-variant-numeric:tabular-nums">{{ r.qty }}</div></div>
+<div><div style="font-size:12px;color:var(--color-neutral-700)">Recommended</div><div style="font-family:var(--font-heading);font-size:26px;font-variant-numeric:tabular-nums">{{ r.rec }}</div></div>
+<div><div style="font-size:12px;color:var(--color-neutral-700)">Suggested</div><div style="font-family:var(--font-heading);font-size:26px;font-variant-numeric:tabular-nums;color:var(--color-accent-700)">{{ r.sug }}</div></div>
+<div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap"><button class="btn btn-ghost" onClick="{{ r.toggle }}">Review<lc-icon name="chevron-down" size="15"></lc-icon></button><button class="btn btn-secondary" onClick="{{ r.open }}">Product</button><sc-if value="{{ r.notPending }}"><button class="btn btn-primary" onClick="{{ r.request }}">Request replenishment</button></sc-if><sc-if value="{{ r.pending }}"><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:6px 10px;border-radius:3px;background:#efeadc;color:#54451f"><lc-icon name="clock" size="13"></lc-icon>{{ r.pendLabel }}</span></sc-if></div>
+</div>
+<sc-if value="{{ r.isOpen }}"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;padding:16px 18px;border-top:1px solid var(--color-divider);font-size:14px">
+<div><div style="font-size:12px;color:var(--color-neutral-700)">Expected usage / month</div><div>{{ r.useL }}</div></div>
+<div><div style="font-size:12px;color:var(--color-neutral-700)">+ Safety stock</div><div>{{ r.safetyL }}</div></div>
+<div><div style="font-size:12px;color:var(--color-neutral-700)">= Recommended</div><div>{{ r.recL }}</div></div>
+<div><div style="font-size:12px;color:var(--color-neutral-700)">− Current stock</div><div>{{ r.curL }}</div></div>
+<div><div style="font-size:12px;color:var(--color-neutral-700)">Next expiry in stock</div><div>{{ r.expL }}</div></div>
+</div></sc-if>
+</div></sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.incentives }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--color-neutral-700)"><lc-icon name="flask-conical" size="16"></lc-icon><span><strong style="font-weight:600">Illustrative data.</strong> Progress values below are sample figures. The underlying calculation is set by Bentley and may differ.</span></div>
+<section style="border:1px solid var(--color-accent);border-radius:var(--radius-md);background:#faf9f9;padding:28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:28px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-accent-700)">Potential savings</div><h2 style="font-size:40px;font-weight:400;margin:0;line-height:1.1">Earn up to 2% off your consignment invoices.</h2><p style="margin:0;font-size:16px">Your clinic currently qualifies for <strong style="font-weight:600">1% off</strong>. Improve stock leanness to unlock the additional 1%.</p></div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:10px"><span style="font-family:var(--font-heading);font-size:72px;line-height:.9;color:var(--color-accent-700)">1%</span><span style="font-size:16px;color:var(--color-neutral-700)">of 2% achieved</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><div style="display:flex;flex-direction:column;gap:6px"><div style="height:14px;border-radius:7px;background:var(--color-neutral-300)"></div><span style="font-size:12px;color:var(--color-neutral-700)">Lean stock · in progress</span></div><div style="display:flex;flex-direction:column;gap:6px"><div style="height:14px;border-radius:7px;background:var(--color-accent)"></div><span style="font-size:12px;color:var(--color-accent-700)">Fewer lost items · achieved</span></div></div>
+<dl style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0;padding-top:12px;border-top:1px solid var(--color-divider)"><div><dt style="font-size:12px;color:var(--color-neutral-700)">Total potential</dt><dd style="margin:0;font-family:var(--font-heading);font-size:24px">2%</dd></div><div><dt style="font-size:12px;color:var(--color-neutral-700)">Achieved</dt><dd style="margin:0;font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">1%</dd></div><div><dt style="font-size:12px;color:var(--color-neutral-700)">Still open</dt><dd style="margin:0;font-family:var(--font-heading);font-size:24px">1%</dd></div></dl>
+<div style="font-size:13px;color:var(--color-neutral-700)">On October’s consignment invoice of €41,280 that is €413 saved. The full 2% would be €826.</div>
+</div>
+</section>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px">
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Incentive 1 · up to 1%</div><h3 style="font-size:25px;margin:4px 0 0">Lean stock</h3></div><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;background:#fbefd9;color:#6e4309"><lc-icon name="clock" size="13"></lc-icon>In progress</span></div>
+<p style="margin:0;font-size:14px">Keep stock close to the recommended level, so less capital sits unused on your shelves.</p>
+<div style="display:flex;align-items:baseline;gap:10px"><span style="font-family:var(--font-heading);font-size:44px;line-height:1">{{ incv.leanPct }}</span><span style="font-size:14px;color:var(--color-neutral-700)">of recommended stock</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="position:relative;height:12px;background:var(--color-neutral-200);border-radius:6px"><div style="height:100%;width:{{ incv.leanW }};background:#c98a2b;border-radius:6px"></div><div style="position:absolute;top:-6px;bottom:-6px;left:40%;width:2px;background:var(--color-text)"></div></div><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-neutral-700)"><span>80%</span><span>Target: at or below 100% (illustrative)</span><span>130%</span></div></div>
+<p style="margin:0;font-size:14px;color:var(--color-neutral-800)">{{ incv.aboveN }} products hold {{ incv.surplusU }} units above recommended. Returning surplus moves you toward the target.</p>
+</section>
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Incentive 2 · up to 1%</div><h3 style="font-size:25px;margin:4px 0 0">Fewer lost items</h3></div><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;background:var(--color-accent-100);color:var(--color-accent-800)"><lc-icon name="circle-check" size="13"></lc-icon>Achieved</span></div>
+<p style="margin:0;font-size:14px">Keep the rate of lost items under 5%. A lost item is a removal found by the RFID count that the clinic has not reported.</p>
+<div style="display:flex;align-items:baseline;gap:10px"><span style="font-family:var(--font-heading);font-size:44px;line-height:1">3.4%</span><span style="font-size:14px;color:var(--color-neutral-700)">lost-item rate this period</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="position:relative;height:12px;background:var(--color-neutral-200);border-radius:6px"><div style="height:100%;width:34%;background:var(--color-accent);border-radius:6px"></div><div style="position:absolute;top:-6px;bottom:-6px;left:50%;width:2px;background:#861b11"></div></div><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-neutral-700)"><span>0%</span><span style="color:#861b11">Threshold: below 5%</span><span>10%</span></div></div>
+<p style="margin:0;font-size:14px;color:var(--color-neutral-800)">{{ disc.open }} removals are still unreported this month. Reporting them keeps you safely below the threshold.</p>
+</section>
+</div>
+<section style="display:flex;flex-direction:column;gap:12px"><h3 style="font-size:24px;margin:0">What you can do next</h3>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px"><sc-for list="{{ incv.actions }}" as="a" hint-placeholder-count="3"><div style="border:1px solid var(--color-divider);border-radius:var(--radius-md);padding:18px;display:flex;flex-direction:column;gap:8px"><lc-icon name="{{ a.icon }}" size="20"></lc-icon><div style="font-family:var(--font-heading);font-size:19px">{{ a.title }}</div><p style="margin:0;font-size:14px;color:var(--color-neutral-800);flex:1">{{ a.body }}</p><button class="btn btn-ghost" onClick="{{ a.go }}" style="align-self:flex-start">{{ a.cta }}<lc-icon name="arrow-right" size="15"></lc-icon></button></div></sc-for></div>
+</section>
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;overflow-x:auto"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px"><h3 style="font-size:24px;margin:0">Incentive history</h3><span style="font-size:12px;font-style:italic;color:var(--color-neutral-700)">Illustrative</span></div>
+<table class="table" style="min-width:620px"><thead><tr><th>Month</th><th>Lean stock</th><th>Fewer lost items</th><th style="text-align:right">Discount</th><th style="text-align:right">Saved</th></tr></thead><tbody>
+<tr><td>Nov 2026</td><td><span style="display:inline-flex;align-items:center;gap:6px;color:#6e4309"><lc-icon name="clock" size="15"></lc-icon>In progress</span></td><td><span style="display:inline-flex;align-items:center;gap:6px;color:var(--color-accent-700)"><lc-icon name="circle-check" size="15"></lc-icon>On track</span></td><td style="text-align:right">—</td><td style="text-align:right">—</td></tr>
+<sc-for list="{{ incv.history }}" as="h" hint-placeholder-count="5"><tr><td>{{ h.m }}</td><td><span style="display:inline-flex;align-items:center;gap:6px;color:{{ h.leanFg }}"><lc-icon name="{{ h.leanIcon }}" size="15"></lc-icon>{{ h.leanL }}</span></td><td><span style="display:inline-flex;align-items:center;gap:6px;color:{{ h.lostFg }}"><lc-icon name="{{ h.lostIcon }}" size="15"></lc-icon>{{ h.lostL }}</span></td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ h.total }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ h.saved }}</td></tr></sc-for>
+</tbody></table></section>
+</div>
+</sc-if>
+<sc-if value="{{ is.discrepancies }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:20px">
+<p style="margin:0;max-width:800px;font-size:15px">Each night the RFID count compares yesterday’s stock, deliveries and today’s stock. If units left the shelf and nobody reported their use, they appear here. This usually means a report was forgotten. Report the usage or tell Bentley what happened.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px">
+<div style="padding:18px;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9"><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Unreported this month</div><div style="font-family:var(--font-heading);font-size:38px;margin-top:8px;font-variant-numeric:tabular-nums">{{ disc.month }}</div><div style="font-size:13px;color:var(--color-neutral-700)">{{ disc.open }} still need a report</div></div>
+<div style="padding:18px;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9"><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Lost-item rate</div><div style="font-family:var(--font-heading);font-size:38px;margin-top:8px">3.4%</div><div style="font-size:13px;color:var(--color-neutral-700)">illustrative</div></div>
+<div style="padding:18px;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9"><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Target</div><div style="font-family:var(--font-heading);font-size:38px;margin-top:8px">below 5%</div><div style="font-size:13px;color:var(--color-neutral-700)">for the 1% discount</div></div>
+<button onClick="{{ go.incentives }}" style="text-align:left;padding:18px;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;cursor:pointer;font-family:var(--font-body);color:var(--color-text);display:flex;flex-direction:column;gap:10px" style-hover="border-color:var(--color-accent)"><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">Incentive progress</div><div style="position:relative;height:10px;background:var(--color-neutral-200);border-radius:5px;margin-top:10px"><div style="height:100%;width:34%;background:var(--color-accent);border-radius:5px"></div><div style="position:absolute;top:-4px;bottom:-4px;left:50%;width:2px;background:#861b11"></div></div><span style="display:inline-flex;align-self:flex-start;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;background:var(--color-accent-100);color:var(--color-accent-800)"><lc-icon name="circle-check" size="13"></lc-icon>On track for 1% off</span></button>
+</div>
+<div style="display:flex;gap:24px;border-bottom:1px solid var(--color-divider);overflow-x:auto"><button onClick="{{ disc.tOpen.go }}" style="white-space:nowrap;flex:none;padding:12px 0;border:0;border-bottom:2px solid {{ disc.tOpen.bd }};background:none;font-family:var(--font-heading);font-size:19px;font-weight:600;cursor:pointer;color:var(--color-text)">Needs attention</button><button onClick="{{ disc.tAll.go }}" style="white-space:nowrap;flex:none;padding:12px 0;border:0;border-bottom:2px solid {{ disc.tAll.bd }};background:none;font-family:var(--font-heading);font-size:19px;font-weight:600;cursor:pointer;color:var(--color-text)">All, including history</button></div>
+<sc-if value="{{ disc.has }}"><div style="display:flex;flex-direction:column;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9">
+<div style="display:grid;grid-template-columns:minmax(220px,2fr) minmax(110px,1fr) 70px minmax(110px,1fr) minmax(150px,1fr) minmax(250px,auto);gap:14px;padding:10px 18px;border-bottom:1px solid var(--color-divider);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)"><span>Product</span><span>Product ID</span><span style="text-align:right">Qty</span><span>Identified</span><span>Reporting status</span><span style="text-align:right">Action</span></div>
+<sc-for list="{{ disc.rows }}" as="d" hint-placeholder-count="4"><div style="border-bottom:1px solid var(--color-divider)">
+<div style="display:grid;grid-template-columns:minmax(220px,2fr) minmax(110px,1fr) 70px minmax(110px,1fr) minmax(150px,1fr) minmax(250px,auto);gap:14px;align-items:center;padding:14px 18px">
+<div><button onClick="{{ d.openProd }}" style="border:0;background:none;padding:0;font:inherit;color:var(--color-accent-700);cursor:pointer;text-align:left" style-hover="text-decoration:underline">{{ d.name }}</button><span style="display:block;font-size:12px;color:var(--color-neutral-700)">{{ d.id }}</span></div>
+<span style="font-size:13px;font-variant-numeric:tabular-nums">{{ d.code }}</span><span style="text-align:right;font-variant-numeric:tabular-nums">{{ d.qty }}</span><span style="font-size:14px">{{ d.date }}</span>
+<span><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;white-space:nowrap;background:{{ d.tag.bg }};color:{{ d.tag.fg }}"><lc-icon name="{{ d.tag.icon }}" size="13"></lc-icon>{{ d.tag.label }}</span></span>
+<div style="display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap"><button class="btn btn-ghost" onClick="{{ d.toggle }}">Review<lc-icon name="{{ d.chev }}" size="15"></lc-icon></button><sc-if value="{{ d.isOpen }}"><button class="btn btn-secondary" onClick="{{ d.explain }}">Explain</button><button class="btn btn-primary" onClick="{{ d.report }}">Report usage</button></sc-if></div>
+</div>
+<sc-if value="{{ d.expanded }}"><div style="display:flex;flex-wrap:wrap;gap:24px;align-items:center;padding:4px 18px 18px;font-size:14px">
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-variant-numeric:tabular-nums"><span style="padding:8px 12px;border:1px solid var(--color-divider);border-radius:var(--radius-md)">Yesterday’s count <strong style="font-weight:600">{{ d.y }}</strong></span><span>+</span><span style="padding:8px 12px;border:1px solid var(--color-divider);border-radius:var(--radius-md)">Deliveries <strong style="font-weight:600">{{ d.del }}</strong></span><span>−</span><span style="padding:8px 12px;border:1px solid var(--color-divider);border-radius:var(--radius-md)">Today’s count <strong style="font-weight:600">{{ d.t }}</strong></span><span>=</span><span style="padding:8px 12px;border:1px solid #c98a2b;border-radius:var(--radius-md)">Removed, not reported <strong style="font-weight:600">{{ d.qty }}</strong></span></div>
+<sc-if value="{{ d.hasNote }}"><div style="flex:1 1 260px;font-size:13px;color:var(--color-neutral-800)"><span style="font-size:12px;color:var(--color-neutral-700)">Your explanation:</span> {{ d.note }}</div></sc-if>
+</div></sc-if>
+</div></sc-for>
+</div></sc-if>
+<sc-if value="{{ disc.empty }}"><div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:56px 20px;border:1px dashed var(--color-divider);border-radius:var(--radius-md);text-align:center"><lc-icon name="circle-check" size="32"></lc-icon><h3 style="font-size:24px;margin:0">All removals are reported</h3><p class="text-muted" style="margin:0">Nothing needs your attention. Thank you for keeping the count accurate.</p><button class="btn btn-secondary" onClick="{{ disc.tAll.go }}">View history</button></div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.requests }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+<div style="position:relative;flex:1 1 240px;max-width:340px"><span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--color-neutral-600);display:flex"><lc-icon name="search" size="16"></lc-icon></span><input class="input" placeholder="Search request ID or product" value="{{ reqv.rQ }}" onChange="{{ reqv.onQ }}" style="padding-left:34px;min-height:42px"></div>
+<select class="input" value="{{ reqv.rType }}" data-val="{{ reqv.rType }}" onChange="{{ reqv.onType }}" style="width:auto;min-height:42px"><sc-for list="{{ reqv.typeOpts }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+<select class="input" value="{{ reqv.rStat }}" data-val="{{ reqv.rStat }}" onChange="{{ reqv.onStat }}" style="width:auto;min-height:42px"><sc-for list="{{ reqv.statOpts }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+<div style="flex:1"></div><span style="font-size:13px;color:var(--color-neutral-700)">{{ reqv.open }} open requests</span>
+<button class="btn btn-primary" onClick="{{ reqv.newReq }}" style="min-height:42px"><lc-icon name="plus" size="16"></lc-icon>New request</button>
+</div>
+<sc-if value="{{ reqv.has }}"><div style="overflow-x:auto;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9"><div style="min-width:960px">
+<div style="display:grid;grid-template-columns:110px 150px 130px minmax(200px,2fr) 60px 140px 120px 40px;gap:12px;padding:10px 18px;border-bottom:1px solid var(--color-divider);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)"><span>Request ID</span><span>Type</span><span>Submitted</span><span>Product</span><span style="text-align:right">Qty</span><span>Status</span><span>Last update</span><span></span></div>
+<sc-for list="{{ reqv.rows }}" as="r" hint-placeholder-count="6"><div style="border-bottom:1px solid var(--color-divider)">
+<button onClick="{{ r.toggle }}" style="display:grid;grid-template-columns:110px 150px 130px minmax(200px,2fr) 60px 140px 120px 40px;gap:12px;align-items:center;width:100%;padding:14px 18px;border:0;background:none;text-align:left;cursor:pointer;font-family:var(--font-body);font-size:14px;color:var(--color-text)" style-hover="background:var(--color-neutral-100)"><span style="font-variant-numeric:tabular-nums">{{ r.id }}</span><span>{{ r.type }}</span><span style="font-size:13px">{{ r.date }}</span><span>{{ r.name }}</span><span style="text-align:right;font-variant-numeric:tabular-nums">{{ r.qty }}</span><span><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;white-space:nowrap;background:{{ r.tag.bg }};color:{{ r.tag.fg }}"><lc-icon name="{{ r.tag.icon }}" size="13"></lc-icon>{{ r.tag.label }}</span></span><span style="font-size:13px">{{ r.upd }}</span><lc-icon name="{{ r.chev }}" size="16"></lc-icon></button>
+<sc-if value="{{ r.expanded }}"><div style="display:flex;flex-wrap:wrap;gap:28px;padding:4px 18px 20px">
+<div style="display:flex;gap:0;align-items:flex-start"><sc-for list="{{ r.steps }}" as="st"><div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:96px;text-align:center"><span style="width:12px;height:12px;border-radius:50%;background:{{ st.dot }}"></span><span style="font-size:12px;color:{{ st.fg }}">{{ st.label }}</span></div></sc-for></div>
+<div style="flex:1 1 280px;font-size:14px;display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;color:var(--color-neutral-700)">Created by {{ r.by }}</span><span>{{ r.note }}</span><button class="btn btn-ghost" onClick="{{ r.openProd }}" style="align-self:flex-start">View product<lc-icon name="arrow-right" size="15"></lc-icon></button></div>
+</div></sc-if>
+</div></sc-for>
+</div></div></sc-if>
+<sc-if value="{{ reqv.empty }}"><div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:56px 20px;border:1px dashed var(--color-divider);border-radius:var(--radius-md);text-align:center"><lc-icon name="clipboard-list" size="32"></lc-icon><h3 style="font-size:24px;margin:0">No requests found</h3><p class="text-muted" style="margin:0">No request matches your search or filters.</p><button class="btn btn-secondary" onClick="{{ reqv.clear }}">Clear filters</button></div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.newRequest }}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{ form.editing }}">
+<form onSubmit="{{ form.submit }}" style="display:flex;flex-direction:column;gap:24px;max-width:860px">
+<div style="display:flex;flex-direction:column;gap:10px"><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">1 · What do you need?</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px"><sc-for list="{{ form.types }}" as="t" hint-placeholder-count="4"><button type="button" onClick="{{ t.pick }}" style="display:flex;flex-direction:column;gap:8px;text-align:left;padding:16px;min-height:120px;border:1px solid {{ t.bd }};border-radius:var(--radius-md);background:{{ t.bg }};color:{{ t.fg }};cursor:pointer;font-family:var(--font-body)"><lc-icon name="{{ t.icon }}" size="20"></lc-icon><span style="font-family:var(--font-heading);font-size:19px;font-weight:600">{{ t.label }}</span><span style="font-size:13px;opacity:.85">{{ t.desc }}</span></button></sc-for></div></div>
+<sc-if value="{{ form.linked }}"><div style="display:flex;gap:10px;align-items:center;padding:12px 14px;border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:14px"><lc-icon name="link" size="16"></lc-icon>This report will resolve unreported removal <strong style="font-weight:600;white-space:nowrap">{{ form.discId }}</strong>.</div></sc-if>
+<div style="display:flex;flex-direction:column;gap:16px"><div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-700)">2 · Details</div>
+<div style="display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px">
+<div class="field"><label>Product</label><select class="input" value="{{ form.f.pid }}" data-val="{{ form.f.pid }}" onChange="{{ form.onPid }}" style="min-height:44px"><sc-for list="{{ form.prodOpts }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select><sc-if value="{{ form.hasProd }}"><div style="font-size:12px;color:var(--color-neutral-700);margin-top:5px">{{ form.prodInfo }}</div></sc-if></div>
+<div class="field"><label>Quantity (units)</label><input class="input" inputmode="numeric" value="{{ form.f.qty }}" onChange="{{ form.onQty }}" placeholder="0" style="min-height:44px"><sc-if value="{{ form.hasSug }}"><div style="font-size:12px;color:var(--color-accent-700);margin-top:5px">{{ form.sugHint }}</div></sc-if></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+<div class="field"><label>Reason</label><select class="input" value="{{ form.f.reason }}" data-val="{{ form.f.reason }}" onChange="{{ form.onReason }}" style="min-height:44px"><sc-for list="{{ form.reasonOpts }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></div>
+<sc-if value="{{ form.showDate }}"><div class="field"><label>{{ form.dateLabel }}</label><input class="input" type="date" value="{{ form.f.date }}" onChange="{{ form.onDate }}" style="min-height:44px"></div></sc-if>
+<sc-if value="{{ form.isRepl }}"><div class="field"><label>Urgency</label><div style="display:flex;border:1px solid var(--color-divider);border-radius:var(--radius-md);overflow:hidden"><button type="button" onClick="{{ form.urgStd.go }}" style="white-space:nowrap;flex:none;flex:1;min-height:44px;border:0;box-shadow:inset 0 0 0 1px {{ form.urgStd.bd }};background:transparent;color:{{ form.urgStd.fg }};font-family:var(--font-body);font-size:14px;cursor:pointer">Standard delivery</button><button type="button" onClick="{{ form.urgUrg.go }}" style="white-space:nowrap;flex:none;flex:1;min-height:44px;border:0;box-shadow:inset 0 0 0 1px {{ form.urgUrg.bd }};background:transparent;color:{{ form.urgUrg.fg }};font-family:var(--font-body);font-size:14px;cursor:pointer">Urgent</button></div></div></sc-if>
+</div>
+<div class="field"><label>Additional notes (optional)</label><textarea class="input" value="{{ form.f.notes }}" onChange="{{ form.onNotes }}" placeholder="Anything Bentley should know, e.g. planned procedures or where the products are stored."></textarea></div>
+</div>
+<sc-if value="{{ form.isRepl }}"><div style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--color-neutral-800)"><lc-icon name="shield-check" size="17"></lc-icon><span>This sends a request to Bentley. It becomes an order only after Bentley confirms it.</span></div></sc-if>
+<sc-if value="{{ form.hasErr }}"><div role="alert" style="display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:var(--radius-md);background:#f8e1dd;color:#861b11;font-size:14px"><lc-icon name="circle-alert" size="18"></lc-icon>{{ form.err }}</div></sc-if>
+<div style="display:flex;gap:10px;padding-top:18px;border-top:1px solid var(--color-divider)"><button type="submit" class="btn btn-primary" disabled="{{ form.busy }}" style="min-height:46px;font-size:16px;padding:0 24px">{{ form.submitLabel }}</button><button type="button" class="btn btn-secondary" onClick="{{ form.cancel }}" style="min-height:46px">Cancel</button></div>
+</form>
+</sc-if>
+<sc-if value="{{ form.done }}">
+<div style="max-width:620px;display:flex;flex-direction:column;gap:18px;padding:36px;border:1px solid var(--color-accent);border-radius:var(--radius-md);background:#faf9f9">
+<span style="width:52px;height:52px;border-radius:50%;border:1px solid var(--color-accent);color:var(--color-accent-700);display:grid;place-items:center"><lc-icon name="check" size="26"></lc-icon></span>
+<div><h2 style="font-size:34px;font-weight:400;margin:0 0 6px">Request sent to Bentley</h2><p style="margin:0;font-size:15px">We’ll notify you when the status changes. You can follow it under Requests.</p></div>
+<dl style="display:grid;grid-template-columns:max-content 1fr;gap:8px 20px;margin:0;font-size:14px;padding:16px 0;border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider)"><dt style="color:var(--color-neutral-700)">Request ID</dt><dd style="margin:0">{{ form.sub.id }}</dd><dt style="color:var(--color-neutral-700)">Type</dt><dd style="margin:0">{{ form.sub.type }}</dd><dt style="color:var(--color-neutral-700)">Product</dt><dd style="margin:0">{{ form.sub.name }}</dd><dt style="color:var(--color-neutral-700)">Quantity</dt><dd style="margin:0">{{ form.sub.qtyL }}</dd><dt style="color:var(--color-neutral-700)">Status</dt><dd style="margin:0"><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;background:#e4eaee;color:#2c4252"><lc-icon name="send" size="13"></lc-icon>Submitted</span></dd></dl>
+<sc-if value="{{ form.sub.linked }}"><div style="font-size:14px;display:flex;gap:8px;align-items:center;color:var(--color-accent-700)"><lc-icon name="circle-check" size="16"></lc-icon>The linked removal is now marked “Usage reported”.</div></sc-if>
+<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-primary" onClick="{{ form.viewReqs }}">View requests</button><button class="btn btn-secondary" onClick="{{ form.another }}">Create another</button><button class="btn btn-ghost" onClick="{{ form.toDash }}">Back to dashboard</button></div>
+</div>
+</sc-if>
+</sc-if>
+<sc-if value="{{ is.reports }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span style="font-size:14px;color:var(--color-neutral-700)">Period</span><div style="display:inline-flex;flex-wrap:wrap;border:1px solid var(--color-divider);border-radius:var(--radius-md);overflow:hidden"><button onClick="{{ repv.r6.go }}" style="white-space:nowrap;flex:none;padding:9px 14px;border:0;box-shadow:inset 0 0 0 1px {{ repv.r6.bd }};background:transparent;color:{{ repv.r6.fg }};font-family:var(--font-body);font-size:14px;cursor:pointer">Last 6 months</button><button onClick="{{ repv.r12.go }}" style="white-space:nowrap;flex:none;padding:9px 14px;border:0;box-shadow:inset 0 0 0 1px {{ repv.r12.bd }};background:transparent;color:{{ repv.r12.fg }};font-family:var(--font-body);font-size:14px;cursor:pointer">Last 12 months</button></div><div style="flex:1"></div><span style="font-size:12px;font-style:italic;color:var(--color-neutral-700)">Demonstration data · November is month-to-date</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:18px">
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:14px"><div><h3 style="font-size:22px;margin:0">Inventory level</h3><p class="text-muted" style="margin:2px 0 0;font-size:13px">Units in stock at month end, against recommended stock (line).</p></div>
+<div style="display:flex;align-items:flex-end;gap:6px;height:190px;border-bottom:1px solid var(--color-divider)"><sc-for list="{{ repv.stock }}" as="b" hint-placeholder-count="12"><div title="{{ b.v }} units" style="flex:1;height:100%;position:relative;display:flex;align-items:flex-end"><div style="width:100%;height:{{ b.h }};background:var(--color-accent-300);border-radius:2px 2px 0 0"></div><div style="position:absolute;left:-3px;right:-3px;bottom:{{ b.rh }};height:2px;background:var(--color-text)"></div></div></sc-for></div>
+<div style="display:flex;gap:6px"><sc-for list="{{ repv.stock }}" as="b"><span style="flex:1;text-align:center;font-size:11px;color:var(--color-neutral-700)">{{ b.m }}</span></sc-for></div>
+</section>
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:14px"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h3 style="font-size:22px;margin:0">Removals</h3><p class="text-muted" style="margin:2px 0 0;font-size:13px">{{ repv.remTotal }} reported · {{ repv.unrepTotal }} unreported in this period</p></div><span style="display:flex;gap:12px;font-size:12px;color:var(--color-neutral-700)"><span style="display:flex;gap:5px;align-items:center"><span style="width:10px;height:10px;background:var(--color-accent-300)"></span>Reported</span><span style="display:flex;gap:5px;align-items:center"><span style="width:10px;height:10px;background:#c98a2b"></span>Unreported</span></span></div>
+<div style="display:flex;align-items:flex-end;gap:6px;height:190px;border-bottom:1px solid var(--color-divider)"><sc-for list="{{ repv.rem }}" as="b" hint-placeholder-count="12"><div title="{{ b.v }} reported, {{ b.u }} unreported" style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div style="width:100%;height:{{ b.uh }};background:#c98a2b"></div><div style="width:100%;height:{{ b.h }};background:var(--color-accent-300)"></div></div></sc-for></div>
+<div style="display:flex;gap:6px"><sc-for list="{{ repv.rem }}" as="b"><span style="flex:1;text-align:center;font-size:11px;color:var(--color-neutral-700)">{{ b.m }}</span></sc-for></div>
+</section>
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:14px"><div><h3 style="font-size:22px;margin:0">Units within 12 months of expiry</h3><p class="text-muted" style="margin:2px 0 0;font-size:13px">Lower is better. Using flagged units first brings this down.</p></div>
+<div style="display:flex;align-items:flex-end;gap:6px;height:160px;border-bottom:1px solid var(--color-divider)"><sc-for list="{{ repv.exp }}" as="b" hint-placeholder-count="12"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:flex-end;height:100%"><span style="font-size:10.5px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ b.v }}</span><div style="width:100%;height:{{ b.h }};background:#e3c58f;border-radius:2px 2px 0 0"></div></div></sc-for></div>
+<div style="display:flex;gap:6px"><sc-for list="{{ repv.exp }}" as="b"><span style="flex:1;text-align:center;font-size:11px;color:var(--color-neutral-700)">{{ b.m }}</span></sc-for></div>
+</section>
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:14px"><div><h3 style="font-size:22px;margin:0">Stock target coverage and discount</h3><p class="text-muted" style="margin:2px 0 0;font-size:13px">Share of recommended stock covered, and the discount earned each month (illustrative).</p></div>
+<div style="display:flex;align-items:flex-end;gap:6px;height:160px;border-bottom:1px solid var(--color-divider)"><sc-for list="{{ repv.cov }}" as="b" hint-placeholder-count="12"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:flex-end;height:100%"><span style="font-size:10.5px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums">{{ b.v }}</span><div style="width:100%;height:{{ b.h }};background:var(--color-accent-200);border-radius:2px 2px 0 0"></div></div></sc-for></div>
+<div style="display:flex;gap:6px"><sc-for list="{{ repv.disc }}" as="b"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;height:6px;background:var(--color-neutral-200);border-radius:3px;overflow:hidden"><div style="height:100%;width:{{ b.h }};background:var(--color-accent)"></div></div><span style="font-size:10.5px;color:var(--color-accent-700)">{{ b.v }}</span><span style="font-size:11px;color:var(--color-neutral-700)">{{ b.m }}</span></div></sc-for></div>
+</section>
+</div>
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;overflow-x:auto"><h3 style="font-size:22px;margin:0 0 8px">Monthly stock changes</h3>
+<table class="table" style="min-width:640px"><thead><tr><th>Month</th><th style="text-align:right">Units at month end</th><th style="text-align:right">Change</th><th style="text-align:right">Reported removals</th><th style="text-align:right">Unreported removals</th><th style="text-align:right">Target coverage</th></tr></thead><tbody>
+<sc-for list="{{ repv.changes }}" as="c" hint-placeholder-count="6"><tr><td>{{ c.m }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ c.v }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ c.c }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ c.rep }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ c.unrep }}</td><td style="text-align:right;font-variant-numeric:tabular-nums">{{ c.cov }}</td></tr></sc-for>
+</tbody></table></section>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.notifications }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:16px;max-width:900px">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;border-bottom:1px solid var(--color-divider)"><div style="display:flex;gap:24px"><button onClick="{{ nv.fAll.go }}" style="white-space:nowrap;flex:none;padding:12px 0;border:0;border-bottom:2px solid {{ nv.fAll.bd }};background:none;font-family:var(--font-heading);font-size:19px;font-weight:600;cursor:pointer;color:var(--color-text)">All</button><button onClick="{{ nv.fUnread.go }}" style="white-space:nowrap;flex:none;padding:12px 0;border:0;border-bottom:2px solid {{ nv.fUnread.bd }};background:none;font-family:var(--font-heading);font-size:19px;font-weight:600;cursor:pointer;color:var(--color-text)">Unread ({{ nv.unread }})</button></div><button class="btn btn-ghost" onClick="{{ nv.markAll }}" style="margin-bottom:8px"><lc-icon name="check-check" size="15"></lc-icon>Mark all as read</button></div>
+<sc-if value="{{ nv.has }}"><div style="display:flex;flex-direction:column;border:1px solid var(--color-divider);border-radius:var(--radius-md)"><sc-for list="{{ nv.list }}" as="n" hint-placeholder-count="6"><div onClick="{{ n.open }}" role="button" style="display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-bottom:1px solid var(--color-divider);background:{{ n.rowBg }};cursor:pointer" style-hover="background:var(--color-neutral-100)"><span style="width:38px;height:38px;flex:none;border-radius:50%;display:grid;place-items:center;background:{{ n.tag.bg }};color:{{ n.tag.fg }}"><lc-icon name="{{ n.icon }}" size="17"></lc-icon></span><div style="flex:1;min-width:0"><div style="display:flex;gap:8px;align-items:center"><sc-if value="{{ n.dot }}"><span style="width:8px;height:8px;border-radius:50%;background:var(--color-accent)" title="Unread"></span></sc-if><span style="font-size:15px;font-weight:{{ n.weight }}">{{ n.title }}</span></div><div style="font-size:14px;color:var(--color-neutral-800);margin-top:2px">{{ n.body }}</div><div style="font-size:12px;color:var(--color-neutral-700);margin-top:4px">{{ n.time }}</div></div><button class="btn btn-ghost" onClick="{{ n.markRead }}" style="font-size:13px;white-space:nowrap">{{ n.readLabel }}</button></div></sc-for></div></sc-if>
+<sc-if value="{{ nv.empty }}"><div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:56px 20px;border:1px dashed var(--color-divider);border-radius:var(--radius-md);text-align:center"><lc-icon name="bell-off" size="32"></lc-icon><h3 style="font-size:24px;margin:0">You’re all caught up</h3><p class="text-muted" style="margin:0">No unread notifications.</p></div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ is.settings }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;gap:24px;border-bottom:1px solid var(--color-divider);overflow-x:auto"><button onClick="{{ setv.tClinic.go }}" style="white-space:nowrap;flex:none;padding:12px 0;border:0;border-bottom:2px solid {{ setv.tClinic.bd }};background:none;font-family:var(--font-heading);font-size:19px;font-weight:600;cursor:pointer;color:var(--color-text)">Clinic profile</button><button onClick="{{ setv.tUsers.go }}" style="white-space:nowrap;flex:none;padding:12px 0;border:0;border-bottom:2px solid {{ setv.tUsers.bd }};background:none;font-family:var(--font-heading);font-size:19px;font-weight:600;cursor:pointer;color:var(--color-text)">Users & permissions</button><button onClick="{{ setv.tPrefs.go }}" style="white-space:nowrap;flex:none;padding:12px 0;border:0;border-bottom:2px solid {{ setv.tPrefs.bd }};background:none;font-family:var(--font-heading);font-size:19px;font-weight:600;cursor:pointer;color:var(--color-text)">Preferences</button></div>
+
+<sc-if value="{{ setv.isClinic }}"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px;max-width:1100px">
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:14px"><h3 style="font-size:22px;margin:0">Clinic information</h3>
+<div class="field"><label>Clinic name</label><input class="input" value="St. Elisabeth Klinik" style="min-height:42px"></div>
+<div class="field"><label>Department</label><input class="input" value="Cardiology · Cath Lab and Angiography" style="min-height:42px"></div>
+<div class="field"><label>Bentley customer number</label><input class="input" value="BI-C-204417" disabled="{{ true }}" style="min-height:42px"></div>
+<div class="field"><label>Address</label><textarea class="input" style="min-height:76px">Elisabethenstraße 18&#10;72379 Hechingen, Germany</textarea></div>
+</section>
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:14px"><h3 style="font-size:22px;margin:0">Contact details</h3>
+<div class="field"><label>Main contact</label><input class="input" value="Anna Keller, Inventory manager" style="min-height:42px"></div>
+<div class="field"><label>Phone</label><input class="input" value="+49 7471 550-2140" style="min-height:42px"></div>
+<div class="field"><label>Email for delivery notices</label><input class="input" value="katheterlabor@st-elisabeth-klinik.de" style="min-height:42px"></div>
+<div style="font-size:13px;color:var(--color-neutral-700);display:flex;gap:8px;align-items:flex-start"><lc-icon name="scan-line" size="15"></lc-icon><span>2 RFID storage rooms: Cath Lab (reader BI-R-3381), Angiography (reader BI-R-3382). Contact Bentley to add a room.</span></div>
+<button class="btn btn-primary" onClick="{{ setv.saveClinic }}" style="align-self:flex-start;margin-top:auto">Save changes</button>
+</section>
+</div></sc-if>
+
+<sc-if value="{{ setv.isUsers }}"><div style="display:flex;flex-direction:column;gap:20px">
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;overflow-x:auto"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px"><div><h3 style="font-size:22px;margin:0">Clinic employees</h3><p class="text-muted" style="margin:2px 0 0;font-size:13px">Your role can manage users because the clinic administrator granted that permission.</p></div><button class="btn btn-primary" onClick="{{ setv.invite }}"><lc-icon name="user-plus" size="16"></lc-icon>Invite employee</button></div>
+<table class="table" style="min-width:820px"><thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Last active</th><th style="text-align:right"></th></tr></thead><tbody>
+<sc-for list="{{ setv.users }}" as="u" hint-placeholder-count="5"><tr><td style="padding-top:12px;padding-bottom:12px"><div style="display:flex;align-items:center;gap:12px"><span style="width:34px;height:34px;flex:none;border-radius:50%;border:1px solid var(--color-divider);display:grid;place-items:center;font-size:12px">{{ u.initials }}</span><div><div>{{ u.name }}<sc-if value="{{ u.isMe }}"><span style="font-size:12px;color:var(--color-neutral-700)"> (you)</span></sc-if></div><div style="font-size:12px;color:var(--color-neutral-700)">{{ u.email }}</div></div></div></td>
+<td><sc-if value="{{ u.notMe }}"><select class="input" value="{{ u.role }}" data-val="{{ u.role }}" onChange="{{ u.onRole }}" style="width:auto"><sc-for list="{{ setv.roleOpts }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></sc-if><sc-if value="{{ u.isMe }}"><span style="font-size:14px">{{ u.role }}</span></sc-if></td>
+<td><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:3px;background:{{ u.tag.bg }};color:{{ u.tag.fg }}"><lc-icon name="{{ u.tag.icon }}" size="13"></lc-icon>{{ u.tag.label }}</span></td><td style="font-size:13px">{{ u.last }}</td>
+<td style="text-align:right"><sc-if value="{{ u.notMe }}"><button class="btn btn-ghost" onClick="{{ u.toggle }}">{{ u.actLabel }}</button></sc-if></td></tr></sc-for>
+</tbody></table></section>
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;overflow-x:auto"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px"><div><h3 style="font-size:22px;margin:0">Role permissions</h3><p class="text-muted" style="margin:2px 0 0;font-size:13px">Choose what each role can do in this clinic.</p></div><button class="btn btn-secondary" onClick="{{ setv.savePerms }}">Save permissions</button></div>
+<table class="table" style="min-width:720px"><thead><tr><th>Permission</th><th style="text-align:center">Clinic administrator</th><th style="text-align:center">Inventory manager</th><th style="text-align:center">Clinic employee</th></tr></thead><tbody>
+<sc-for list="{{ setv.perms }}" as="pm" hint-placeholder-count="8"><tr><td>{{ pm.label }}</td><td style="text-align:center"><input type="checkbox" checked="{{ pm.a }}" onChange="{{ pm.tA }}" style="width:18px;height:18px;accent-color:var(--color-accent)"></td><td style="text-align:center"><input type="checkbox" checked="{{ pm.m }}" onChange="{{ pm.tM }}" style="width:18px;height:18px;accent-color:var(--color-accent)"></td><td style="text-align:center"><input type="checkbox" checked="{{ pm.e }}" onChange="{{ pm.tE }}" style="width:18px;height:18px;accent-color:var(--color-accent)"></td></tr></sc-for>
+</tbody></table></section>
+</div></sc-if>
+
+<sc-if value="{{ setv.isPrefs }}"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px;max-width:1100px">
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:6px"><h3 style="font-size:22px;margin:0 0 8px">Notify me about</h3>
+<sc-for list="{{ setv.prefs }}" as="pf" hint-placeholder-count="6"><label style="display:flex;align-items:center;gap:12px;min-height:44px;border-bottom:1px solid var(--color-divider);font-size:14px;cursor:pointer"><input type="checkbox" checked="{{ pf.on }}" onChange="{{ pf.toggle }}" style="width:18px;height:18px;accent-color:var(--color-accent)"><span>{{ pf.label }}</span></label></sc-for>
+<div class="field" style="margin-top:12px"><label>Email delivery</label><select class="input" value="{{ setv.digest }}" data-val="{{ setv.digest }}" onChange="{{ setv.onDigest }}" style="min-height:42px"><sc-for list="{{ setv.digestOpts }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></div>
+</section>
+<section style="border:1px solid var(--color-divider);border-radius:var(--radius-md);background:#faf9f9;padding:22px;display:flex;flex-direction:column;gap:14px"><h3 style="font-size:22px;margin:0">Expiry warnings</h3>
+<div class="field"><label>Start warning me</label><select class="input" value="{{ setv.warn }}" data-val="{{ setv.warn }}" onChange="{{ setv.onWarn }}" style="min-height:42px"><sc-for list="{{ setv.warnOpts }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select><div style="font-size:12px;color:var(--color-neutral-700);margin-top:5px">Bentley always flags units at 12 months. This only changes your personal reminders.</div></div>
+<h3 style="font-size:22px;margin:10px 0 0">Account</h3>
+<div class="field"><label>Name</label><input class="input" value="Anna Keller" style="min-height:42px"></div>
+<div class="field"><label>Email</label><input class="input" value="anna.keller@st-elisabeth-klinik.de" style="min-height:42px"></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:auto"><button class="btn btn-primary" onClick="{{ setv.savePrefs }}">Save preferences</button><button class="btn btn-secondary" onClick="{{ setv.savePrefs }}">Change password</button></div>
+</section>
+</div></sc-if>
+</div>
+</sc-if>
+</sc-if>
+</main>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ modal.any }}"><div onClick="{{ modal.close }}" style="position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:20px;background:color-mix(in srgb,var(--color-neutral-900) 50%,transparent)">
+<div onClick="{{ modal.stop }}" role="dialog" style="width:min(500px,100%);display:flex;flex-direction:column;gap:16px;padding:26px;border-radius:var(--radius-lg);background:var(--color-bg);box-shadow:var(--shadow-lg);border:1px solid var(--color-divider)">
+<sc-if value="{{ modal.explain }}">
+<div style="display:flex;justify-content:space-between;gap:12px"><h3 style="font-size:24px;margin:0">Explain removal {{ modal.ex.id }}</h3><button class="btn btn-ghost btn-icon" onClick="{{ modal.close }}" title="Close"><lc-icon name="x" size="18"></lc-icon></button></div>
+<p style="margin:0;font-size:14px">{{ modal.exName }}. Tell Bentley what happened. This does not count as a usage report.</p>
+<div class="field"><label>What happened?</label><select class="input" value="{{ modal.ex.reason }}" data-val="{{ modal.ex.reason }}" onChange="{{ modal.onExReason }}" style="min-height:44px"><sc-for list="{{ modal.exOpts }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></div>
+<div class="field"><label>Details (optional)</label><textarea class="input" value="{{ modal.ex.note }}" onChange="{{ modal.onExNote }}" placeholder="e.g. used in an emergency at 02:30, report pending"></textarea></div>
+<div style="display:flex;justify-content:flex-end;gap:10px"><button class="btn btn-secondary" onClick="{{ modal.close }}">Cancel</button><button class="btn btn-primary" onClick="{{ modal.sendEx }}" disabled="{{ modal.exDis }}">Send explanation</button></div>
+</sc-if>
+<sc-if value="{{ modal.invite }}">
+<div style="display:flex;justify-content:space-between;gap:12px"><h3 style="font-size:24px;margin:0">Invite an employee</h3><button class="btn btn-ghost btn-icon" onClick="{{ modal.close }}" title="Close"><lc-icon name="x" size="18"></lc-icon></button></div>
+<div class="field"><label>Work email</label><input class="input" type="email" value="{{ modal.inv.email }}" onChange="{{ modal.onInvEmail }}" placeholder="name@st-elisabeth-klinik.de" style="min-height:44px"></div>
+<div class="field"><label>Role</label><select class="input" value="{{ modal.inv.role }}" data-val="{{ modal.inv.role }}" onChange="{{ modal.onInvRole }}" style="min-height:44px"><sc-for list="{{ setv.roleOpts }}" as="o"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></div>
+<p class="text-muted" style="margin:0;font-size:13px">They receive an email with a sign-in link valid for 7 days.</p>
+<div style="display:flex;justify-content:flex-end;gap:10px"><button class="btn btn-secondary" onClick="{{ modal.close }}">Cancel</button><button class="btn btn-primary" onClick="{{ modal.sendInv }}" disabled="{{ modal.invDis }}">Send invitation</button></div>
+</sc-if>
+<sc-if value="{{ modal.help }}">
+<div style="display:flex;justify-content:space-between;gap:12px"><h3 style="font-size:24px;margin:0">Help & support</h3><button class="btn btn-ghost btn-icon" onClick="{{ modal.close }}" title="Close"><lc-icon name="x" size="18"></lc-icon></button></div>
+<div style="display:flex;flex-direction:column;font-size:14px">
+<div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--color-divider)"><lc-icon name="phone" size="17"></lc-icon><div><div>Bentley customer service</div><div class="text-muted">+49 7471 9849-0 · Mon–Fri, 08:00–17:00</div></div></div>
+<div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--color-divider)"><lc-icon name="mail" size="17"></lc-icon><div><div>Smart Stock support</div><div class="text-muted">smartstock@bentley.global</div></div></div>
+<div style="display:flex;gap:12px;padding:12px 0"><lc-icon name="book-open" size="17"></lc-icon><div><div>Quick guide</div><div class="text-muted">How stock counts, expiry flags and incentives work.</div></div></div>
+</div>
+<div style="display:flex;justify-content:flex-end"><button class="btn btn-secondary" onClick="{{ modal.close }}">Close</button></div>
+</sc-if>
+</div></div></sc-if>
+<sc-if value="{{ hasToast }}"><div role="status" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:12px;max-width:min(560px,calc(100vw - 32px));padding:12px 14px 12px 16px;border-radius:var(--radius-md);background:var(--color-neutral-900);color:#f3f2f2;box-shadow:var(--shadow-lg);font-size:14px"><span style="color:var(--color-accent-300);display:flex"><lc-icon name="circle-check" size="18"></lc-icon></span><span style="flex:1">{{ toast }}</span><button onClick="{{ closeToast }}" title="Dismiss" style="border:0;background:none;color:inherit;cursor:pointer;display:flex;padding:4px"><lc-icon name="x" size="16"></lc-icon></button></div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;syncStatus&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;ok&quot;,&quot;stale&quot;,&quot;failed&quot;],&quot;default&quot;:&quot;ok&quot;,&quot;tsType&quot;:&quot;'ok'|'stale'|'failed'&quot;,&quot;section&quot;:&quot;Demo states&quot;},&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;login&quot;,&quot;dashboard&quot;,&quot;inventory&quot;,&quot;expiry&quot;,&quot;vmi&quot;,&quot;incentives&quot;,&quot;discrepancies&quot;,&quot;requests&quot;,&quot;reports&quot;,&quot;notifications&quot;,&quot;settings&quot;],&quot;default&quot;:&quot;login&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Demo states&quot;}}">
+class Component extends DCLogic {
+  T = new Date('2026-11-09T12:00:00');
+  D = this.buildData();
+  state = {
+    screen: this.props.startScreen || 'login',
+    collapsed: false, loading: false, toast: null, menu: false, modal: null,
+    gq: '', q: '', cat: 'all', expF: 'all', stF: 'all', avail: 'all', sortKey: 'name', sortDir: 1, page: 1,
+    pid: 'P02', pTab: 'lots', priority: { 'P03-0': true },
+    xWin: '12', xCat: 'all', xQ: '',
+    vmiTab: 'compare', vmiF: 'all', openRec: null, vmiInfo: false,
+    dTab: 'open', openDisc: null, discs: this.D.discs, ex: { id: null, reason: '', note: '' },
+    rType: 'all', rStat: 'all', rQ: '', openReq: null, reqs: this.D.reqs,
+    form: this.blankForm('replenish'), formErr: null, busy: false, submitted: null,
+    rep: '12', nF: 'all', notes: this.D.notes,
+    sTab: 'clinic', users: this.D.users, perms: this.D.perms, inv: { email: '', role: 'Clinic employee' },
+    prefs: { expiry: true, stock: true, disc: true, req: true, inc: false, sync: true, digest: 'Daily summary at 07:00', warn: '12' },
+    lg: { email: 'anna.keller@st-elisabeth-klinik.de', pw: 'demopassword', remember: true, err: null, busy: false }
+  };
+
+  componentDidMount() { if (window.innerWidth < 1180) this.setState({ collapsed: true }); this.syncSelects(); }
+  componentDidUpdate() { this.syncSelects(); }
+  syncSelects() { const run = () => document.querySelectorAll('select[data-val]').forEach(el => { const v = el.getAttribute('data-val'); if (el.value !== v) el.value = v; }); run(); requestAnimationFrame(run); }
+  d(s) { return new Date(s + 'T12:00:00'); }
+  days(s) { return Math.round((this.d(s) - this.T) / 864e5); }
+  fmt(s) { return s ? this.d(s).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'; }
+  eur(n) { return '€' + Math.round(n).toLocaleString('en-GB'); }
+  shelf(s) {
+    let n = this.days(s); if (n < 0) return 'Expired';
+    const y = Math.floor(n / 365); n -= y * 365; const m = Math.floor(n / 30.44); n -= Math.round(m * 30.44);
+    const w = Math.max(0, Math.floor(n / 7)); const o = [];
+    if (y) o.push(y + (y > 1 ? ' years' : ' year')); if (m) o.push(m + ' mo'); if (w || !o.length) o.push(w + ' wk');
+    return o.join(' ');
+  }
+  tone(k, label, icon) {
+    const T = { ok: ['var(--color-accent-100)', 'var(--color-accent-800)', 'circle-check'], warn: ['#fbefd9', '#6e4309', 'triangle-alert'], crit: ['#f8e1dd', '#861b11', 'circle-alert'], soft: ['#efeadc', '#54451f', 'clock'], info: ['#e4eaee', '#2c4252', 'info'], neutral: ['var(--color-neutral-200)', 'var(--color-neutral-800)', 'circle-dot'] }[k];
+    return { bg: T[0], fg: T[1], icon: icon || T[2], label };
+  }
+  tier(s) { const n = this.days(s); return n <= 91 ? 'critical' : n <= 183 ? 'attention' : n <= 365 ? 'upcoming' : 'ok'; }
+  expTag(s) { const t = this.tier(s); return t === 'critical' ? this.tone('crit', 'Critical · under 3 mo') : t === 'attention' ? this.tone('warn', 'Attention · under 6 mo') : t === 'upcoming' ? this.tone('soft', 'Use first · under 12 mo') : this.tone('neutral', 'OK', 'calendar-check'); }
+  stockKey(p) { return p.qty === 0 ? 'out' : p.qty < p.rec ? 'below' : p.qty > p.rec * 1.15 ? 'above' : 'on'; }
+  stockTag(k) { return { out: this.tone('crit', 'Out of stock', 'package-x'), below: this.tone('warn', 'Below target', 'arrow-down'), on: this.tone('ok', 'On target', 'check'), above: this.tone('info', 'Above target', 'arrow-up') }[k]; }
+  reqTone(st) { return { Draft: this.tone('neutral', 'Draft', 'pencil'), Submitted: this.tone('info', 'Submitted', 'send'), 'Under review': this.tone('soft', 'Under review', 'eye'), Approved: this.tone('ok', 'Approved', 'check'), 'In progress': this.tone('info', 'In progress', 'truck'), Completed: this.tone('ok', 'Completed', 'circle-check'), Rejected: this.tone('crit', 'Rejected', 'circle-x') }[st]; }
+  discTone(st) { return { open: this.tone('warn', 'Not reported yet'), explained: this.tone('info', 'Explanation sent', 'message-square'), reported: this.tone('ok', 'Usage reported', 'check'), resolved: this.tone('ok', 'Resolved') }[st]; }
+
+  buildData() {
+    const DES = 'Drug-eluting coronary stent (sirolimus) on a thin-strut cobalt-chromium platform, pre-mounted on a rapid-exchange delivery system.';
+    const raw = [
+      ['P01', 'BeCor DES 2.5 × 15 mm', 'BI-DES-2515', 'Coronary stents', 1180, 12, 6, [[6, '2025-11-12', '2027-06-20'], [8, '2026-06-03', '2028-02-11']], DES, [['Diameter', '2.5 mm'], ['Length', '15 mm'], ['Drug', 'Sirolimus'], ['Catheter', 'Rapid exchange, 142 cm']]],
+      ['P02', 'BeCor DES 3.0 × 18 mm', 'BI-DES-3018', 'Coronary stents', 1180, 16, 8, [[4, '2025-03-10', '2026-12-28'], [12, '2026-05-14', '2028-01-14'], [10, '2026-10-29', '2028-06-15']], DES, [['Diameter', '3.0 mm'], ['Length', '18 mm'], ['Drug', 'Sirolimus'], ['Catheter', 'Rapid exchange, 142 cm']]],
+      ['P03', 'BeCor DES 3.5 × 23 mm', 'BI-DES-3523', 'Coronary stents', 1220, 10, 6, [[3, '2025-02-18', '2027-01-30'], [9, '2026-04-07', '2027-12-12']], DES, [['Diameter', '3.5 mm'], ['Length', '23 mm'], ['Drug', 'Sirolimus'], ['Catheter', 'Rapid exchange, 142 cm']]],
+      ['P04', 'BeCor DES 4.0 × 28 mm', 'BI-DES-4028', 'Coronary stents', 1250, 5, 3, [[5, '2025-08-21', '2027-04-18'], [7, '2026-11-04', '2028-05-09']], DES, [['Diameter', '4.0 mm'], ['Length', '28 mm'], ['Drug', 'Sirolimus'], ['Catheter', 'Rapid exchange, 142 cm']]],
+      ['P05', 'BeFlex BMS 3.0 × 15 mm', 'BI-BMS-3015', 'Coronary stents', 640, 6, 4, [[10, '2026-03-02', '2028-09-30']], 'Bare-metal coronary stent, cobalt-chromium, pre-mounted on a rapid-exchange delivery system.', [['Diameter', '3.0 mm'], ['Length', '15 mm'], ['Coating', 'None'], ['Catheter', 'Rapid exchange, 142 cm']]],
+      ['P06', 'BePeri SE Stent 6 × 60 mm', 'BI-PSE-0660', 'Peripheral stents', 1390, 6, 4, [[4, '2025-06-11', '2027-03-05'], [6, '2026-02-19', '2027-11-20']], 'Self-expanding nitinol stent for peripheral arteries on an over-the-wire delivery system.', [['Diameter', '6 mm'], ['Length', '60 mm'], ['Material', 'Nitinol'], ['Catheter', 'OTW 0.035″, 130 cm']]],
+      ['P07', 'BePeri SE Stent 8 × 80 mm', 'BI-PSE-0880', 'Peripheral stents', 1420, 4, 2, [[9, '2025-12-01', '2027-08-14']], 'Self-expanding nitinol stent for peripheral arteries on an over-the-wire delivery system.', [['Diameter', '8 mm'], ['Length', '80 mm'], ['Material', 'Nitinol'], ['Catheter', 'OTW 0.035″, 130 cm']]],
+      ['P08', 'BeGraft Covered 7 × 37 mm', 'BI-CVG-0737', 'Peripheral stents', 1650, 4, 2, [[2, '2025-01-15', '2026-12-18'], [4, '2026-08-11', '2028-03-01']], 'Balloon-expandable covered stent graft with ePTFE covering for peripheral and visceral arteries.', [['Diameter', '7 mm'], ['Length', '37 mm'], ['Covering', 'ePTFE'], ['Sheath', '7F compatible']]],
+      ['P09', 'BeCross PTCA Balloon 2.5 × 15 mm', 'BI-PTC-2515', 'Balloon catheters', 210, 20, 10, [[14, '2026-01-20', '2027-06-30'], [14, '2026-08-05', '2028-01-31']], 'Semi-compliant coronary balloon dilatation catheter, rapid exchange.', [['Diameter', '2.5 mm'], ['Length', '15 mm'], ['Rated burst', '14 atm'], ['Catheter', 'Rapid exchange, 145 cm']]],
+      ['P10', 'BeCross NC Balloon 3.5 × 12 mm', 'BI-NCB-3512', 'Balloon catheters', 245, 14, 6, [[22, '2026-04-28', '2028-04-12']], 'Non-compliant coronary balloon catheter for post-dilatation, rapid exchange.', [['Diameter', '3.5 mm'], ['Length', '12 mm'], ['Rated burst', '20 atm'], ['Catheter', 'Rapid exchange, 145 cm']]],
+      ['P11', 'BeDrug DCB 5 × 80 mm', 'BI-DCB-0580', 'Balloon catheters', 890, 5, 3, [[3, '2025-05-09', '2027-02-26'], [8, '2026-10-02', '2028-07-19']], 'Paclitaxel drug-coated balloon catheter for peripheral arteries, over-the-wire.', [['Diameter', '5 mm'], ['Length', '80 mm'], ['Drug', 'Paclitaxel 3 µg/mm²'], ['Catheter', 'OTW 0.035″, 135 cm']]],
+      ['P12', 'BePTA Balloon 6 × 40 mm', 'BI-PTA-0640', 'Balloon catheters', 260, 8, 4, [], 'Peripheral balloon dilatation catheter, over-the-wire.', [['Diameter', '6 mm'], ['Length', '40 mm'], ['Rated burst', '12 atm'], ['Catheter', 'OTW 0.035″, 135 cm']]],
+      ['P13', 'BeWire Guidewire 0.014″ 190 cm', 'BI-GW-014190', 'Accessories', 85, 28, 12, [[44, '2026-07-14', '2029-01-10']], 'Coronary workhorse guidewire with hydrophilic coating.', [['Diameter', '0.014″'], ['Length', '190 cm'], ['Tip', 'Soft, shapeable'], ['Coating', 'Hydrophilic']]],
+      ['P14', 'BeSheath Introducer 6F 11 cm', 'BI-SH-0611', 'Accessories', 48, 35, 15, [[70, '2026-02-03', '2028-02-03']], 'Introducer sheath with haemostatic valve and side port.', [['Size', '6F'], ['Length', '11 cm'], ['Guidewire', '0.035″'], ['Valve', 'Haemostatic']]],
+      ['P15', 'BeInflate Inflation Device 30 atm', 'BI-INF-30', 'Accessories', 120, 6, 4, [[6, '2025-10-07', '2027-12-25']], 'Single-use inflation device with pressure gauge for balloon catheters.', [['Max pressure', '30 atm'], ['Volume', '20 ml'], ['Gauge', 'Analogue'], ['Lock', 'Quick release']]],
+      ['P16', 'BeWire Guidewire 0.035″ 260 cm', 'BI-GW-035260', 'Accessories', 92, 14, 6, [[7, '2025-04-02', '2027-03-25'], [14, '2026-11-06', '2029-03-01']], 'Peripheral exchange-length guidewire with PTFE coating.', [['Diameter', '0.035″'], ['Length', '260 cm'], ['Tip', 'J-tip'], ['Coating', 'PTFE']]]
+    ];
+    const products = raw.map((r, i) => {
+      const lots = r[7].map((l, j) => ({ key: r[0] + '-' + j, pid: r[0], lot: 'LT' + l[1].slice(2, 4) + l[1].slice(5, 7) + '-' + r[0].slice(1) + (j + 1), qty: l[0], arr: l[1], exp: l[2] }));
+      const qty = lots.reduce((a, l) => a + l.qty, 0);
+      const next = lots.slice().sort((a, b) => a.exp < b.exp ? -1 : 1)[0] || null;
+      const lastArr = lots.map(l => l.arr).sort().pop() || null;
+      const p = { id: r[0], name: r[1], code: r[2], cat: r[3], price: r[4], use: r[5], safety: r[6], rec: r[5] + r[6], lots, desc: r[8], spec: r[9].map(x => ({ k: x[0], v: x[1] })), qty, value: qty * r[4], next, lastArr, gtin: '04260451' + String(23001 + i * 173).padStart(5, '0') };
+      p.stock = this.stockKey(p); return p;
+    });
+    const byId = {}; products.forEach(p => byId[p.id] = p);
+    const discs = [
+      { id: 'D-2611-04', pid: 'P02', qty: 1, date: '2026-11-09', status: 'open', y: 27, del: 0 },
+      { id: 'D-2611-03', pid: 'P09', qty: 2, date: '2026-11-05', status: 'open', y: 30, del: 0 },
+      { id: 'D-2611-02', pid: 'P13', qty: 1, date: '2026-11-03', status: 'explained', y: 45, del: 0, note: 'Used in an emergency procedure during the night shift. Usage report to follow.' },
+      { id: 'D-2611-01', pid: 'P06', qty: 1, date: '2026-11-02', status: 'open', y: 11, del: 0 },
+      { id: 'D-2610-07', pid: 'P01', qty: 1, date: '2026-10-28', status: 'resolved', y: 15, del: 0 },
+      { id: 'D-2610-05', pid: 'P14', qty: 3, date: '2026-10-19', status: 'resolved', y: 73, del: 0 }
+    ];
+    const reqs = [
+      { id: 'REQ-1048', type: 'replenish', pid: 'P12', qty: 12, date: '2026-11-08', status: 'Under review', upd: '2026-11-09', by: 'Anna Keller', note: 'Out of stock since 02 Nov. Two PTA procedures planned next week.' },
+      { id: 'REQ-1047', type: 'usage', pid: 'P01', qty: 1, date: '2026-11-02', status: 'Completed', upd: '2026-11-03', by: 'Lena Vogt', note: 'Matched to removal D-2610-07.' },
+      { id: 'REQ-1046', type: 'return', pid: 'P08', qty: 2, date: '2026-10-30', status: 'In progress', upd: '2026-11-06', by: 'Anna Keller', note: 'Close to expiry. Pickup booked for 11 Nov 2026.' },
+      { id: 'REQ-1045', type: 'adjust', pid: 'P14', qty: 3, date: '2026-10-27', status: 'Approved', upd: '2026-11-03', by: 'Anna Keller', note: 'Three sheaths damaged in transport and discarded.' },
+      { id: 'REQ-1044', type: 'replenish', pid: 'P10', qty: 6, date: '2026-10-21', status: 'Completed', upd: '2026-10-29', by: 'Anna Keller', note: '' },
+      { id: 'REQ-1043', type: 'usage', pid: 'P09', qty: 2, date: '2026-11-05', status: 'Draft', upd: '2026-11-05', by: 'Lena Vogt', note: 'Draft, not yet submitted.' },
+      { id: 'REQ-1041', type: 'adjust', pid: 'P05', qty: 1, date: '2026-10-12', status: 'Rejected', upd: '2026-10-15', by: 'Tobias Klein', note: 'Rejected by Bentley: RFID count confirms 10 units on the shelf.' }
+    ];
+    const notes = [
+      { id: 'n1', icon: 'package-search', tone: 'warn', title: 'Unreported removal identified', body: '1 × BeCor DES 3.0 × 18 mm was removed from storage but no usage was reported.', time: 'Today, 00:04', read: false, to: ['discrepancies', {}] },
+      { id: 'n2', icon: 'calendar-clock', tone: 'crit', title: '3 units expire within 3 months', body: 'BeCor DES 3.5 × 23 mm, lot LT2502-031, expires on 30 Jan 2027.', time: 'Today, 00:04', read: false, to: ['expiry', { xWin: '3' }] },
+      { id: 'n3', icon: 'package-plus', tone: 'info', title: 'November stock recommendations are ready', body: '5 products are below their recommended stock level.', time: 'Yesterday, 08:15', read: false, to: ['vmi', { vmiTab: 'replenish' }] },
+      { id: 'n4', icon: 'clipboard-list', tone: 'soft', title: 'REQ-1048 is under review', body: 'Bentley is reviewing your replenishment request for BePTA Balloon 6 × 40 mm.', time: 'Yesterday, 14:32', read: false, to: ['requests', {}] },
+      { id: 'n5', icon: 'badge-percent', tone: 'ok', title: 'October: you qualified for the lost-items discount', body: 'Lost-item rate 3.4%, below the 5% threshold. 1% off your consignment invoice.', time: '03 Nov 2026', read: true, to: ['incentives', {}] },
+      { id: 'n6', icon: 'package-x', tone: 'crit', title: 'BePTA Balloon 6 × 40 mm is out of stock', body: 'Recommended stock is 12 units.', time: '02 Nov 2026', read: true, to: ['product', { pid: 'P12', pTab: 'lots' }] },
+      { id: 'n7', icon: 'wifi-off', tone: 'warn', title: 'Reader in Storage room 2 reported late', body: 'The nightly scan finished at 00:41 instead of 00:05. No data was lost.', time: '29 Oct 2026', read: true, to: ['dashboard', {}] },
+      { id: 'n8', icon: 'truck', tone: 'info', title: 'Pickup booked for REQ-1046', body: 'Bentley will collect 2 × BeGraft Covered 7 × 37 mm on 11 Nov 2026.', time: '06 Nov 2026', read: true, to: ['requests', {}] }
+    ];
+    const users = [
+      { id: 'u1', name: 'Anna Keller', email: 'anna.keller@st-elisabeth-klinik.de', role: 'Inventory manager', status: 'Active', last: 'Today', me: true },
+      { id: 'u2', name: 'Dr. Markus Brandt', email: 'm.brandt@st-elisabeth-klinik.de', role: 'Clinic administrator', status: 'Active', last: '07 Nov 2026' },
+      { id: 'u3', name: 'Lena Vogt', email: 'lena.vogt@st-elisabeth-klinik.de', role: 'Clinic employee', status: 'Active', last: 'Today' },
+      { id: 'u4', name: 'Tobias Klein', email: 't.klein@st-elisabeth-klinik.de', role: 'Clinic employee', status: 'Invited', last: '—' },
+      { id: 'u5', name: 'Sabine Roth', email: 's.roth@st-elisabeth-klinik.de', role: 'Clinic employee', status: 'Deactivated', last: '14 Aug 2026' }
+    ];
+    const perms = [
+      { key: 'view', label: 'View inventory and expiry dates', a: true, m: true, e: true },
+      { key: 'req', label: 'Submit replenishment and return requests', a: true, m: true, e: false },
+      { key: 'usage', label: 'Report product usage', a: true, m: true, e: true },
+      { key: 'disc', label: 'Explain unreported removals', a: true, m: true, e: true },
+      { key: 'adj', label: 'Submit stock adjustments', a: true, m: true, e: false },
+      { key: 'inc', label: 'View incentives and invoice savings', a: true, m: true, e: false },
+      { key: 'exp', label: 'Export data', a: true, m: true, e: false },
+      { key: 'users', label: 'Manage users and permissions', a: true, m: true, e: false },
+      { key: 'clinic', label: 'Edit clinic profile', a: true, m: false, e: false }
+    ];
+    const activity = [
+      { date: '09 Nov', icon: 'scan-line', tone: 'ok', title: 'Nightly RFID scan completed', detail: '301 units counted in 2 storage rooms', to: ['dashboard', {}] },
+      { date: '09 Nov', icon: 'package-search', tone: 'warn', title: 'Unreported removal identified', detail: 'BeCor DES 3.0 × 18 mm · 1 unit', to: ['discrepancies', {}] },
+      { date: '08 Nov', icon: 'clipboard-check', tone: 'ok', title: 'Usage reported by Lena Vogt', detail: 'BeCross NC Balloon 3.5 × 12 mm · 2 units', to: ['product', { pid: 'P10', pTab: 'history' }] },
+      { date: '06 Nov', icon: 'truck', tone: 'info', title: 'Delivery received', detail: 'BeWire Guidewire 0.035″ 260 cm · +14 units', to: ['product', { pid: 'P16', pTab: 'history' }] },
+      { date: '05 Nov', icon: 'package-search', tone: 'warn', title: 'Unreported removal identified', detail: 'BeCross PTCA Balloon 2.5 × 15 mm · 2 units', to: ['discrepancies', {}] },
+      { date: '04 Nov', icon: 'truck', tone: 'info', title: 'Delivery received', detail: 'BeCor DES 4.0 × 28 mm · +7 units', to: ['product', { pid: 'P04', pTab: 'history' }] },
+      { date: '03 Nov', icon: 'sliders-horizontal', tone: 'neutral', title: 'Stock adjustment approved', detail: 'BeSheath Introducer 6F 11 cm · −3 units', to: ['requests', {}] }
+    ];
+    const months = ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'];
+    const series = { stock: [338, 333, 329, 324, 318, 315, 312, 309, 306, 304, 303, 301], rec: [300, 300, 296, 296, 294, 294, 292, 292, 290, 290, 288, 288], rep: [41, 38, 44, 40, 46, 43, 45, 47, 42, 44, 46, 19], unrep: [5, 4, 4, 3, 4, 3, 2, 3, 2, 2, 1, 4], exp: [71, 69, 66, 64, 63, 61, 60, 58, 59, 57, 55, 57], cov: [84, 85, 86, 86, 88, 87, 89, 90, 90, 91, 91, 91], disc: [0, 0, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1] };
+    return { products, byId, discs, reqs, notes, users, perms, activity, months, series, cats: ['Coronary stents', 'Peripheral stents', 'Balloon catheters', 'Accessories'] };
+  }
+
+  blankForm(type, extra) { return Object.assign({ type, pid: '', qty: '', reason: '', notes: '', date: '', urgency: 'Standard', discId: null }, extra || {}); }
+  go(screen, extra) {
+    clearTimeout(this._lt);
+    this.setState(Object.assign({ screen, menu: false, loading: screen !== 'login' }, extra || {}));
+    this._lt = setTimeout(() => this.setState({ loading: false }), 420);
+    try { window.scrollTo(0, 0); } catch (e) {}
+  }
+  toast(msg) { clearTimeout(this._tt); this.setState({ toast: msg }); this._tt = setTimeout(() => this.setState({ toast: null }), 4000); }
+  startRequest(type, pid, qty, extra) { this.go('newRequest', { form: this.blankForm(type, Object.assign({ pid: pid || '', qty: qty ? String(qty) : '' }, extra || {})), formErr: null, submitted: null }); }
+  setForm(k, v) { this.setState(s => ({ form: Object.assign({}, s.form, { [k]: v }), formErr: null })); }
+  downloadCSV(rows) {
+    const head = ['Product', 'Product ID', 'Barcode', 'Category', 'Quantity', 'Unit price (EUR)', 'Stock value (EUR)', 'Last arrival', 'Next expiry', 'Status'];
+    const body = rows.map(p => [p.name, p.code, p.gtin, p.cat, p.qty, p.price, p.value, p.lastArr || '', p.next ? p.next.exp : '', p.stock].map(v => '"' + String(v).replace(/"/g, '""') + '"').join(','));
+    const blob = new Blob([[head.join(',')].concat(body).join('\n')], { type: 'text/csv' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'smart-stock-inventory-2026-11-09.csv'; document.body.appendChild(a); a.click(); a.remove();
+    this.toast('Inventory exported as CSV (' + rows.length + ' products).');
+  }
+  submitRequest() {
+    const f = this.state.form;
+    if (!f.pid) return this.setState({ formErr: 'Choose a product.' });
+    if (!(Number(f.qty) > 0)) return this.setState({ formErr: 'Enter a quantity of at least 1.' });
+    if (!f.reason) return this.setState({ formErr: 'Choose a reason.' });
+    this.setState({ busy: true, formErr: null });
+    setTimeout(() => {
+      const id = 'REQ-' + (1049 + this.state.reqs.filter(r => r.date === '2026-11-09').length);
+      const r = { id, type: f.type, pid: f.pid, qty: Number(f.qty), date: '2026-11-09', status: 'Submitted', upd: '2026-11-09', by: 'Anna Keller', note: f.notes || f.reason };
+      this.setState(s => ({ busy: false, submitted: r, reqs: [r].concat(s.reqs), discs: f.discId ? s.discs.map(d => d.id === f.discId ? Object.assign({}, d, { status: 'reported' }) : d) : s.discs }));
+    }, 900);
+  }
+
+  renderVals() {
+    const s = this.state, D = this.D, P = D.byId;
+    const go = (scr, extra) => () => this.go(scr, extra);
+    const goTo = t => go(t[0], t[1]);
+    const is = { [s.screen]: true }; is.app = s.screen !== 'login';
+    const tl = { replenish: 'Replenishment', adjust: 'Stock adjustment', usage: 'Usage report', return: 'Return / pickup' };
+    const openDiscs = s.discs.filter(d => d.status === 'open');
+    const unread = s.notes.filter(n => !n.read).length;
+    const prods = D.products;
+
+    // nav
+    const item = (label, icon, act, fn, badge) => ({ label, icon, badge: badge || '', hasBadge: !!badge, go: fn, bg: act ? 'var(--color-accent-100)' : 'transparent', fg: act ? 'var(--color-accent-800)' : 'var(--color-text)' });
+    const sc = s.screen;
+    const nav = {
+      main: [
+        item('Dashboard', 'layout-dashboard', sc === 'dashboard', go('dashboard')),
+        item('Inventory', 'package', sc === 'inventory' || sc === 'product', go('inventory')),
+        item('Expiry management', 'calendar-clock', sc === 'expiry', go('expiry')),
+        item('Stock recommendations', 'gauge', sc === 'vmi', go('vmi', { vmiTab: 'compare' })),
+        item('Incentives & discounts', 'badge-percent', sc === 'incentives', go('incentives')),
+        item('Unreported removals', 'package-search', sc === 'discrepancies', go('discrepancies'), openDiscs.length),
+        item('Requests', 'clipboard-list', sc === 'requests' || sc === 'newRequest', go('requests'))
+      ],
+      more: [
+        item('Reports & history', 'chart-column', sc === 'reports', go('reports')),
+        item('Notifications', 'bell', sc === 'notifications', go('notifications'), unread)
+      ],
+      bottom: [
+        item('Clinic profile', 'building-2', sc === 'settings' && s.sTab === 'clinic', go('settings', { sTab: 'clinic' })),
+        item('User management', 'users', sc === 'settings' && s.sTab === 'users', go('settings', { sTab: 'users' })),
+        item('Settings', 'settings', sc === 'settings' && s.sTab === 'prefs', go('settings', { sTab: 'prefs' })),
+        item('Help & support', 'circle-help', false, () => this.setState({ modal: 'help' }))
+      ]
+    };
+
+    // sync
+    const sy = this.props.syncStatus || 'ok';
+    const sync = {
+      ok: sy === 'ok', bad: sy !== 'ok',
+      last: sy === 'ok' ? '09 Nov 2026, 00:04' : sy === 'stale' ? '07 Nov 2026, 00:03' : '08 Nov 2026, 00:04',
+      next: '10 Nov 2026, 00:00',
+      tag: sy === 'ok' ? this.tone('ok', 'Synced') : sy === 'stale' ? this.tone('warn', 'Data outdated') : this.tone('crit', 'Scan failed', 'wifi-off'),
+      title: sy === 'stale' ? 'Inventory data is 2 days old' : 'Last night’s RFID scan failed',
+      body: sy === 'stale' ? 'The last successful scan was on 07 Nov 2026 at 00:03. Quantities may not include recent removals. Bentley has been notified.' : 'Showing data from 08 Nov 2026, 00:04. The reader in Storage room 2 did not respond. Bentley support has been notified automatically.',
+      bg: sy === 'stale' ? '#fbefd9' : '#f8e1dd', fg: sy === 'stale' ? '#6e4309' : '#861b11',
+      rooms: [{ name: 'Storage room 1 · Cath Lab', units: 188, st: this.tone('ok', 'Online') }, { name: 'Storage room 2 · Angiography', units: 113, st: sy === 'failed' ? this.tone('crit', 'No response', 'wifi-off') : this.tone('ok', 'Online') }],
+      retry: () => this.toast('Sync requested. Bentley will retry the scan within 15 minutes.')
+    };
+
+    // product view
+    const pv = p => Object.assign({}, p, {
+      priceL: this.eur(p.price), valueL: this.eur(p.value), arrL: this.fmt(p.lastArr), expL: p.next ? this.fmt(p.next.exp) : '—', shelfL: p.next ? this.shelf(p.next.exp) : '—',
+      st: this.stockTag(p.stock), ex: p.next ? this.expTag(p.next.exp) : this.tone('neutral', 'No stock', 'minus'),
+      lotsNote: p.lots.length > 1 ? '+' + (p.lots.length - 1) + ' more lot' + (p.lots.length > 2 ? 's' : '') : (p.lots.length ? '1 lot' : 'No lots'),
+      open: go('product', { pid: p.id, pTab: 'lots' })
+    });
+
+    // totals
+    const totUnits = prods.reduce((a, p) => a + p.qty, 0), totRec = prods.reduce((a, p) => a + p.rec, 0), totValue = prods.reduce((a, p) => a + p.value, 0);
+    const below = prods.filter(p => p.stock === 'below' || p.stock === 'out'), above = prods.filter(p => p.stock === 'above'), onT = prods.filter(p => p.stock === 'on');
+    const shortU = below.reduce((a, p) => a + p.rec - p.qty, 0), surplusU = above.reduce((a, p) => a + p.qty - p.rec, 0);
+    const coverage = Math.round(100 * prods.reduce((a, p) => a + Math.min(p.qty, p.rec), 0) / totRec);
+    const allLots = []; prods.forEach(p => p.lots.forEach(l => allLots.push(Object.assign({ p }, l))));
+    const band = t => allLots.filter(l => this.tier(l.exp) === t);
+    const bandInfo = (t, label, range, tone, win) => { const ls = band(t); return { label, range, units: ls.reduce((a, l) => a + l.qty, 0), products: new Set(ls.map(l => l.pid)).size, tag: this.tone(tone, label), go: go('expiry', { xWin: win }) }; };
+    const bands = [bandInfo('critical', 'Critical', 'Expires within 3 months', 'crit', '3'), bandInfo('attention', 'Attention', 'Expires in 3–6 months', 'warn', '6'), bandInfo('upcoming', 'Upcoming', 'Expires in 6–12 months', 'soft', '12')];
+    const flaggedUnits = bands.reduce((a, b) => a + b.units, 0), flaggedProducts = new Set(allLots.filter(l => this.tier(l.exp) !== 'ok').map(l => l.pid)).size;
+    const scaleMax = Math.max(totUnits, totRec) * 1.18;
+    const inv = { cur: totUnits, rec: totRec, diff: (totUnits - totRec > 0 ? '+' : '') + (totUnits - totRec), curW: (100 * totUnits / scaleMax).toFixed(1) + '%', recL: (100 * totRec / scaleMax).toFixed(1) + '%', below: below.length, above: above.length, on: onT.length, shortU, surplusU, coverage: coverage + '%',
+      goBelow: go('vmi', { vmiTab: 'compare', vmiF: 'below' }), goOn: go('vmi', { vmiTab: 'compare', vmiF: 'on' }), goAbove: go('vmi', { vmiTab: 'compare', vmiF: 'above' }) };
+
+    const kpis = [
+      { label: 'Units in stock', value: String(totUnits), sub: prods.filter(p => p.qty > 0).length + ' products · ' + this.eur(totValue), icon: 'package', fg: 'var(--color-text)', go: go('inventory') },
+      { label: 'Approaching expiry', value: String(flaggedUnits), sub: 'units within 12 months', icon: 'calendar-clock', fg: '#6e4309', go: go('expiry', { xWin: '12' }) },
+      { label: 'Unreported removals', value: String(s.discs.filter(d => d.date >= '2026-11-01').length), sub: openDiscs.length + ' still to report this month', icon: 'package-search', fg: openDiscs.length ? '#861b11' : 'var(--color-text)', go: go('discrepancies') },
+      { label: 'Stock target coverage', value: coverage + '%', sub: below.length + ' products below target', icon: 'gauge', fg: 'var(--color-text)', go: go('vmi', { vmiTab: 'compare' }) },
+      { label: 'Current discount', value: '1%', sub: 'of up to 2% · illustrative', icon: 'badge-percent', fg: 'var(--color-accent-700)', go: go('incentives') }
+    ];
+
+    // replenishment
+    const pendingFor = pid => s.reqs.find(r => r.type === 'replenish' && r.pid === pid && ['Submitted', 'Under review', 'Approved', 'In progress'].includes(r.status));
+    const recs = below.map(p => {
+      const pend = pendingFor(p.id), sug = p.rec - p.qty, crit = p.lots.filter(l => this.tier(l.exp) === 'critical').reduce((a, l) => a + l.qty, 0);
+      const reason = p.qty === 0 ? 'Out of stock. Expected usage is ' + p.use + ' units per month.' : 'Stock is ' + sug + ' unit' + (sug > 1 ? 's' : '') + ' below recommended. Expected usage is ' + p.use + ' units per month.' + (crit ? ' ' + crit + ' units also expire within 3 months.' : '');
+      return Object.assign(pv(p), { sug: '+' + sug, sugN: sug, reason, pending: !!pend, notPending: !pend, pendLabel: pend ? pend.id + ' · ' + pend.status : '', isOpen: s.openRec === p.id, toggle: () => this.setState({ openRec: s.openRec === p.id ? null : p.id }), request: () => this.startRequest('replenish', p.id, sug, { reason: 'Below recommended stock' }), useL: p.use + ' units', safetyL: p.safety + ' units', recL: p.rec + ' units', curL: p.qty + ' units', urgent: p.qty === 0, tag: p.qty === 0 ? this.tone('crit', 'Out of stock', 'package-x') : this.tone('warn', 'Below target', 'arrow-down') });
+    });
+
+    // inventory
+    const q = s.q.trim().toLowerCase();
+    let rows = prods.filter(p => {
+      if (q && !(p.name.toLowerCase().includes(q) || p.code.toLowerCase().includes(q) || p.gtin.includes(q))) return false;
+      if (s.cat !== 'all' && p.cat !== s.cat) return false;
+      if (s.stF !== 'all' && p.stock !== s.stF) return false;
+      if (s.avail === 'in' && p.qty === 0) return false; if (s.avail === 'out' && p.qty > 0) return false;
+      if (s.expF !== 'all') { const lim = { '3': 91, '6': 183, '12': 365 }[s.expF]; if (!p.next || this.days(p.next.exp) > lim) return false; }
+      return true;
+    });
+    const k = s.sortKey, val = p => k === 'name' ? p.name : k === 'qty' ? p.qty : k === 'value' ? p.value : k === 'arrival' ? (p.lastArr || '') : (p.next ? p.next.exp : '9999');
+    rows.sort((a, b) => (val(a) < val(b) ? -1 : val(a) > val(b) ? 1 : 0) * s.sortDir);
+    const per = 8, pages = Math.max(1, Math.ceil(rows.length / per)), page = Math.min(s.page, pages);
+    const sortH = key => ({ icon: s.sortKey === key ? (s.sortDir > 0 ? 'arrow-up' : 'arrow-down') : 'arrow-up-down', fg: s.sortKey === key ? 'var(--color-accent-700)' : 'inherit', go: () => this.setState(st => ({ sortKey: key, sortDir: st.sortKey === key ? -st.sortDir : 1 })) });
+    const filtersOn = !!(q || s.cat !== 'all' || s.stF !== 'all' || s.avail !== 'all' || s.expF !== 'all');
+    const opt = (list, cur) => list.map(([v, l]) => ({ v, l }));
+    const invt = {
+      rows: rows.slice((page - 1) * per, page * per).map(pv), count: rows.length, units: rows.reduce((a, p) => a + p.qty, 0), value: this.eur(rows.reduce((a, p) => a + p.value, 0)),
+      empty: rows.length === 0, has: rows.length > 0, range: rows.length ? ((page - 1) * per + 1) + '–' + Math.min(page * per, rows.length) + ' of ' + rows.length : '0 of 0',
+      pages: Array.from({ length: pages }, (_, i) => ({ n: i + 1, go: () => this.setState({ page: i + 1 }), bd: i + 1 === page ? 'var(--color-accent)' : 'var(--color-divider)', fg: i + 1 === page ? 'var(--color-accent-700)' : 'inherit' })),
+      prev: () => this.setState({ page: Math.max(1, page - 1) }), next: () => this.setState({ page: Math.min(pages, page + 1) }), prevDis: page === 1, nextDis: page === pages,
+      sort: { name: sortH('name'), qty: sortH('qty'), value: sortH('value'), arrival: sortH('arrival'), expiry: sortH('expiry') },
+      q: s.q, cat: s.cat, expF: s.expF, stF: s.stF, avail: s.avail, filtersOn,
+      onQ: e => this.setState({ q: e.target.value, page: 1 }), onCat: e => this.setState({ cat: e.target.value, page: 1 }), onExp: e => this.setState({ expF: e.target.value, page: 1 }), onSt: e => this.setState({ stF: e.target.value, page: 1 }), onAvail: e => this.setState({ avail: e.target.value, page: 1 }),
+      clear: () => this.setState({ q: '', cat: 'all', expF: 'all', stF: 'all', avail: 'all', page: 1 }),
+      exportCsv: () => this.downloadCSV(rows),
+      catOpts: opt([['all', 'All categories']].concat(D.cats.map(c => [c, c]))),
+      expOpts: opt([['all', 'Any expiry'], ['3', 'Within 3 months'], ['6', 'Within 6 months'], ['12', 'Within 12 months']]),
+      stOpts: opt([['all', 'Any stock status'], ['below', 'Below target'], ['on', 'On target'], ['above', 'Above target'], ['out', 'Out of stock']]),
+      avOpts: opt([['all', 'All products'], ['in', 'In stock'], ['out', 'Not available']])
+    };
+
+    // product detail
+    const p0 = P[s.pid] || prods[1], prod = pv(p0);
+    const dif = p0.qty - p0.rec;
+    prod.recL = p0.rec; prod.diffL = dif === 0 ? 'Matches recommended' : dif > 0 ? dif + ' above recommended' : Math.abs(dif) + ' below recommended';
+    prod.diffFg = dif < 0 ? '#6e4309' : 'var(--color-neutral-700)';
+    prod.hasNext = !!p0.next; prod.noNext = !p0.next;
+    prod.nextLot = p0.next ? p0.next.lot + ' · ' + p0.next.qty + ' units' : '';
+    prod.isBelow = dif < 0; prod.sug = Math.max(0, -dif);
+    prod.lotRows = p0.lots.slice().sort((a, b) => a.exp < b.exp ? -1 : 1).map(l => ({ lot: l.lot, qty: l.qty, arr: this.fmt(l.arr), exp: this.fmt(l.exp), shelf: this.shelf(l.exp), tag: this.expTag(l.exp), flag: this.tier(l.exp) !== 'ok', pri: !!s.priority[l.key], notPri: !s.priority[l.key], togglePri: () => { this.setState(st => ({ priority: Object.assign({}, st.priority, { [l.key]: !st.priority[l.key] }) })); this.toast(s.priority[l.key] ? 'Priority mark removed from lot ' + l.lot + '.' : 'Lot ' + l.lot + ' marked for priority use in upcoming surgeries and BeBoxes.'); } }));
+    prod.noLots = p0.lots.length === 0; prod.hasLots = !prod.noLots;
+    const hist = [];
+    p0.lots.forEach(l => hist.push({ date: l.arr, icon: 'truck', fg: 'var(--color-accent-700)', title: 'Delivery received', detail: 'Lot ' + l.lot, change: '+' + l.qty }));
+    s.discs.filter(d => d.pid === p0.id).forEach(d => hist.push({ date: d.date, icon: 'package-search', fg: '#6e4309', title: 'Removal identified by RFID', detail: d.id + ' · ' + this.discTone(d.status).label, change: '−' + d.qty }));
+    s.reqs.filter(r => r.pid === p0.id && r.status !== 'Draft').forEach(r => hist.push({ date: r.date, icon: r.type === 'usage' ? 'clipboard-check' : r.type === 'adjust' ? 'sliders-horizontal' : r.type === 'return' ? 'undo-2' : 'package-plus', fg: 'var(--color-neutral-700)', title: tl[r.type] + ' ' + r.id, detail: r.status, change: r.type === 'replenish' ? 'Requested ' + r.qty : r.type === 'return' ? '−' + r.qty : r.type === 'adjust' ? '−' + r.qty : '−' + r.qty }));
+    ['2026-10-14', '2026-09-23'].forEach((dt, i) => p0.qty && hist.push({ date: dt, icon: 'clipboard-check', fg: 'var(--color-neutral-700)', title: 'Usage reported', detail: i ? 'By Lena Vogt' : 'By Anna Keller', change: '−' + (i + 1) }));
+    prod.history = hist.sort((a, b) => a.date < b.date ? 1 : -1).map(h => Object.assign(h, { dateL: this.fmt(h.date) }));
+    prod.tabLots = s.pTab === 'lots'; prod.tabHist = s.pTab === 'history';
+    prod.tLotsBd = s.pTab === 'lots' ? 'var(--color-accent)' : 'transparent'; prod.tHistBd = s.pTab === 'history' ? 'var(--color-accent)' : 'transparent';
+    prod.showLots = () => this.setState({ pTab: 'lots' }); prod.showHist = () => this.setState({ pTab: 'history' });
+    prod.reqRepl = () => this.startRequest('replenish', p0.id, Math.max(1, p0.rec - p0.qty), { reason: dif < 0 ? 'Below recommended stock' : '' });
+    prod.reqUsage = () => this.startRequest('usage', p0.id, 1, { reason: 'Used in procedure' });
+    prod.reqDisc = () => this.startRequest('adjust', p0.id, 1, { reason: 'Shelf count differs from system' });
+    prod.reqReturn = () => this.startRequest('return', p0.id, p0.next ? p0.next.qty : 1, { reason: p0.next && this.tier(p0.next.exp) !== 'ok' ? 'Close to expiry' : '' });
+    prod.recPct = Math.min(100, Math.round(100 * p0.qty / Math.max(p0.qty, p0.rec) )) + '%';
+    const pScale = Math.max(p0.qty, p0.rec) * 1.2; prod.curW = (100 * p0.qty / pScale) + '%'; prod.recLeft = (100 * p0.rec / pScale) + '%';
+
+    // expiry
+    const lim = { '3': 91, '6': 183, '12': 365 }[s.xWin];
+    const xq = s.xQ.trim().toLowerCase();
+    const xRows = allLots.filter(l => this.days(l.exp) <= lim && (s.xCat === 'all' || l.p.cat === s.xCat) && (!xq || l.p.name.toLowerCase().includes(xq) || l.p.code.toLowerCase().includes(xq))).sort((a, b) => a.exp < b.exp ? -1 : 1)
+      .map(l => { const t = this.tier(l.exp); return { name: l.p.name, code: l.p.code, lot: l.lot, qty: l.qty, arr: this.fmt(l.arr), exp: this.fmt(l.exp), shelf: this.shelf(l.exp), tag: this.expTag(l.exp), rowBg: t === 'critical' ? '#fbf1ef' : 'transparent', pri: !!s.priority[l.key], notPri: !s.priority[l.key], open: go('product', { pid: l.pid, pTab: 'lots' }), togglePri: e => { e.stopPropagation(); this.setState(st => ({ priority: Object.assign({}, st.priority, { [l.key]: !st.priority[l.key] }) })); this.toast(s.priority[l.key] ? 'Priority mark removed from lot ' + l.lot + '.' : 'Lot ' + l.lot + ' marked for priority use.'); } }; });
+    const win = w => ({ bd: s.xWin === w ? 'var(--color-accent)' : 'var(--color-divider)', fg: s.xWin === w ? 'var(--color-accent-700)' : 'inherit', go: () => this.setState({ xWin: w }) });
+    const expv = { rows: xRows, has: xRows.length > 0, empty: xRows.length === 0, units: xRows.reduce((a, r) => a + r.qty, 0), lots: xRows.length, w3: win('3'), w6: win('6'), w12: win('12'), xQ: s.xQ, xCat: s.xCat, onQ: e => this.setState({ xQ: e.target.value }), onCat: e => this.setState({ xCat: e.target.value }), catOpts: invt.catOpts, priCount: Object.values(s.priority).filter(Boolean).length,
+      cards: [
+        { label: 'Within 3 months', n: bands[0].products, units: bands[0].units, tag: this.tone('crit', 'Critical'), go: () => this.setState({ xWin: '3' }) },
+        { label: 'Within 3–6 months', n: bands[1].products, units: bands[1].units, tag: this.tone('warn', 'Attention'), go: () => this.setState({ xWin: '6' }) },
+        { label: 'Within 6–12 months', n: bands[2].products, units: bands[2].units, tag: this.tone('soft', 'Use first'), go: () => this.setState({ xWin: '12' }) },
+        { label: 'Total affected', n: flaggedProducts, units: flaggedUnits, tag: this.tone('neutral', 'All flagged', 'layers'), go: () => this.setState({ xWin: '12' }) }
+      ] };
+
+    // vmi
+    const vRows = prods.filter(p => s.vmiF === 'all' || (s.vmiF === 'below' ? (p.stock === 'below' || p.stock === 'out') : p.stock === s.vmiF)).map(p => {
+      const m = Math.max(p.qty, p.rec) * 1.25, dd = p.qty - p.rec;
+      return Object.assign(pv(p), { curW: (100 * p.qty / m) + '%', recLeft: (100 * p.rec / m) + '%', barC: p.stock === 'below' || p.stock === 'out' ? '#c98a2b' : p.stock === 'above' ? '#7f97a8' : 'var(--color-accent)', diffL: dd > 0 ? '+' + dd : String(dd), sugL: dd < 0 ? '+' + (-dd) : '—', canReq: dd < 0 && !pendingFor(p.id), request: () => this.startRequest('replenish', p.id, -dd, { reason: 'Below recommended stock' }) });
+    });
+    const vf = f => ({ bd: s.vmiF === f ? 'var(--color-accent)' : 'var(--color-divider)', fg: s.vmiF === f ? 'var(--color-accent-700)' : 'inherit', go: () => this.setState({ vmiF: f }) });
+    const vmi = { rows: vRows, recs, recCount: recs.length, tabCompare: s.vmiTab === 'compare', tabRepl: s.vmiTab === 'replenish', tcBd: s.vmiTab === 'compare' ? 'var(--color-accent)' : 'transparent', trBd: s.vmiTab === 'replenish' ? 'var(--color-accent)' : 'transparent', showCompare: () => this.setState({ vmiTab: 'compare' }), showRepl: () => this.setState({ vmiTab: 'replenish' }), fAll: vf('all'), fBelow: vf('below'), fOn: vf('on'), fAbove: vf('above'), info: s.vmiInfo, toggleInfo: () => this.setState({ vmiInfo: !s.vmiInfo }), infoIcon: s.vmiInfo ? 'chevron-up' : 'chevron-down', pending: recs.filter(r => r.pending).length };
+
+    // incentives
+    const leanPct = Math.round(1000 * totUnits / totRec) / 10;
+    const incv = {
+      leanPct: leanPct + '%', leanW: ((leanPct - 80) / 50 * 100).toFixed(1) + '%', leanTarget: '40%', surplusU, aboveN: above.length,
+      lostW: '34%', lostTarget: '50%',
+      history: [['Jun 2026', true, true], ['Jul 2026', false, true], ['Aug 2026', false, true], ['Sep 2026', false, true], ['Oct 2026', false, true]].map(([m, a, b]) => ({ m, leanIcon: a ? 'circle-check' : 'circle-minus', leanFg: a ? 'var(--color-accent-700)' : 'var(--color-neutral-500)', leanL: a ? 'Achieved' : 'Not achieved', lostIcon: b ? 'circle-check' : 'circle-minus', lostFg: b ? 'var(--color-accent-700)' : 'var(--color-neutral-500)', lostL: b ? 'Achieved' : 'Not achieved', total: (a + b) + '%', saved: this.eur(41280 * (a + b) / 100) })).reverse(),
+      actions: [
+        { icon: 'package-search', title: 'Report the ' + openDiscs.length + ' open removals', body: 'Every removal you report keeps it out of the lost-item rate.', cta: 'Report removals', go: go('discrepancies') },
+        { icon: 'undo-2', title: 'Return surplus on ' + above.length + ' products', body: surplusU + ' units sit above recommended stock. A return or pickup request lowers tied-up stock.', cta: 'See surplus products', go: go('vmi', { vmiTab: 'compare', vmiF: 'above' }) },
+        { icon: 'calendar-clock', title: 'Use expiring units first', body: flaggedUnits + ' units expire within 12 months. Allocate them to upcoming surgeries and BeBoxes.', cta: 'Open expiry list', go: go('expiry', { xWin: '12' }) }
+      ]
+    };
+
+    // discrepancies
+    const dRows = s.discs.filter(d => s.dTab === 'all' || d.status === 'open' || d.status === 'explained').map(d => {
+      const p = P[d.pid];
+      return { id: d.id, name: p.name, code: p.code, qty: d.qty, date: this.fmt(d.date), tag: this.discTone(d.status), isOpen: d.status === 'open', notOpen: d.status !== 'open', note: d.note || '', hasNote: !!d.note, expanded: s.openDisc === d.id, chev: s.openDisc === d.id ? 'chevron-up' : 'chevron-down', y: d.y, del: d.del, t: d.y + d.del - d.qty, toggle: () => this.setState({ openDisc: s.openDisc === d.id ? null : d.id }), report: () => this.startRequest('usage', d.pid, d.qty, { reason: 'Used in procedure', discId: d.id, notes: 'Reporting removal ' + d.id + '.' }), explain: () => this.setState({ modal: 'explain', ex: { id: d.id, reason: '', note: '' } }), openProd: go('product', { pid: d.pid, pTab: 'history' }) };
+    });
+    const dt = t => ({ bd: s.dTab === t ? 'var(--color-accent)' : 'transparent', fg: s.dTab === t ? 'var(--color-accent-700)' : 'inherit', go: () => this.setState({ dTab: t }) });
+    const disc = { rows: dRows, has: dRows.length > 0, empty: dRows.length === 0, open: openDiscs.length, month: s.discs.filter(d => d.date >= '2026-11-01').length, tOpen: dt('open'), tAll: dt('all') };
+
+    // requests
+    const rq = s.rQ.trim().toLowerCase();
+    const reqRows = s.reqs.filter(r => (s.rType === 'all' || r.type === s.rType) && (s.rStat === 'all' || r.status === s.rStat) && (!rq || r.id.toLowerCase().includes(rq) || P[r.pid].name.toLowerCase().includes(rq))).map(r => {
+      const steps = ['Submitted', 'Under review', 'Approved', 'In progress', 'Completed'], idx = r.status === 'Draft' ? -1 : r.status === 'Rejected' ? 1 : steps.indexOf(r.status);
+      return { id: r.id, type: tl[r.type], name: P[r.pid].name, qty: r.qty, date: r.status === 'Draft' ? 'Not submitted' : this.fmt(r.date), upd: this.fmt(r.upd), tag: this.reqTone(r.status), by: r.by, note: r.note || 'No notes.', expanded: s.openReq === r.id, chev: s.openReq === r.id ? 'chevron-up' : 'chevron-down', toggle: () => this.setState({ openReq: s.openReq === r.id ? null : r.id }),
+        steps: steps.map((st, i) => ({ label: r.status === 'Rejected' && i === 1 ? 'Rejected' : st, dot: i <= idx ? (r.status === 'Rejected' && i === 1 ? '#861b11' : 'var(--color-accent)') : 'var(--color-neutral-300)', fg: i <= idx ? 'var(--color-text)' : 'var(--color-neutral-500)' })), openProd: go('product', { pid: r.pid, pTab: 'lots' }) };
+    });
+    const reqv = { rows: reqRows, has: reqRows.length > 0, empty: reqRows.length === 0, rQ: s.rQ, rType: s.rType, rStat: s.rStat, onQ: e => this.setState({ rQ: e.target.value }), onType: e => this.setState({ rType: e.target.value }), onStat: e => this.setState({ rStat: e.target.value }), clear: () => this.setState({ rQ: '', rType: 'all', rStat: 'all' }),
+      typeOpts: opt([['all', 'All request types'], ['replenish', 'Replenishment'], ['adjust', 'Stock adjustment'], ['usage', 'Usage report'], ['return', 'Return / pickup']]),
+      statOpts: opt([['all', 'Any status']].concat(['Draft', 'Submitted', 'Under review', 'Approved', 'In progress', 'Completed', 'Rejected'].map(x => [x, x]))),
+      open: s.reqs.filter(r => !['Completed', 'Rejected', 'Draft'].includes(r.status)).length, newReq: () => this.startRequest('replenish') };
+
+    // form
+    const f = s.form;
+    const reasons = { replenish: ['Below recommended stock', 'Planned procedures', 'Product out of stock', 'Other'], adjust: ['Shelf count differs from system', 'Product damaged', 'Product found', 'Other'], usage: ['Used in procedure', 'Opened, not implanted', 'Other'], return: ['Close to expiry', 'Overstock', 'Damaged packaging', 'Recall'] }[f.type];
+    const fp = f.pid ? P[f.pid] : null;
+    const form = {
+      types: [['replenish', 'Replenishment', 'Ask Bentley to restock a product.', 'package-plus'], ['adjust', 'Stock adjustment', 'Correct a count that does not match the shelf.', 'sliders-horizontal'], ['usage', 'Usage report', 'Report products used in a procedure.', 'clipboard-check'], ['return', 'Return or pickup', 'Send products back to Bentley.', 'undo-2']].map(([key, label, desc, icon]) => ({ label, desc, icon, bd: f.type === key ? 'var(--color-accent)' : 'var(--color-divider)', bg: f.type === key ? 'var(--color-accent-100)' : 'transparent', fg: f.type === key ? 'var(--color-accent-800)' : 'var(--color-text)', pick: () => this.setState(st => ({ form: this.blankForm(key, { pid: st.form.pid, qty: st.form.qty }), formErr: null })) })),
+      f, typeLabel: tl[f.type], prodOpts: [{ v: '', l: 'Choose a product…' }].concat(prods.map(p => ({ v: p.id, l: p.name + ' · ' + p.code }))), reasonOpts: [{ v: '', l: 'Choose a reason…' }].concat(reasons.map(r => ({ v: r, l: r }))),
+      onPid: e => this.setForm('pid', e.target.value), onQty: e => this.setForm('qty', e.target.value.replace(/[^0-9]/g, '')), onReason: e => this.setForm('reason', e.target.value), onNotes: e => this.setForm('notes', e.target.value), onDate: e => this.setForm('date', e.target.value),
+      isRepl: f.type === 'replenish', isUsage: f.type === 'usage', isReturn: f.type === 'return', isAdj: f.type === 'adjust',
+      showDate: f.type === 'usage' || f.type === 'return', dateLabel: f.type === 'usage' ? 'Date of use' : 'Preferred pickup date',
+      urgStd: { bd: f.urgency === 'Standard' ? 'var(--color-accent)' : 'var(--color-divider)', fg: f.urgency === 'Standard' ? 'var(--color-accent-700)' : 'inherit', go: () => this.setForm('urgency', 'Standard') },
+      urgUrg: { bd: f.urgency === 'Urgent' ? 'var(--color-accent)' : 'var(--color-divider)', fg: f.urgency === 'Urgent' ? 'var(--color-accent-700)' : 'inherit', go: () => this.setForm('urgency', 'Urgent') },
+      hasProd: !!fp, prodInfo: fp ? fp.qty + ' in stock · ' + fp.rec + ' recommended' + (fp.next ? ' · next expiry ' + this.fmt(fp.next.exp) : '') : '', sugHint: fp && f.type === 'replenish' && fp.rec > fp.qty ? 'Suggested quantity: ' + (fp.rec - fp.qty) : '', hasSug: !!(fp && f.type === 'replenish' && fp.rec > fp.qty),
+      linked: !!f.discId, discId: f.discId, err: s.formErr, hasErr: !!s.formErr, busy: s.busy, notBusy: !s.busy, submitLabel: s.busy ? 'Sending…' : 'Submit request',
+      submit: e => { if (e && e.preventDefault) e.preventDefault(); this.submitRequest(); }, cancel: go('requests'),
+      done: !!s.submitted, editing: !s.submitted,
+      sub: s.submitted ? { id: s.submitted.id, type: tl[s.submitted.type], name: P[s.submitted.pid].name, qty: s.submitted.qty, qtyL: s.submitted.qty + (s.submitted.qty === 1 ? ' unit' : ' units'), linked: !!f.discId } : {},
+      another: () => this.startRequest(f.type), viewReqs: go('requests'), toDash: go('dashboard')
+    };
+
+    // reports
+    const n = Number(s.rep), sl = a => a.slice(12 - n), ms = sl(D.months);
+    const mk = (arr, max, fmt) => sl(arr).map((v, i) => ({ v: fmt ? fmt(v) : v, h: (100 * v / max).toFixed(1) + '%', m: ms[i] }));
+    const repv = {
+      r6: { bd: n === 6 ? 'var(--color-accent)' : 'var(--color-divider)', fg: n === 6 ? 'var(--color-accent-700)' : 'inherit', go: () => this.setState({ rep: '6' }) },
+      r12: { bd: n === 12 ? 'var(--color-accent)' : 'var(--color-divider)', fg: n === 12 ? 'var(--color-accent-700)' : 'inherit', go: () => this.setState({ rep: '12' }) },
+      stock: sl(D.series.stock).map((v, i) => ({ v, h: (100 * v / 360).toFixed(1) + '%', rh: (100 * sl(D.series.rec)[i] / 360).toFixed(1) + '%', m: ms[i] })),
+      rem: sl(D.series.rep).map((v, i) => { const u = sl(D.series.unrep)[i]; return { v, u, h: (100 * v / 55).toFixed(1) + '%', uh: (100 * u / 55).toFixed(1) + '%', m: ms[i] }; }),
+      exp: mk(D.series.exp, 80), cov: mk(D.series.cov, 100, v => v + '%'), disc: sl(D.series.disc).map((v, i) => ({ v: v + '%', h: (v / 2 * 100) + '%', m: ms[i], empty: v === 0 })),
+      changes: sl(D.series.stock).map((v, i, a) => { const prev = i ? a[i - 1] : (12 - n ? D.series.stock[11 - n] : 342); const c = v - prev; return { m: ms[i] + ' 2026'.replace('2026', i + (12 - n) === 0 ? '2025' : '2026'), v, c: (c > 0 ? '+' : '') + c, rep: sl(D.series.rep)[i], unrep: sl(D.series.unrep)[i], cov: sl(D.series.cov)[i] + '%' }; }).reverse(),
+      remTotal: sl(D.series.rep).reduce((a, b) => a + b, 0), unrepTotal: sl(D.series.unrep).reduce((a, b) => a + b, 0)
+    };
+
+    // notifications
+    const nList = s.notes.filter(x => s.nF === 'all' || !x.read).map(x => Object.assign({}, x, { tag: this.tone(x.tone, ''), weight: x.read ? '400' : '600', dot: !x.read, rowBg: x.read ? 'transparent' : '#faf9f9', markRead: e => { e.stopPropagation(); this.setState(st => ({ notes: st.notes.map(y => y.id === x.id ? Object.assign({}, y, { read: !y.read }) : y) })); }, readLabel: x.read ? 'Mark unread' : 'Mark read', open: () => { this.setState(st => ({ notes: st.notes.map(y => y.id === x.id ? Object.assign({}, y, { read: true }) : y) })); this.go(x.to[0], x.to[1]); } }));
+    const nv = { list: nList, has: nList.length > 0, empty: nList.length === 0, unread, fAll: { bd: s.nF === 'all' ? 'var(--color-accent)' : 'transparent', fg: s.nF === 'all' ? 'var(--color-accent-700)' : 'inherit', go: () => this.setState({ nF: 'all' }) }, fUnread: { bd: s.nF === 'unread' ? 'var(--color-accent)' : 'transparent', fg: s.nF === 'unread' ? 'var(--color-accent-700)' : 'inherit', go: () => this.setState({ nF: 'unread' }) }, markAll: () => { this.setState(st => ({ notes: st.notes.map(y => Object.assign({}, y, { read: true })) })); this.toast('All notifications marked as read.'); } };
+
+    // settings
+    const stb = t => ({ bd: s.sTab === t ? 'var(--color-accent)' : 'transparent', fg: s.sTab === t ? 'var(--color-accent-700)' : 'inherit', go: () => this.setState({ sTab: t }) });
+    const roleOpts = ['Clinic administrator', 'Inventory manager', 'Clinic employee'].map(r => ({ v: r, l: r }));
+    const setv = {
+      tClinic: stb('clinic'), tUsers: stb('users'), tPrefs: stb('prefs'), isClinic: s.sTab === 'clinic', isUsers: s.sTab === 'users', isPrefs: s.sTab === 'prefs',
+      users: s.users.map(u => ({ ...u, initials: u.name.replace('Dr. ', '').split(' ').map(x => x[0]).join(''), tag: u.status === 'Active' ? this.tone('ok', 'Active') : u.status === 'Invited' ? this.tone('soft', 'Invited', 'mail') : this.tone('neutral', 'Deactivated', 'circle-slash'), notMe: !u.me, isMe: !!u.me, actLabel: u.status === 'Deactivated' ? 'Reactivate' : 'Deactivate', onRole: e => { const v = e.target.value; this.setState(st => ({ users: st.users.map(y => y.id === u.id ? Object.assign({}, y, { role: v }) : y) })); this.toast(u.name + ' is now ' + v + '.'); }, toggle: () => { this.setState(st => ({ users: st.users.map(y => y.id === u.id ? Object.assign({}, y, { status: y.status === 'Deactivated' ? 'Active' : 'Deactivated' }) : y) })); this.toast(u.name + (u.status === 'Deactivated' ? ' has been reactivated.' : ' has been deactivated. They can no longer sign in.')); } })),
+      roleOpts, perms: s.perms.map(pm => ({ label: pm.label, a: pm.a, m: pm.m, e: pm.e, tA: () => this.setState(st => ({ perms: st.perms.map(y => y.key === pm.key ? Object.assign({}, y, { a: !y.a }) : y) })), tM: () => this.setState(st => ({ perms: st.perms.map(y => y.key === pm.key ? Object.assign({}, y, { m: !y.m }) : y) })), tE: () => this.setState(st => ({ perms: st.perms.map(y => y.key === pm.key ? Object.assign({}, y, { e: !y.e }) : y) })) })),
+      invite: () => this.setState({ modal: 'invite', inv: { email: '', role: 'Clinic employee' } }),
+      savePerms: () => this.toast('Permissions saved. Changes apply at next sign-in.'), saveClinic: () => this.toast('Clinic profile saved.'), savePrefs: () => this.toast('Preferences saved.'),
+      prefs: [['expiry', 'Products approaching expiry'], ['stock', 'Stock falling below target'], ['disc', 'Unreported removals'], ['req', 'Request status updates'], ['inc', 'Incentive progress updates'], ['sync', 'RFID synchronisation problems']].map(([key, label]) => ({ label, on: !!s.prefs[key], toggle: () => this.setState(st => ({ prefs: Object.assign({}, st.prefs, { [key]: !st.prefs[key] }) })) })),
+      warnOpts: [{ v: '12', l: '12 months before expiry (Bentley standard)' }, { v: '9', l: '9 months before expiry' }, { v: '6', l: '6 months before expiry' }], warn: s.prefs.warn, onWarn: e => { const v = e.target.value; this.setState(st => ({ prefs: Object.assign({}, st.prefs, { warn: v }) })); },
+      digestOpts: ['Immediately', 'Daily summary at 07:00', 'Weekly summary on Monday'].map(x => ({ v: x, l: x })), digest: s.prefs.digest, onDigest: e => { const v = e.target.value; this.setState(st => ({ prefs: Object.assign({}, st.prefs, { digest: v }) })); }
+    };
+
+    // modals
+    const modal = {
+      any: !!s.modal, explain: s.modal === 'explain', invite: s.modal === 'invite', help: s.modal === 'help',
+      close: () => this.setState({ modal: null }), stop: e => e.stopPropagation(),
+      ex: s.ex, exName: s.ex.id ? P[s.discs.find(d => d.id === s.ex.id).pid].name : '',
+      exOpts: [{ v: '', l: 'Choose an explanation…' }].concat(['Product used, usage report will follow', 'Moved to another storage room', 'Damaged and discarded', 'Possible counting issue', 'Other'].map(x => ({ v: x, l: x }))),
+      onExReason: e => { const v = e.target.value; this.setState(st => ({ ex: Object.assign({}, st.ex, { reason: v }) })); }, onExNote: e => { const v = e.target.value; this.setState(st => ({ ex: Object.assign({}, st.ex, { note: v }) })); },
+      exDis: !s.ex.reason,
+      sendEx: () => { const id = s.ex.id, note = s.ex.reason + (s.ex.note ? '. ' + s.ex.note : ''); this.setState(st => ({ modal: null, discs: st.discs.map(d => d.id === id ? Object.assign({}, d, { status: 'explained', note }) : d) })); this.toast('Explanation for ' + id + ' sent to Bentley.'); },
+      inv: s.inv, onInvEmail: e => { const v = e.target.value; this.setState(st => ({ inv: Object.assign({}, st.inv, { email: v }) })); }, onInvRole: e => { const v = e.target.value; this.setState(st => ({ inv: Object.assign({}, st.inv, { role: v }) })); },
+      invDis: !/^\S+@\S+\.\S+$/.test(s.inv.email),
+      sendInv: () => { const em = s.inv.email, nm = em.split('@')[0].split(/[._]/).map(x => x ? x[0].toUpperCase() + x.slice(1) : '').join(' '); this.setState(st => ({ modal: null, users: st.users.concat([{ id: 'u' + Date.now(), name: nm, email: em, role: st.inv.role, status: 'Invited', last: '—' }]) })); this.toast('Invitation sent to ' + em + '.'); }
+    };
+
+    // login
+    const lg = s.lg;
+    const login = { email: lg.email, pw: lg.pw, remember: lg.remember, err: lg.err, hasErr: !!lg.err, busy: lg.busy, label: lg.busy ? 'Signing in…' : 'Sign in',
+      onEmail: e => { const v = e.target.value; this.setState(st => ({ lg: Object.assign({}, st.lg, { email: v, err: null }) })); }, onPw: e => { const v = e.target.value; this.setState(st => ({ lg: Object.assign({}, st.lg, { pw: v, err: null }) })); }, onRemember: () => this.setState(st => ({ lg: Object.assign({}, st.lg, { remember: !st.lg.remember }) })),
+      forgot: e => { e.preventDefault(); this.setState(st => ({ lg: Object.assign({}, st.lg, { err: null }) })); this.toast('If ' + (lg.email || 'your address') + ' has an account, a reset link is on its way.'); },
+      submit: e => { e.preventDefault(); if (!/^\S+@\S+\.\S+$/.test(lg.email)) return this.setState(st => ({ lg: Object.assign({}, st.lg, { err: 'Enter a valid email address.' }) })); if (lg.pw.length < 6) return this.setState(st => ({ lg: Object.assign({}, st.lg, { err: 'The password is incorrect. Check it and try again.' }) })); this.setState(st => ({ lg: Object.assign({}, st.lg, { busy: true }) })); setTimeout(() => { this.setState(st => ({ lg: Object.assign({}, st.lg, { busy: false }) })); this.go('dashboard'); }, 700); } };
+
+    const titles = { dashboard: 'Dashboard', inventory: 'Inventory', product: p0.name, expiry: 'Expiry management', vmi: 'Stock recommendations', incentives: 'Incentives & discounts', discrepancies: 'Unreported removals', requests: 'Requests', newRequest: 'New request', reports: 'Reports & history', notifications: 'Notifications', settings: 'Settings' };
+    const crumbs = sc === 'product' ? [{ label: 'Inventory', go: go('inventory') }] : sc === 'newRequest' ? [{ label: 'Requests', go: go('requests') }] : [];
+
+    return {
+      is, ready: !s.loading, loading: s.loading, nav, expanded: !s.collapsed, collapsed: s.collapsed, sideW: s.collapsed ? '72px' : '260px', navJustify: s.collapsed ? 'center' : 'flex-start', sidePad: s.collapsed ? '0' : '18px', userDir: s.collapsed ? 'column' : 'row', collapseIcon: s.collapsed ? 'panel-left-open' : 'panel-left-close', toggleSide: () => this.setState({ collapsed: !s.collapsed }),
+      title: titles[sc] || '', crumbs, hasCrumbs: crumbs.length > 0, sync, unread, hasUnread: unread > 0,
+      gq: s.gq, onGq: e => this.setState({ gq: e.target.value }), gqKey: e => { if (e.key === 'Enter') this.go('inventory', { q: s.gq, gq: '', page: 1 }); },
+      menu: s.menu, toggleMenu: () => this.setState({ menu: !s.menu }), closeMenu: () => this.setState({ menu: false }), signOut: () => this.go('login', { menu: false }),
+      goNotes: go('notifications'), goSettings: go('settings', { sTab: 'prefs' }), goUsers: go('settings', { sTab: 'users' }),
+      go: { dashboard: go('dashboard'), inventory: go('inventory'), expiry: go('expiry', { xWin: '12' }), vmi: go('vmi', { vmiTab: 'compare', vmiF: 'all' }), repl: go('vmi', { vmiTab: 'replenish' }), incentives: go('incentives'), discrepancies: go('discrepancies'), requests: go('requests'), reports: go('reports') },
+      kpis, inv, bands, flaggedUnits, flaggedProducts, recs, recsTop: recs.slice(0, 4), activity: D.activity.map(a => Object.assign({}, a, { tag: this.tone(a.tone, ''), go: goTo(a.to) })),
+      invt, prod, expv, vmi, incv, disc, reqv, form, repv, nv, setv, modal, login,
+      toast: s.toast, hasToast: !!s.toast, closeToast: () => this.setState({ toast: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

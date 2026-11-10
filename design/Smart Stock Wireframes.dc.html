@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet"><style>body{margin:0;background:#f0eee9;font-family:system-ui,sans-serif}a{color:#0391d1}a:hover{color:#02699a}.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}.dv-tname{font:600 13px/1.2 system-ui,sans-serif;color:#1a1a1a}.dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.55)}.dv-card{max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}.dv-next{margin:22px 0 0;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.5)}</style></helmet>
+<section class="dv-turn" id="t2">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Course MVP · annotated wireframes (what the Node.js app implements)</span><span style="font:12px system-ui;color:rgba(0,0,0,.5)">7 screens · numbered markers ↔ notes · FR-xx = requirement in BUSINESS_CASE.md</span></div>
+<div class="dv-opts" style="font-family:'Patrick Hand',cursive;font-size:14px;color:#222">
+
+<div class="dv-opt" id="2a"><div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>User flow &amp; navigation map</div><div class="dv-card" style="width:900px;padding:20px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span style="border:2px solid #222;border-radius:4px;padding:4px 10px;white-space:nowrap;flex:none">S1 Sign in</span><span style="flex:none">→</span><span style="border:2px solid #0391d1;border-radius:4px;padding:4px 10px;white-space:nowrap;flex:none">S2 Dashboard</span><span style="color:#666;white-space:nowrap;flex:none">→ header nav reaches every screen:</span><span style="border:1.5px solid #222;border-radius:4px;padding:2px 8px;white-space:nowrap;flex:none">Inventory</span><span style="border:1.5px solid #222;border-radius:4px;padding:2px 8px;white-space:nowrap;flex:none">Requests</span><span style="border:1.5px solid #222;border-radius:4px;padding:2px 8px;white-space:nowrap;flex:none">Removals</span><span style="border:1.5px solid #222;border-radius:4px;padding:2px 8px;white-space:nowrap;flex:none">Log out → S1</span></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+<div style="border:1.5px dashed #222;border-radius:4px;padding:10px;display:flex;flex-direction:column;gap:6px"><span style="font-size:16px;white-space:nowrap;flex:none">Flow A · Check &amp; reorder stock</span><span>S3 Inventory → S4 Product detail → "Request replenishment" → S6 Request form (prefilled) → S5 Requests list</span></div>
+<div style="border:1.5px dashed #222;border-radius:4px;padding:10px;display:flex;flex-direction:column;gap:6px"><span style="font-size:16px;white-space:nowrap;flex:none">Flow B · Manage requests (full CRUD)</span><span>S5 list → New (Create) · open (Read) · Edit → S6 (Update) · Withdraw → confirm (Delete)</span></div>
+<div style="border:1.5px dashed #222;border-radius:4px;padding:10px;display:flex;flex-direction:column;gap:6px"><span style="font-size:16px;white-space:nowrap;flex:none">Flow C · Resolve removals</span><span>S7 Removals → Explain (dialog, Update) or Report usage → S6 (type = usage)</span></div>
+</div>
+<div style="display:grid;grid-template-columns:120px repeat(4,1fr);border:1.5px solid #222;border-radius:4px;font-size:13px">
+<span style="padding:4px 8px;border-bottom:1.5px solid #222;white-space:nowrap;flex:none">Data</span><span style="padding:4px 8px;border-bottom:1.5px solid #222;white-space:nowrap;flex:none">Create</span><span style="padding:4px 8px;border-bottom:1.5px solid #222;white-space:nowrap;flex:none">Read</span><span style="padding:4px 8px;border-bottom:1.5px solid #222;white-space:nowrap;flex:none">Update</span><span style="padding:4px 8px;border-bottom:1.5px solid #222;white-space:nowrap;flex:none">Delete</span>
+<span style="padding:4px 8px;white-space:nowrap;flex:none">requests</span><span style="padding:4px 8px;color:#0391d1;white-space:nowrap;flex:none">✓ S6</span><span style="padding:4px 8px;color:#0391d1;white-space:nowrap;flex:none">✓ S5</span><span style="padding:4px 8px;color:#0391d1;white-space:nowrap;flex:none">✓ S6</span><span style="padding:4px 8px;color:#0391d1;white-space:nowrap;flex:none">✓ S5</span>
+<span style="padding:4px 8px;white-space:nowrap;flex:none">products / lots</span><span style="padding:4px 8px;color:#999;white-space:nowrap;flex:none">seed</span><span style="padding:4px 8px;color:#0391d1;white-space:nowrap;flex:none">✓ S3 S4</span><span style="padding:4px 8px;color:#0391d1;white-space:nowrap;flex:none">✓ S4 "use first"</span><span style="padding:4px 8px;color:#999;white-space:nowrap;flex:none">–</span>
+<span style="padding:4px 8px;white-space:nowrap;flex:none">removals</span><span style="padding:4px 8px;color:#999;white-space:nowrap;flex:none">seed</span><span style="padding:4px 8px;color:#0391d1;white-space:nowrap;flex:none">✓ S7</span><span style="padding:4px 8px;color:#0391d1;white-space:nowrap;flex:none">✓ S7 explain</span><span style="padding:4px 8px;color:#999;white-space:nowrap;flex:none">–</span>
+</div>
+<div style="font:12.5px/1.5 system-ui;color:#444">Every data screen has 3 states: <b>loading</b> ("Loading…" text), <b>empty</b> (message + next action), <b>error</b> (red banner with the server message + "Try again"). Success actions show a green message at the top of the next screen.</div>
+</div></div>
+
+<div class="dv-opt" id="2b"><div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a>S1 · Sign in · login.html</div><div class="dv-card" style="width:900px;display:grid;grid-template-columns:540px 1fr">
+<div style="height:340px;display:grid;grid-template-columns:1fr 200px;border-right:1px solid #ddd">
+<div style="padding:26px;display:flex;flex-direction:column;gap:10px;justify-content:center">
+<div style="display:flex;align-items:center;gap:8px"><div style="width:20px;height:20px;border:2px solid #0391d1;border-radius:50%"></div><span style="font-size:17px;white-space:nowrap;flex:none">BENTLEY</span><span style="color:#888;white-space:nowrap;flex:none">| Smart Stock</span></div>
+<span style="font-size:28px;white-space:nowrap;flex:none">Sign in</span>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="display:flex;gap:6px;align-items:center">Email <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">1</span></span><div style="height:26px;border:1.5px solid #222;border-radius:3px"></div></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="display:flex;gap:6px;align-items:center">Password <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">2</span></span><div style="height:26px;border:1.5px solid #222;border-radius:3px"></div></div>
+<div style="display:flex;gap:6px;align-items:center;border:1.5px solid #c0392b;color:#c0392b;padding:2px 6px;font-size:13px">Email or password is incorrect <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">4</span></div>
+<div style="display:flex;gap:6px;align-items:center"><div style="flex:1;height:30px;border:2px solid #0391d1;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#0391d1">Sign in</div><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">3</span></div>
+</div>
+<div style="background:#2b2b2b;color:#eee;padding:18px;display:flex;align-items:flex-end;font-size:19px">Consistency. Courage. Care</div>
+</div>
+<div style="padding:16px 18px;font:12.5px/1.45 system-ui;color:#333;display:flex;flex-direction:column;gap:7px">
+<b>Purpose</b><span>Only clinic staff can see stock data. (FR-01)</span>
+<span><b>1</b> Email — required, must look like an email. Inline error: "Enter a valid email."</span>
+<span><b>2</b> Password — required. Inline error: "Enter your password."</span>
+<span><b>3</b> Sign in → <code>POST /api/auth/login</code>. While waiting: button disabled, text "Signing in…". 200 → go to S2 Dashboard.</span>
+<span><b>4</b> Error area — shown on 401 only. Password field is cleared.</span>
+<b>Navigation</b><span>Opening any other page without a session redirects here.</span>
+</div></div></div>
+
+<div class="dv-opt" id="2c"><div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a>S2 · Dashboard · index.html</div><div class="dv-card" style="width:900px;display:grid;grid-template-columns:540px 1fr">
+<div style="height:340px;border-right:1px solid #ddd;display:flex;flex-direction:column">
+<div style="height:34px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:12px;padding:0 10px;font-size:13px"><div style="width:16px;height:16px;border:2px solid #0391d1;border-radius:50%"></div><span style="white-space:nowrap;flex:none">Smart Stock</span><span style="color:#0391d1;border-bottom:2px solid #0391d1;white-space:nowrap;flex:none">Dashboard</span><span style="white-space:nowrap;flex:none">Inventory</span><span style="white-space:nowrap;flex:none">Requests</span><span style="white-space:nowrap;flex:none">Removals</span><div style="flex:1"></div><span style="color:#666;white-space:nowrap;flex:none">Anna K. · Log out</span></div>
+<div style="padding:12px;display:flex;flex-direction:column;gap:10px">
+<span style="font-size:22px;white-space:nowrap;flex:none">Dashboard</span>
+<div style="display:flex;gap:6px;align-items:center"><span style="font-size:13px;color:#666;white-space:nowrap;flex:none">KPI cards</span><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">1</span></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px"><sc-for list="{{ mvpKpis }}" as="k" hint-placeholder-count="4"><div style="border:1.5px solid #222;border-radius:3px;padding:6px;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#555;white-space:nowrap;flex:none">{{ k }}</span><span style="font-size:20px;white-space:nowrap;flex:none">00</span><span style="font-size:11px;color:#0391d1;white-space:nowrap;flex:none">view →</span></div></sc-for></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div style="border:1.5px solid #222;border-radius:3px;padding:6px;display:flex;flex-direction:column;gap:5px"><span style="display:flex;gap:6px;align-items:center">Expiring soon <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">2</span></span><sc-for list="{{ r4 }}" as="x" hint-placeholder-count="4"><div style="display:flex;gap:6px;align-items:center"><div style="flex:1;height:6px;background:#ccc"></div><span style="font-size:11px;border:1.5px solid {{ x.c }};padding:0 3px;white-space:nowrap;flex:none">tier</span></div></sc-for></div>
+<div style="border:1.5px solid #222;border-radius:3px;padding:6px;display:flex;flex-direction:column;gap:5px"><span style="display:flex;gap:6px;align-items:center">My latest requests <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">3</span></span><sc-for list="{{ r3 }}" as="x" hint-placeholder-count="3"><div style="display:flex;gap:6px;align-items:center"><div style="flex:1;height:6px;background:#ccc"></div><span style="font-size:11px;border:1.5px solid #222;padding:0 3px;white-space:nowrap;flex:none">status</span></div></sc-for></div>
+</div></div></div>
+<div style="padding:16px 18px;font:12.5px/1.45 system-ui;color:#333;display:flex;flex-direction:column;gap:7px">
+<b>Purpose</b><span>One-glance overview after login. Data: <code>GET /api/dashboard</code>. (FR-02)</span>
+<span><b>1</b> Units in stock · Lots expiring ≤ 90 days · Products below recommended · Open removals. Each card links to S3 (with filter) or S7.</span>
+<span><b>2</b> 5 lots with the nearest expiry date, tier tag (critical ≤ 90 d red, warning ≤ 180 d amber). Click → S4.</span>
+<span><b>3</b> 3 newest requests with status tag. Click → S5.</span>
+<b>States</b><span>Loading: "Loading dashboard…". Error: red banner "Could not load the dashboard." + Try again.</span>
+<b>Header</b><span>Same on S2–S7. Active page underlined. "Log out" → <code>POST /api/auth/logout</code> → S1.</span>
+</div></div></div>
+
+<div class="dv-opt" id="2d"><div class="dv-olabel"><a class="dv-oid" href="#2d">2d</a>S3 · Inventory · inventory.html</div><div class="dv-card" style="width:900px;display:grid;grid-template-columns:540px 1fr">
+<div style="height:340px;border-right:1px solid #ddd;display:flex;flex-direction:column">
+<div style="height:34px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:12px;padding:0 10px;font-size:13px"><div style="width:16px;height:16px;border:2px solid #0391d1;border-radius:50%"></div><span style="white-space:nowrap;flex:none">Smart Stock</span><span style="white-space:nowrap;flex:none">Dashboard</span><span style="color:#0391d1;border-bottom:2px solid #0391d1;white-space:nowrap;flex:none">Inventory</span><span style="white-space:nowrap;flex:none">Requests</span><span style="white-space:nowrap;flex:none">Removals</span><div style="flex:1"></div><span style="color:#666;white-space:nowrap;flex:none">Anna K. · Log out</span></div>
+<div style="padding:12px;display:flex;flex-direction:column;gap:8px">
+<span style="font-size:22px;white-space:nowrap;flex:none">Inventory</span>
+<div style="display:flex;gap:6px;align-items:center"><div style="flex:1;height:24px;border:1.5px solid #222;border-radius:3px;color:#888;padding:0 6px;display:flex;align-items:center">Search name or code…</div><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">1</span><span style="border:1.5px solid #222;padding:0 8px;font-size:12px;white-space:nowrap;flex:none">Category ▾</span><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">2</span><span style="border:1.5px solid #222;padding:0 8px;font-size:12px;white-space:nowrap;flex:none">Stock status ▾</span><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">3</span></div>
+<div style="border:1.5px solid #222;border-radius:3px">
+<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:6px;padding:4px 6px;border-bottom:1.5px solid #222;font-size:12px"><span>Product</span><span>In stock</span><span>Recomm.</span><span>Status</span><span>Next expiry</span></div>
+<sc-for list="{{ r6 }}" as="x" hint-placeholder-count="6"><div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:6px;padding:6px;border-bottom:1px solid #ddd;align-items:center"><div style="height:6px;background:#bbb"></div><span style="font-size:12px;white-space:nowrap;flex:none">00</span><span style="font-size:12px;white-space:nowrap;flex:none">00</span><span style="font-size:11px;border:1.5px solid {{ x.c }};padding:0 3px;width:max-content;white-space:nowrap;flex:none">status</span><div style="height:6px;background:#ddd"></div></div></sc-for>
+</div>
+<div style="display:flex;gap:6px;align-items:center;font-size:12px;color:#666"><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">4</span>row click → product page · <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">5</span>empty state</div>
+</div></div>
+<div style="padding:16px 18px;font:12.5px/1.45 system-ui;color:#333;display:flex;flex-direction:column;gap:7px">
+<b>Purpose</b><span>Find a product and see if stock is too low or too high. Data: <code>GET /api/products?search=&amp;category=&amp;status=</code>. (FR-03)</span>
+<span><b>1</b> Search — filters after typing (300 ms pause). Matches name or code, case-insensitive.</span>
+<span><b>2</b> Category — All / Coronary stents / Peripheral stents / Balloon catheters / Accessories.</span>
+<span><b>3</b> Stock status — All / Out of stock / Below / On target / Above. Tag colours: out + below amber, on target blue, above grey.</span>
+<span><b>4</b> Whole row is a link to S4 <code>product.html?id=…</code>.</span>
+<span><b>5</b> Empty: "No products match your filters." + "Clear filters" button.</span>
+<b>States</b><span>Loading text in table body. Error banner + Try again.</span>
+</div></div></div>
+
+<div class="dv-opt" id="2e"><div class="dv-olabel"><a class="dv-oid" href="#2e">2e</a>S4 · Product detail · product.html?id=</div><div class="dv-card" style="width:900px;display:grid;grid-template-columns:540px 1fr">
+<div style="height:340px;border-right:1px solid #ddd;display:flex;flex-direction:column">
+<div style="height:34px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:12px;padding:0 10px;font-size:13px"><div style="width:16px;height:16px;border:2px solid #0391d1;border-radius:50%"></div><span style="white-space:nowrap;flex:none">Smart Stock</span><span style="white-space:nowrap;flex:none">Dashboard</span><span style="color:#0391d1;border-bottom:2px solid #0391d1;white-space:nowrap;flex:none">Inventory</span><span style="white-space:nowrap;flex:none">Requests</span><span style="white-space:nowrap;flex:none">Removals</span><div style="flex:1"></div><span style="color:#666;white-space:nowrap;flex:none">Anna K. · Log out</span></div>
+<div style="padding:12px;display:flex;flex-direction:column;gap:8px">
+<span style="font-size:12px;color:#666;white-space:nowrap;flex:none">← Back to inventory</span>
+<div style="display:flex;gap:8px;align-items:center"><span style="font-size:20px;white-space:nowrap;flex:none">BeCor DES 3.0 × 18 mm</span><span style="font-size:11px;border:1.5px solid #222;padding:0 4px;white-space:nowrap;flex:none">BI-DES-3018</span><span style="font-size:11px;border:1.5px solid #c98a2b;padding:0 4px;white-space:nowrap;flex:none">below</span><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">1</span></div>
+<div style="display:flex;gap:10px;align-items:center"><div style="flex:1;display:flex;flex-direction:column;gap:3px"><span style="font-size:12px;white-space:nowrap;flex:none">In stock 14 · Recommended 24 · Suggested order 10</span><div style="height:10px;border:1.5px solid #222;position:relative"><div style="width:58%;height:100%;background:#0391d1"></div></div></div><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">2</span><span style="border:2px solid #0391d1;color:#0391d1;padding:1px 8px;border-radius:3px;font-size:13px;white-space:nowrap;flex:none">Request replenishment</span><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">3</span></div>
+<div style="display:flex;gap:6px;align-items:center"><span>Lots (soonest expiry first)</span><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">4</span></div>
+<div style="border:1.5px solid #222;border-radius:3px">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 90px;gap:6px;padding:4px 6px;border-bottom:1.5px solid #222;font-size:12px"><span>Lot</span><span>Qty</span><span>Expires</span><span>Tier</span><span style="display:flex;gap:4px;align-items:center">Use first <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">5</span></span></div>
+<sc-for list="{{ r3 }}" as="x" hint-placeholder-count="3"><div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 90px;gap:6px;padding:6px;border-bottom:1px solid #ddd;align-items:center;font-size:12px"><span>LT26…</span><span>00</span><span>dd.mm.yyyy</span><span style="font-size:11px;border:1.5px solid #c0392b;padding:0 3px;width:max-content;white-space:nowrap;flex:none">critical</span><span>☐</span></div></sc-for>
+</div></div></div>
+<div style="padding:16px 18px;font:12.5px/1.45 system-ui;color:#333;display:flex;flex-direction:column;gap:7px">
+<b>Purpose</b><span>Decide what to use first and how much to reorder. Data: <code>GET /api/products/:id</code>. (FR-04, FR-05)</span>
+<span><b>1</b> Name, code, category, stock status tag.</span>
+<span><b>2</b> Stock bar. Suggested order = recommended − in stock (0 if not below).</span>
+<span><b>3</b> Opens S6 prefilled: type = replenishment, this product, quantity = suggested. Hidden when suggested = 0.</span>
+<span><b>4</b> Lots sorted by expiry date. Tier: critical ≤ 90 days, warning ≤ 180 days, ok.</span>
+<span><b>5</b> Checkbox → <code>PATCH /api/lots/:id {"useFirst": true}</code>. Success: "Saved". Error: checkbox reverts + error message.</span>
+<b>States</b><span>Unknown id (404): "Product not found." + link back to S3.</span>
+</div></div></div>
+
+<div class="dv-opt" id="2f"><div class="dv-olabel"><a class="dv-oid" href="#2f">2f</a>S5 · Requests list · requests.html</div><div class="dv-card" style="width:900px;display:grid;grid-template-columns:540px 1fr">
+<div style="height:340px;border-right:1px solid #ddd;display:flex;flex-direction:column;position:relative">
+<div style="height:34px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:12px;padding:0 10px;font-size:13px"><div style="width:16px;height:16px;border:2px solid #0391d1;border-radius:50%"></div><span style="white-space:nowrap;flex:none">Smart Stock</span><span style="white-space:nowrap;flex:none">Dashboard</span><span style="white-space:nowrap;flex:none">Inventory</span><span style="color:#0391d1;border-bottom:2px solid #0391d1;white-space:nowrap;flex:none">Requests</span><span style="white-space:nowrap;flex:none">Removals</span><div style="flex:1"></div><span style="color:#666;white-space:nowrap;flex:none">Anna K. · Log out</span></div>
+<div style="padding:12px;display:flex;flex-direction:column;gap:8px">
+<div style="border:1.5px solid #1f8553;color:#1f8553;padding:2px 8px;font-size:13px">✓ Request #13 created</div>
+<div style="display:flex;gap:6px;align-items:center"><span style="font-size:22px;flex:1;white-space:nowrap;flex:none">Requests</span><span style="border:1.5px solid #222;padding:0 8px;font-size:12px;white-space:nowrap;flex:none">Status ▾</span><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">2</span><span style="border:1.5px solid #222;padding:0 8px;font-size:12px;white-space:nowrap;flex:none">Type ▾</span><span style="border:2px solid #0391d1;color:#0391d1;padding:1px 8px;border-radius:3px;font-size:13px;white-space:nowrap;flex:none">+ New request</span><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">1</span></div>
+<div style="border:1.5px solid #222;border-radius:3px">
+<div style="display:grid;grid-template-columns:36px 1fr 1.6fr 40px 1fr 1.1fr;gap:6px;padding:4px 6px;border-bottom:1.5px solid #222;font-size:12px"><span>#</span><span>Type</span><span>Product</span><span>Qty</span><span>Status</span><span style="display:flex;gap:4px;align-items:center">Actions <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">3</span></span></div>
+<sc-for list="{{ reqRows }}" as="x" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:36px 1fr 1.6fr 40px 1fr 1.1fr;gap:6px;padding:6px;border-bottom:1px solid #ddd;align-items:center;font-size:12px"><span>{{ x.id }}</span><span>{{ x.type }}</span><div style="height:6px;background:#bbb"></div><span>00</span><span style="font-size:11px;border:1.5px solid #222;padding:0 3px;width:max-content;white-space:nowrap;flex:none">{{ x.status }}</span><span style="color:#0391d1">{{ x.actions }}</span></div></sc-for>
+</div></div>
+<div style="position:absolute;right:16px;bottom:16px;width:220px;background:#fff;border:2px solid #222;border-radius:4px;padding:10px;display:flex;flex-direction:column;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,.18)"><span style="display:flex;gap:6px;align-items:center">Withdraw request #12? <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">4</span></span><span style="font-size:12px;color:#555;white-space:nowrap;flex:none">This cannot be undone.</span><div style="display:flex;gap:6px;justify-content:flex-end;font-size:12px"><span style="border:1.5px solid #222;padding:0 6px;white-space:nowrap;flex:none">Cancel</span><span style="border:2px solid #c0392b;color:#c0392b;padding:0 6px;white-space:nowrap;flex:none">Withdraw</span></div></div>
+</div>
+<div style="padding:16px 18px;font:12.5px/1.45 system-ui;color:#333;display:flex;flex-direction:column;gap:7px">
+<b>Purpose</b><span>Track all requests to Bentley; Read + Delete of the CRUD roundtrip. Data: <code>GET /api/requests?status=&amp;type=</code>. (FR-07, FR-09)</span>
+<span><b>1</b> New request → S6 empty form.</span>
+<span><b>2</b> Filters: Status (All / Submitted / Approved / Rejected / Completed), Type (All / Replenishment / Usage / Return). Newest first.</span>
+<span><b>3</b> "Edit · Withdraw" only for status <i>Submitted</i>. Other rows show no actions (Bentley already handles them).</span>
+<span><b>4</b> Confirm dialog → <code>DELETE /api/requests/:id</code>. 204 → row disappears + message "Request #12 withdrawn". 409 → "This request can no longer be changed."</span>
+<b>States</b><span>Empty: "No requests yet." + New request. Green success message after create/edit/delete.</span>
+</div></div></div>
+
+<div class="dv-opt" id="2g"><div class="dv-olabel"><a class="dv-oid" href="#2g">2g</a>S6 · Request form (create + edit) · request-form.html</div><div class="dv-card" style="width:900px;display:grid;grid-template-columns:540px 1fr">
+<div style="height:380px;border-right:1px solid #ddd;display:flex;flex-direction:column">
+<div style="height:34px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:12px;padding:0 10px;font-size:13px"><div style="width:16px;height:16px;border:2px solid #0391d1;border-radius:50%"></div><span style="white-space:nowrap;flex:none">Smart Stock</span><span style="white-space:nowrap;flex:none">Dashboard</span><span style="white-space:nowrap;flex:none">Inventory</span><span style="color:#0391d1;border-bottom:2px solid #0391d1;white-space:nowrap;flex:none">Requests</span><span style="white-space:nowrap;flex:none">Removals</span><div style="flex:1"></div><span style="color:#666;white-space:nowrap;flex:none">Anna K. · Log out</span></div>
+<div style="padding:12px;display:flex;flex-direction:column;gap:7px">
+<span style="font-size:22px;white-space:nowrap;flex:none">New request <span style="font-size:13px;color:#888;white-space:nowrap;flex:none">(edit mode: "Edit request #12")</span></span>
+<div style="display:flex;gap:8px;align-items:center"><span style="font-size:13px;white-space:nowrap;flex:none">Type</span><span style="border:2px solid #0391d1;padding:0 8px;font-size:12px;white-space:nowrap;flex:none">◉ Replenishment</span><span style="border:1.5px solid #222;padding:0 8px;font-size:12px;white-space:nowrap;flex:none">○ Usage report</span><span style="border:1.5px solid #222;padding:0 8px;font-size:12px;white-space:nowrap;flex:none">○ Return</span><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">1</span></div>
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:8px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;display:flex;gap:4px;align-items:center;white-space:nowrap;flex:none">Product <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">2</span></span><div style="height:24px;border:1.5px solid #222;border-radius:3px"></div><span style="font-size:11px;color:#0391d1;white-space:nowrap;flex:none">In stock 14 · recommended 24</span></div>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;display:flex;gap:4px;align-items:center;white-space:nowrap;flex:none">Quantity <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">3</span></span><div style="height:24px;border:1.5px solid #c0392b;border-radius:3px"></div><span style="font-size:11px;color:#c0392b;white-space:nowrap;flex:none">Enter a whole number from 1 to 100.</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;display:flex;gap:4px;align-items:center;white-space:nowrap;flex:none">Reason <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">4</span></span><div style="height:24px;border:1.5px solid #222;border-radius:3px"></div></div>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;display:flex;gap:4px;align-items:center;white-space:nowrap;flex:none">Notes (optional) <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">5</span></span><div style="height:40px;border:1.5px solid #222;border-radius:3px"></div><span style="font-size:11px;color:#888;align-self:flex-end;white-space:nowrap;flex:none">0 / 500</span></div>
+<div style="display:flex;gap:6px;justify-content:flex-end;align-items:center"><span style="border:1.5px solid #222;padding:1px 8px;border-radius:3px;white-space:nowrap;flex:none">Cancel</span><span style="border:2px solid #0391d1;color:#0391d1;padding:1px 8px;border-radius:3px;white-space:nowrap;flex:none">Save request</span><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">6</span></div>
+</div></div>
+<div style="padding:16px 18px;font:12.5px/1.45 system-ui;color:#333;display:flex;flex-direction:column;gap:7px">
+<b>Purpose</b><span>Create + Update of the CRUD roundtrip. (FR-06, FR-08)</span>
+<span><b>1</b> Type, required. Default replenishment. URL can prefill: <code>?type=&amp;productId=&amp;quantity=</code>.</span>
+<span><b>2</b> Product, required. Options from <code>GET /api/products</code>; shows current + recommended stock.</span>
+<span><b>3</b> Quantity, required, integer 1–100.</span>
+<span><b>4</b> Reason, required for Return and Usage report. Options depend on type.</span>
+<span><b>5</b> Notes, max 500 characters, live counter.</span>
+<span><b>6</b> Save → create: <code>POST /api/requests</code> (201) · edit (<code>?id=12</code>): loads with <code>GET /api/requests/12</code>, saves with <code>PUT /api/requests/12</code> (200). Then → S5 with success message. Button disabled while saving.</span>
+<b>Errors</b><span>Browser checks fields first; the server checks again. 400 → messages shown under the fields. 409 → "This request can no longer be changed." Cancel → back to S5 without saving.</span>
+</div></div></div>
+
+<div class="dv-opt" id="2h"><div class="dv-olabel"><a class="dv-oid" href="#2h">2h</a>S7 · Unreported removals · removals.html</div><div class="dv-card" style="width:900px;display:grid;grid-template-columns:540px 1fr">
+<div style="height:340px;border-right:1px solid #ddd;display:flex;flex-direction:column;position:relative">
+<div style="height:34px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:12px;padding:0 10px;font-size:13px"><div style="width:16px;height:16px;border:2px solid #0391d1;border-radius:50%"></div><span style="white-space:nowrap;flex:none">Smart Stock</span><span style="white-space:nowrap;flex:none">Dashboard</span><span style="white-space:nowrap;flex:none">Inventory</span><span style="white-space:nowrap;flex:none">Requests</span><span style="color:#0391d1;border-bottom:2px solid #0391d1;white-space:nowrap;flex:none">Removals</span><div style="flex:1"></div><span style="color:#666;white-space:nowrap;flex:none">Anna K. · Log out</span></div>
+<div style="padding:12px;display:flex;flex-direction:column;gap:8px">
+<span style="font-size:22px;white-space:nowrap;flex:none">Unreported removals</span>
+<div style="display:flex;gap:14px;border-bottom:1.5px solid #222;align-items:center"><span style="border-bottom:3px solid #0391d1;white-space:nowrap;flex:none">Open (3)</span><span style="color:#888;white-space:nowrap;flex:none">Explained</span><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">1</span></div>
+<sc-for list="{{ r3 }}" as="x" hint-placeholder-count="3"><div style="border:1.5px solid #222;border-radius:3px;padding:6px;display:flex;gap:8px;align-items:center"><div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="height:6px;background:#bbb;width:70%"></div><span style="font-size:11px;color:#666;white-space:nowrap;flex:none">2 units · detected 04.11.2026</span></div><span style="border:2px solid #0391d1;color:#0391d1;padding:0 6px;border-radius:3px;font-size:12px;white-space:nowrap;flex:none">Report usage</span><span style="border:1.5px solid #222;padding:0 6px;border-radius:3px;font-size:12px;white-space:nowrap;flex:none">Explain</span></div></sc-for>
+<div style="display:flex;gap:6px;font-size:12px;color:#666;align-items:center"><span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">2</span>Report usage <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">3</span>Explain</div>
+</div>
+<div style="position:absolute;right:16px;bottom:14px;width:230px;background:#fff;border:2px solid #222;border-radius:4px;padding:10px;display:flex;flex-direction:column;gap:5px;box-shadow:0 4px 14px rgba(0,0,0,.18)"><span style="display:flex;gap:6px;align-items:center">Explain removal <span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#0391d1;color:#fff;font:600 10px system-ui;align-items:center;justify-content:center;white-space:nowrap;flex:none">4</span></span><span style="font-size:12px;white-space:nowrap;flex:none">Reason</span><div style="height:20px;border:1.5px solid #222"></div><span style="font-size:12px;white-space:nowrap;flex:none">Note</span><div style="height:28px;border:1.5px solid #222"></div><div style="display:flex;gap:6px;justify-content:flex-end;font-size:12px"><span style="border:1.5px solid #222;padding:0 6px;white-space:nowrap;flex:none">Cancel</span><span style="border:2px solid #0391d1;color:#0391d1;padding:0 6px;white-space:nowrap;flex:none">Send</span></div></div>
+</div>
+<div style="padding:16px 18px;font:12.5px/1.45 system-ui;color:#333;display:flex;flex-direction:column;gap:7px">
+<b>Purpose</b><span>Units that left storage without a usage report must be explained. Data: <code>GET /api/removals?status=open|explained</code>. (FR-10, FR-11)</span>
+<span><b>1</b> Tabs filter by status. Count shown on Open.</span>
+<span><b>2</b> Report usage → S6 prefilled: type = usage, product, quantity.</span>
+<span><b>3</b> Explain → opens dialog 4.</span>
+<span><b>4</b> Reason required (Used in procedure · Damaged · Moved to other room · Other). Note required when "Other", max 300. Send → <code>PATCH /api/removals/:id</code> → item moves to Explained + message "Explanation saved".</span>
+<b>States</b><span>Empty (Open): "No open removals — every unit is accounted for." Error banner + Try again.</span>
+</div></div></div>
+
+</div>
+<p class="dv-next" style="font-family:system-ui">Turn <a class="dv-tid" href="#t1">1</a> below shows the full product vision (14 screens) — out of scope for the course app. Try next: "add mobile versions of <a class="dv-oid" href="#2d">2d</a>" · "annotate <a class="dv-oid" href="#2g">2g</a> in German"</p>
+</section>
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Full product vision · all 14 prototype screens (not in course scope)</span><span style="font:12px system-ui;color:rgba(0,0,0,.5)">Hi-fi version: <a href="Smart Stock.dc.html">Smart Stock.dc.html</a></span></div>
+<div class="dv-opts" style="font-family:'Patrick Hand',cursive;font-size:14px;color:#222">
+
+<div class="dv-opt" id="1a"><div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Sign in</div><div class="dv-card" style="width:560px">
+<div style="display:grid;grid-template-columns:1fr 1fr;height:360px">
+<div style="padding:28px;display:flex;flex-direction:column;gap:12px;justify-content:center">
+<div style="display:flex;align-items:center;gap:8px"><div style="width:22px;height:22px;border:2px solid #0391d1;border-radius:50%"></div><span style="font-size:18px">BENTLEY</span><span style="color:#888">| Smart Stock</span></div>
+<div style="font-size:30px">Sign in</div>
+<div style="display:flex;flex-direction:column;gap:4px"><span>Email</span><div style="height:28px;border:1.5px solid #222;border-radius:3px"></div></div>
+<div style="display:flex;flex-direction:column;gap:4px"><span>Password</span><div style="height:28px;border:1.5px solid #222;border-radius:3px"></div></div>
+<div style="display:flex;justify-content:space-between;color:#555"><span>☐ Remember me</span><span style="text-decoration:underline">Forgot password?</span></div>
+<div style="height:32px;border:2px solid #0391d1;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#0391d1">Sign in</div>
+</div>
+<div style="background:#2b2b2b;color:#eee;padding:24px;display:flex;flex-direction:column;justify-content:flex-end;position:relative">
+<div style="position:absolute;right:20px;top:24px;width:120px;height:120px;border:2px dashed #555;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#777">faint mark</div>
+<div style="font-size:24px">Consistency. Courage. Care</div></div>
+</div></div></div>
+
+<div class="dv-opt" id="1b"><div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Dashboard</div><div class="dv-card" style="width:560px"><div style="display:flex;height:360px">
+<div style="width:40px;border-right:1.5px solid #222;display:flex;flex-direction:column;align-items:center;gap:9px;padding:9px 0"><div style="width:18px;height:18px;border:2px solid #0391d1;border-radius:50%"></div><sc-for list="{{ nav }}" as="n" hint-placeholder-count="7"><div style="width:16px;height:16px;border:1.5px solid {{ n.c }};border-radius:3px;background:{{ n.bg }}"></div></sc-for></div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<div style="height:30px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:8px;padding:0 10px"><span>Dashboard</span><div style="flex:1"></div><div style="width:90px;height:16px;border:1.5px solid #222;border-radius:3px"></div><span style="font-size:11px;border:1.5px solid #222;padding:0 4px">synced</span><div style="width:14px;height:14px;border:1.5px solid #222;border-radius:50%"></div><div style="width:18px;height:18px;background:#ddd;border-radius:50%"></div></div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:8px">
+<div style="border:1.5px dashed #c98a2b;padding:3px 8px;font-size:12px;color:#8a5a12">⚠ sync banner (only when scan stale / failed)</div>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px"><sc-for list="{{ kpis }}" as="k" hint-placeholder-count="5"><div style="border:1.5px solid #222;border-radius:3px;padding:5px;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:#555">{{ k }}</span><span style="font-size:18px">00</span></div></sc-for></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div style="border:1.5px solid #222;border-radius:3px;padding:6px;display:flex;flex-direction:column;gap:5px"><span>Stock vs recommended</span><div style="height:10px;border:1.5px solid #222;position:relative"><div style="width:68%;height:100%;background:#0391d1"></div></div><span style="font-size:12px;color:#555">Expiry bands</span><div style="display:flex;gap:4px"><span style="flex:1;border:1.5px solid #c0392b;font-size:11px;padding:1px 3px">Critical</span><span style="flex:1;border:1.5px solid #c98a2b;font-size:11px;padding:1px 3px">Attention</span><span style="flex:1;border:1.5px solid #222;font-size:11px;padding:1px 3px">Upcoming</span></div></div>
+<div style="border:1.5px solid #222;border-radius:3px;padding:6px;display:flex;flex-direction:column;gap:5px"><span>Top replenishment</span><sc-for list="{{ r3 }}" as="x" hint-placeholder-count="3"><div style="display:flex;gap:6px;align-items:center"><div style="flex:1;height:6px;background:#d5d5d5;border-radius:3px"></div><span style="font-size:11px;color:#0391d1">Request →</span></div></sc-for></div>
+<div style="border:1.5px solid #222;border-radius:3px;padding:6px;display:flex;flex-direction:column;gap:5px"><span>Recent activity</span><sc-for list="{{ r3 }}" as="x" hint-placeholder-count="3"><div style="height:6px;background:#d5d5d5;border-radius:3px;width:85%"></div></sc-for></div>
+<div style="border:1.5px solid #222;border-radius:3px;padding:6px;display:flex;flex-direction:column;gap:5px"><span>Storage rooms</span><div style="display:flex;justify-content:space-between;font-size:12px"><span>Room 1 · Cath Lab</span><span>● reader ok</span></div><div style="display:flex;justify-content:space-between;font-size:12px"><span>Room 2</span><span>● reader ok</span></div></div>
+</div></div></div></div></div></div>
+
+<div class="dv-opt" id="1c"><div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Inventory</div><div class="dv-card" style="width:560px"><div style="display:flex;height:360px">
+<div style="width:40px;border-right:1.5px solid #222;display:flex;flex-direction:column;align-items:center;gap:9px;padding:9px 0"><div style="width:18px;height:18px;border:2px solid #0391d1;border-radius:50%"></div><sc-for list="{{ nav }}" as="n" hint-placeholder-count="7"><div style="width:16px;height:16px;border:1.5px solid #222;border-radius:3px"></div></sc-for></div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<div style="height:30px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:8px;padding:0 10px"><span>Inventory</span><div style="flex:1"></div><div style="width:90px;height:16px;border:1.5px solid #222;border-radius:3px"></div><div style="width:14px;height:14px;border:1.5px solid #222;border-radius:50%"></div><div style="width:18px;height:18px;background:#ddd;border-radius:50%"></div></div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:6px;align-items:center"><div style="flex:1;height:24px;border:1.5px solid #222;border-radius:3px;padding:0 6px;color:#888;display:flex;align-items:center">🔍 search product, code…</div><span style="border:2px solid #0391d1;color:#0391d1;padding:1px 8px;border-radius:3px">Export CSV</span></div>
+<div style="display:flex;gap:5px;flex-wrap:wrap"><sc-for list="{{ filters }}" as="f" hint-placeholder-count="4"><span style="border:1.5px solid #222;border-radius:12px;padding:0 8px;font-size:12px">{{ f }} ▾</span></sc-for></div>
+<div style="border:1.5px solid #222;border-radius:3px">
+<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:6px;padding:4px 6px;border-bottom:1.5px solid #222;font-size:12px"><span>Product ↕</span><span>Qty ↕</span><span>Value ↕</span><span>Arrived ↕</span><span>Expiry ↕</span></div>
+<sc-for list="{{ r6 }}" as="x" hint-placeholder-count="6"><div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:6px;padding:7px 6px;border-bottom:1px solid #ddd;align-items:center"><div style="height:6px;background:#bbb;border-radius:3px"></div><div style="height:6px;background:#d5d5d5;width:50%"></div><div style="height:6px;background:#d5d5d5;width:70%"></div><div style="height:6px;background:#d5d5d5;width:70%"></div><span style="font-size:11px;border:1.5px solid {{ x.c }};padding:0 3px;width:max-content">tag</span></div></sc-for>
+</div>
+<div style="display:flex;justify-content:space-between;font-size:12px;color:#555"><span>1–8 of 16</span><span>‹ 1 2 ›</span></div>
+</div></div></div></div></div>
+
+<div class="dv-opt" id="1d"><div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>Product detail</div><div class="dv-card" style="width:560px"><div style="display:flex;height:360px">
+<div style="width:40px;border-right:1.5px solid #222;display:flex;flex-direction:column;align-items:center;gap:9px;padding:9px 0"><div style="width:18px;height:18px;border:2px solid #0391d1;border-radius:50%"></div><sc-for list="{{ nav }}" as="n" hint-placeholder-count="7"><div style="width:16px;height:16px;border:1.5px solid #222;border-radius:3px"></div></sc-for></div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<div style="height:30px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:8px;padding:0 10px"><span style="color:#888">Inventory /</span><span>Product</span><div style="flex:1"></div><div style="width:14px;height:14px;border:1.5px solid #222;border-radius:50%"></div><div style="width:18px;height:18px;background:#ddd;border-radius:50%"></div></div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:8px;align-items:center"><span style="font-size:22px">Product name</span><span style="font-size:11px;border:1.5px solid #222;padding:0 4px">BI-DES-3018</span><span style="font-size:11px;border:1.5px solid #c98a2b;padding:0 4px">below target</span></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ actions }}" as="a" hint-placeholder-count="4"><span style="border:2px solid {{ a.c }};color:{{ a.c }};padding:1px 8px;border-radius:3px;font-size:13px">{{ a.t }}</span></sc-for></div>
+<div style="border:1.5px solid #222;border-radius:3px;padding:6px;display:flex;flex-direction:column;gap:4px"><span style="font-size:12px">Current 7 · Recommended 10</span><div style="height:10px;border:1.5px solid #222;position:relative"><div style="width:70%;height:100%;background:#0391d1"></div><div style="position:absolute;left:100%;top:-4px;width:2px;height:16px;background:#222"></div></div></div>
+<div style="display:flex;gap:14px;border-bottom:1.5px solid #222"><span style="border-bottom:3px solid #0391d1">Lots</span><span style="color:#888">History</span></div>
+<sc-for list="{{ r4 }}" as="x" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;align-items:center;padding:3px 0;border-bottom:1px solid #ddd"><span style="font-size:12px">Lot ####</span><div style="height:6px;background:#d5d5d5"></div><span style="font-size:11px;border:1.5px solid {{ x.c }};padding:0 3px;width:max-content">expiry tier</span><span style="font-size:12px">☆ use first</span></div></sc-for>
+</div></div></div></div></div>
+
+<div class="dv-opt" id="1e"><div class="dv-olabel"><a class="dv-oid" href="#1e">1e</a>Expiry management</div><div class="dv-card" style="width:560px"><div style="display:flex;height:360px">
+<div style="width:40px;border-right:1.5px solid #222;display:flex;flex-direction:column;align-items:center;gap:9px;padding:9px 0"><div style="width:18px;height:18px;border:2px solid #0391d1;border-radius:50%"></div><sc-for list="{{ nav }}" as="n" hint-placeholder-count="7"><div style="width:16px;height:16px;border:1.5px solid #222;border-radius:3px"></div></sc-for></div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<div style="height:30px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:8px;padding:0 10px"><span>Expiry management</span><div style="flex:1"></div><div style="width:14px;height:14px;border:1.5px solid #222;border-radius:50%"></div><div style="width:18px;height:18px;background:#ddd;border-radius:50%"></div></div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;border:1.5px solid #222;border-radius:3px;width:max-content"><span style="padding:0 10px;background:#0391d1;color:#fff">3 mo</span><span style="padding:0 10px;border-left:1.5px solid #222">6 mo</span><span style="padding:0 10px;border-left:1.5px solid #222">12 mo</span></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px"><sc-for list="{{ expCards }}" as="k" hint-placeholder-count="4"><div style="border:1.5px solid #222;border-radius:3px;padding:5px"><div style="font-size:11px;color:#555">{{ k }}</div><div style="font-size:18px">00</div></div></sc-for></div>
+<div style="border:1.5px solid #222;border-radius:3px">
+<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:6px;padding:4px 6px;border-bottom:1.5px solid #222;font-size:12px"><span>Product</span><span>Lot</span><span>Expires</span><span>Tier</span><span>Priority</span></div>
+<sc-for list="{{ r5 }}" as="x" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:6px;padding:7px 6px;border-bottom:1px solid #ddd;align-items:center;background:{{ x.row }}"><div style="height:6px;background:#bbb"></div><div style="height:6px;background:#d5d5d5"></div><div style="height:6px;background:#d5d5d5"></div><span style="font-size:11px;border:1.5px solid {{ x.c }};padding:0 3px;width:max-content">tier</span><span style="font-size:12px">☆</span></div></sc-for>
+</div>
+<span style="font-size:12px;color:#888">critical rows tinted</span>
+</div></div></div></div></div>
+
+<div class="dv-opt" id="1f"><div class="dv-olabel"><a class="dv-oid" href="#1f">1f</a>Stock recommendations</div><div class="dv-card" style="width:560px"><div style="display:flex;height:360px">
+<div style="width:40px;border-right:1.5px solid #222;display:flex;flex-direction:column;align-items:center;gap:9px;padding:9px 0"><div style="width:18px;height:18px;border:2px solid #0391d1;border-radius:50%"></div><sc-for list="{{ nav }}" as="n" hint-placeholder-count="7"><div style="width:16px;height:16px;border:1.5px solid #222;border-radius:3px"></div></sc-for></div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<div style="height:30px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:8px;padding:0 10px"><span>Stock recommendations</span><div style="flex:1"></div><div style="width:14px;height:14px;border:1.5px solid #222;border-radius:50%"></div><div style="width:18px;height:18px;background:#ddd;border-radius:50%"></div></div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:14px;border-bottom:1.5px solid #222"><span style="border-bottom:3px solid #0391d1">Compare</span><span style="color:#888">Replenish</span><div style="flex:1"></div><span style="font-size:12px">All · Below · On · Above</span></div>
+<sc-for list="{{ bars }}" as="b" hint-placeholder-count="6"><div style="display:grid;grid-template-columns:110px 1fr 40px;gap:8px;align-items:center"><div style="height:6px;background:#bbb"></div><div style="height:10px;border:1.5px solid #222;position:relative"><div style="width:{{ b.w }};height:100%;background:{{ b.c }}"></div><div style="position:absolute;left:70%;top:-4px;width:2px;height:16px;background:#222"></div></div><span style="font-size:12px">7/10</span></div></sc-for>
+<div style="border:1.5px dashed #222;padding:4px 8px;font-size:13px">▸ How recommendations work</div>
+</div></div></div></div></div>
+
+<div class="dv-opt" id="1g"><div class="dv-olabel"><a class="dv-oid" href="#1g">1g</a>Incentives &amp; discounts</div><div class="dv-card" style="width:560px"><div style="display:flex;height:360px">
+<div style="width:40px;border-right:1.5px solid #222;display:flex;flex-direction:column;align-items:center;gap:9px;padding:9px 0"><div style="width:18px;height:18px;border:2px solid #0391d1;border-radius:50%"></div><sc-for list="{{ nav }}" as="n" hint-placeholder-count="7"><div style="width:16px;height:16px;border:1.5px solid #222;border-radius:3px"></div></sc-for></div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<div style="height:30px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:8px;padding:0 10px"><span>Incentives &amp; discounts</span><div style="flex:1"></div><div style="width:14px;height:14px;border:1.5px solid #222;border-radius:50%"></div><div style="width:18px;height:18px;background:#ddd;border-radius:50%"></div></div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:8px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div style="border:1.5px solid #222;border-radius:3px;padding:6px;display:flex;flex-direction:column;gap:4px"><span>Lean stock · 1%</span><div style="height:10px;border:1.5px solid #222"><div style="width:80%;height:100%;background:#0391d1"></div></div><span style="font-size:12px;color:#555">achieved this month</span></div>
+<div style="border:1.5px solid #222;border-radius:3px;padding:6px;display:flex;flex-direction:column;gap:4px"><span>Lost items &lt; 5% · 1%</span><div style="height:10px;border:1.5px solid #222"><div style="width:45%;height:100%;background:#c98a2b"></div></div><span style="font-size:12px;color:#555">not yet</span></div>
+</div>
+<div style="border:1.5px solid #222;border-radius:3px">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;padding:4px 6px;border-bottom:1.5px solid #222;font-size:12px"><span>Month</span><span>Lean</span><span>Lost</span><span>Saved €</span></div>
+<sc-for list="{{ r4 }}" as="x" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;padding:5px 6px;border-bottom:1px solid #ddd;font-size:12px"><span>Mon</span><span>✓</span><span>✗</span><div style="height:6px;background:#d5d5d5;margin-top:5px"></div></div></sc-for>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px"><sc-for list="{{ r3 }}" as="x" hint-placeholder-count="3"><div style="border:1.5px solid #222;border-radius:3px;padding:5px;display:flex;flex-direction:column;gap:3px"><span style="font-size:12px">Suggested action</span><div style="height:5px;background:#d5d5d5"></div><div style="height:5px;background:#d5d5d5;width:60%"></div></div></sc-for></div>
+</div></div></div></div></div>
+
+<div class="dv-opt" id="1h"><div class="dv-olabel"><a class="dv-oid" href="#1h">1h</a>Unreported removals</div><div class="dv-card" style="width:560px"><div style="display:flex;height:360px">
+<div style="width:40px;border-right:1.5px solid #222;display:flex;flex-direction:column;align-items:center;gap:9px;padding:9px 0"><div style="width:18px;height:18px;border:2px solid #0391d1;border-radius:50%"></div><sc-for list="{{ nav }}" as="n" hint-placeholder-count="7"><div style="width:16px;height:16px;border:1.5px solid #222;border-radius:3px"></div></sc-for></div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<div style="height:30px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:8px;padding:0 10px"><span>Unreported removals</span><div style="flex:1"></div><div style="width:14px;height:14px;border:1.5px solid #222;border-radius:50%"></div><div style="width:18px;height:18px;background:#ddd;border-radius:50%"></div></div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:14px;border-bottom:1.5px solid #222"><span style="border-bottom:3px solid #0391d1">Open (3)</span><span style="color:#888">All</span></div>
+<sc-for list="{{ r3 }}" as="x" hint-placeholder-count="3"><div style="border:1.5px solid #222;border-radius:3px;padding:6px;display:flex;gap:8px;align-items:center"><span style="font-size:12px">D-2611-0#</span><div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="height:6px;background:#bbb;width:70%"></div><div style="height:5px;background:#d5d5d5;width:40%"></div></div><span style="border:2px solid #0391d1;color:#0391d1;padding:0 6px;border-radius:3px;font-size:12px">Report usage</span><span style="border:1.5px solid #222;padding:0 6px;border-radius:3px;font-size:12px">Explain</span><span>▾</span></div></sc-for>
+<div style="border:1.5px dashed #222;border-radius:3px;padding:6px;font-size:12px;color:#555">Explain → modal: reason ▾ + note + Save</div>
+</div></div></div></div></div>
+
+<div class="dv-opt" id="1i"><div class="dv-olabel"><a class="dv-oid" href="#1i">1i</a>Requests</div><div class="dv-card" style="width:560px"><div style="display:flex;height:360px">
+<div style="width:40px;border-right:1.5px solid #222;display:flex;flex-direction:column;align-items:center;gap:9px;padding:9px 0"><div style="width:18px;height:18px;border:2px solid #0391d1;border-radius:50%"></div><sc-for list="{{ nav }}" as="n" hint-placeholder-count="7"><div style="width:16px;height:16px;border:1.5px solid #222;border-radius:3px"></div></sc-for></div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<div style="height:30px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:8px;padding:0 10px"><span>Requests</span><div style="flex:1"></div><div style="width:14px;height:14px;border:1.5px solid #222;border-radius:50%"></div><div style="width:18px;height:18px;background:#ddd;border-radius:50%"></div></div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:6px;align-items:center"><div style="flex:1;height:24px;border:1.5px solid #222;border-radius:3px"></div><span style="border:1.5px solid #222;border-radius:12px;padding:0 8px;font-size:12px">Type ▾</span><span style="border:1.5px solid #222;border-radius:12px;padding:0 8px;font-size:12px">Status ▾</span><span style="border:2px solid #0391d1;color:#0391d1;padding:1px 8px;border-radius:3px">+ New request</span></div>
+<div style="border:1.5px solid #222;border-radius:3px;padding:6px;display:flex;flex-direction:column;gap:8px"><div style="display:flex;gap:8px;align-items:center"><span style="font-size:12px">REQ-1042</span><div style="flex:1;height:6px;background:#bbb"></div><span style="font-size:11px;border:1.5px solid #0391d1;padding:0 4px">Approved</span><span>▴</span></div>
+<div style="display:flex;align-items:center"><sc-for list="{{ steps }}" as="s" hint-placeholder-count="5"><div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px"><div style="width:14px;height:14px;border-radius:50%;border:2px solid {{ s.c }};background:{{ s.bg }}"></div><span style="font-size:11px">{{ s.t }}</span></div></sc-for></div></div>
+<sc-for list="{{ r4 }}" as="x" hint-placeholder-count="4"><div style="border:1.5px solid #222;border-radius:3px;padding:6px;display:flex;gap:8px;align-items:center"><span style="font-size:12px">REQ-10##</span><div style="flex:1;height:6px;background:#d5d5d5"></div><span style="font-size:11px;border:1.5px solid #222;padding:0 4px">status</span><span>▾</span></div></sc-for>
+</div></div></div></div></div>
+
+<div class="dv-opt" id="1j"><div class="dv-olabel"><a class="dv-oid" href="#1j">1j</a>New request</div><div class="dv-card" style="width:560px"><div style="display:flex;height:360px">
+<div style="width:40px;border-right:1.5px solid #222;display:flex;flex-direction:column;align-items:center;gap:9px;padding:9px 0"><div style="width:18px;height:18px;border:2px solid #0391d1;border-radius:50%"></div><sc-for list="{{ nav }}" as="n" hint-placeholder-count="7"><div style="width:16px;height:16px;border:1.5px solid #222;border-radius:3px"></div></sc-for></div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<div style="height:30px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:8px;padding:0 10px"><span style="color:#888">Requests /</span><span>New request</span><div style="flex:1"></div><div style="width:14px;height:14px;border:1.5px solid #222;border-radius:50%"></div><div style="width:18px;height:18px;background:#ddd;border-radius:50%"></div></div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:7px">
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px"><sc-for list="{{ types }}" as="t" hint-placeholder-count="4"><div style="border:{{ t.b }};border-radius:3px;padding:6px;font-size:12px;min-height:34px">{{ t.t }}</div></sc-for></div>
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:8px">
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:12px">Product</span><div style="height:24px;border:1.5px solid #222;border-radius:3px"></div><span style="font-size:11px;color:#0391d1">in stock 7 · suggested 3</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:12px">Quantity</span><div style="height:24px;border:1.5px solid #222;border-radius:3px"></div></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:12px">Reason</span><div style="height:24px;border:1.5px solid #222;border-radius:3px"></div></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:12px">Urgency</span><div style="height:24px;border:1.5px solid #222;border-radius:3px"></div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:12px">Notes</span><div style="height:44px;border:1.5px solid #222;border-radius:3px"></div></div>
+<div style="display:flex;gap:6px;justify-content:flex-end"><span style="border:1.5px solid #222;padding:1px 8px;border-radius:3px">Cancel</span><span style="border:2px solid #0391d1;color:#0391d1;padding:1px 8px;border-radius:3px">Submit request</span></div>
+<span style="font-size:12px;color:#888">→ success screen with request id + next actions</span>
+</div></div></div></div></div>
+
+<div class="dv-opt" id="1k"><div class="dv-olabel"><a class="dv-oid" href="#1k">1k</a>Reports &amp; history</div><div class="dv-card" style="width:560px"><div style="display:flex;height:360px">
+<div style="width:40px;border-right:1.5px solid #222;display:flex;flex-direction:column;align-items:center;gap:9px;padding:9px 0"><div style="width:18px;height:18px;border:2px solid #0391d1;border-radius:50%"></div><sc-for list="{{ nav }}" as="n" hint-placeholder-count="7"><div style="width:16px;height:16px;border:1.5px solid #222;border-radius:3px"></div></sc-for></div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<div style="height:30px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:8px;padding:0 10px"><span>Reports &amp; history</span><div style="flex:1"></div><div style="width:14px;height:14px;border:1.5px solid #222;border-radius:50%"></div><div style="width:18px;height:18px;background:#ddd;border-radius:50%"></div></div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;border:1.5px solid #222;border-radius:3px;width:max-content"><span style="padding:0 10px;background:#0391d1;color:#fff">6 months</span><span style="padding:0 10px;border-left:1.5px solid #222">12 months</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><sc-for list="{{ charts }}" as="c" hint-placeholder-count="4"><div style="border:1.5px solid #222;border-radius:3px;padding:6px;display:flex;flex-direction:column;gap:4px"><span style="font-size:12px">{{ c }}</span><div style="display:flex;align-items:flex-end;gap:4px;height:48px;border-left:1.5px solid #222;border-bottom:1.5px solid #222;padding:0 4px"><sc-for list="{{ heights }}" as="h" hint-placeholder-count="6"><div style="flex:1;height:{{ h }};background:#9fd3ee"></div></sc-for></div></div></sc-for></div>
+<div style="border:1.5px solid #222;border-radius:3px;padding:6px;font-size:12px;color:#555">monthly table ▸</div>
+</div></div></div></div></div>
+
+<div class="dv-opt" id="1l"><div class="dv-olabel"><a class="dv-oid" href="#1l">1l</a>Notifications</div><div class="dv-card" style="width:560px"><div style="display:flex;height:360px">
+<div style="width:40px;border-right:1.5px solid #222;display:flex;flex-direction:column;align-items:center;gap:9px;padding:9px 0"><div style="width:18px;height:18px;border:2px solid #0391d1;border-radius:50%"></div><sc-for list="{{ nav }}" as="n" hint-placeholder-count="7"><div style="width:16px;height:16px;border:1.5px solid #222;border-radius:3px"></div></sc-for></div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<div style="height:30px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:8px;padding:0 10px"><span>Notifications</span><div style="flex:1"></div><div style="width:14px;height:14px;border:1.5px solid #222;border-radius:50%"></div><div style="width:18px;height:18px;background:#ddd;border-radius:50%"></div></div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:14px;border-bottom:1.5px solid #222;align-items:baseline"><span style="border-bottom:3px solid #0391d1">All</span><span style="color:#888">Unread (4)</span><div style="flex:1"></div><span style="font-size:12px;color:#0391d1">Mark all read</span></div>
+<sc-for list="{{ notes }}" as="x" hint-placeholder-count="6"><div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid #ddd"><div style="width:8px;height:8px;border-radius:50%;background:{{ x.dot }}"></div><div style="width:16px;height:16px;border:1.5px solid #222;border-radius:3px"></div><div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="height:6px;background:#bbb;width:60%"></div><div style="height:5px;background:#d5d5d5;width:85%"></div></div><span style="font-size:11px;color:#888">2h</span></div></sc-for>
+</div></div></div></div></div>
+
+<div class="dv-opt" id="1m"><div class="dv-olabel"><a class="dv-oid" href="#1m">1m</a>Settings</div><div class="dv-card" style="width:560px"><div style="display:flex;height:360px">
+<div style="width:40px;border-right:1.5px solid #222;display:flex;flex-direction:column;align-items:center;gap:9px;padding:9px 0"><div style="width:18px;height:18px;border:2px solid #0391d1;border-radius:50%"></div><sc-for list="{{ nav }}" as="n" hint-placeholder-count="7"><div style="width:16px;height:16px;border:1.5px solid #222;border-radius:3px"></div></sc-for></div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<div style="height:30px;border-bottom:1.5px solid #222;display:flex;align-items:center;gap:8px;padding:0 10px"><span>Settings</span><div style="flex:1"></div><div style="width:14px;height:14px;border:1.5px solid #222;border-radius:50%"></div><div style="width:18px;height:18px;background:#ddd;border-radius:50%"></div></div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;gap:14px;border-bottom:1.5px solid #222"><span style="color:#888">Clinic profile</span><span style="border-bottom:3px solid #0391d1">User management</span><span style="color:#888">Preferences</span></div>
+<div style="display:flex;justify-content:flex-end"><span style="border:2px solid #0391d1;color:#0391d1;padding:0 8px;border-radius:3px;font-size:13px">+ Invite user</span></div>
+<sc-for list="{{ r4 }}" as="x" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:20px 1.5fr 1fr 70px 70px;gap:8px;align-items:center;padding:2px 0;border-bottom:1px solid #ddd"><div style="width:16px;height:16px;background:#ddd;border-radius:50%"></div><div style="height:6px;background:#bbb"></div><span style="font-size:11px;border:1.5px solid #222;padding:0 3px">Role ▾</span><span style="font-size:11px">Active</span><span style="font-size:11px;color:#c0392b">Deactivate</span></div></sc-for>
+<span style="font-size:12px">Role × permission matrix</span>
+<div style="display:grid;grid-template-columns:90px repeat(6,1fr);gap:3px;font-size:11px"><sc-for list="{{ matrix }}" as="m" hint-placeholder-count="21"><span style="text-align:center">{{ m }}</span></sc-for></div>
+</div></div></div></div></div>
+
+<div class="dv-opt" id="1n"><div class="dv-olabel"><a class="dv-oid" href="#1n">1n</a>Help &amp; support (modal)</div><div class="dv-card" style="width:560px"><div style="display:flex;height:360px;position:relative">
+<div style="width:40px;border-right:1.5px solid #222"></div><div style="flex:1"><div style="height:30px;border-bottom:1.5px solid #222"></div></div>
+<div style="position:absolute;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center">
+<div style="width:300px;background:#fff;border:2px solid #222;border-radius:4px;padding:14px;display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between"><span style="font-size:20px">Help &amp; support</span><span>✕</span></div><sc-for list="{{ r3 }}" as="x" hint-placeholder-count="3"><div style="display:flex;gap:8px;align-items:center"><div style="width:16px;height:16px;border:1.5px solid #222;border-radius:3px"></div><div style="flex:1;height:6px;background:#bbb"></div></div></sc-for><div style="display:flex;justify-content:flex-end"><span style="border:2px solid #0391d1;color:#0391d1;padding:0 8px;border-radius:3px">Contact Bentley</span></div></div>
+</div></div></div></div>
+
+</div>
+<p class="dv-next" style="font-family:system-ui">Try next: "explore 3 dashboard layouts riffing on <a class="dv-oid" href="#1b">1b</a>" · "add a mobile wireframe of <a class="dv-oid" href="#1c">1c</a>" · "wireframe the RFID scan simulator page"</p>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const A = '#0391d1', W = '#c98a2b', C = '#c0392b', K = '#222';
+    const n = (k) => Array.from({ length: k }, (_, i) => i);
+    const tiers = [C, W, K, K, K, K];
+    return {
+      nav: n(7).map(i => ({ c: i === 0 ? A : K, bg: i === 0 ? '#e6f6fe' : 'transparent' })),
+      kpis: ['Units in stock', 'Approaching expiry', 'Unreported removals', 'Coverage', 'Discount'],
+      r3: n(3), r4: n(4).map(i => ({ c: tiers[i] })), r5: n(5).map(i => ({ c: tiers[i], row: i === 0 ? '#fbf1ef' : 'transparent' })),
+      r6: n(6).map(i => ({ c: tiers[i] })),
+      filters: ['Category', 'Expiry', 'Stock status', 'Availability'],
+      actions: [{ t: 'Request replenishment', c: A }, { t: 'Report usage', c: K }, { t: 'Report discrepancy', c: K }, { t: 'Request return', c: K }],
+      expCards: ['Critical', 'Attention', 'Upcoming', 'Value at risk'],
+      bars: ['40%', '70%', '90%', '55%', '70%', '20%'].map(w => ({ w, c: parseInt(w) < 70 ? W : parseInt(w) > 80 ? '#7f97a8' : A })),
+      steps: ['Submitted', 'Review', 'Approved', 'In progress', 'Done'].map((t, i) => ({ t, c: i < 3 ? A : '#bbb', bg: i < 3 ? A : '#fff' })),
+      types: ['Replenishment', 'Stock adjustment', 'Usage report', 'Return / pickup'].map((t, i) => ({ t, b: i === 0 ? '2px solid ' + A : '1.5px solid ' + K })),
+      charts: ['Stock vs recommended', 'Reported vs unreported', 'Approaching expiry', 'Discount %'],
+      heights: ['60%', '75%', '50%', '85%', '70%', '90%'],
+      mvpKpis: ['Units in stock', 'Expiring ≤ 90 days', 'Below recommended', 'Open removals'],
+      reqRows: [{ id: '13', type: 'Replen.', status: 'Submitted', actions: 'Edit · Withdraw' }, { id: '12', type: 'Return', status: 'Submitted', actions: 'Edit · Withdraw' }, { id: '11', type: 'Usage', status: 'Approved', actions: '' }, { id: '10', type: 'Replen.', status: 'Completed', actions: '' }],
+      notes: n(6).map(i => ({ dot: i < 4 ? A : 'transparent' })),
+      matrix: ['', 'view', 'req', 'usage', 'disc', 'users', 'clinic', 'Admin', '✓', '✓', '✓', '✓', '✓', '✓', 'Manager', '✓', '✓', '✓', '✓', '–', '–']
+    };
+  }
+}
+</script>
+</body>
+</html>

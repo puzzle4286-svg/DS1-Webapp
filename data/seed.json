@@ -1,0 +1,29 @@
+{
+  "users": [
+    { "name": "Anna Keller", "email": "anna@stelisabeth.de", "password": "demo1234" }
+  ],
+  "products": [
+    { "code": "BI-DES-2515", "name": "BeCor DES 2.5 × 15 mm", "category": "Coronary stents", "unitPrice": 1180, "recommended": 18, "lots": [["LT2511-0412", 6, "2027-06-20"], ["LT2606-0133", 8, "2028-02-11"]] },
+    { "code": "BI-DES-3018", "name": "BeCor DES 3.0 × 18 mm", "category": "Coronary stents", "unitPrice": 1180, "recommended": 24, "lots": [["LT2503-0219", 4, "2026-12-28"], ["LT2605-0877", 10, "2028-01-14"]] },
+    { "code": "BI-DES-3523", "name": "BeCor DES 3.5 × 23 mm", "category": "Coronary stents", "unitPrice": 1220, "recommended": 16, "lots": [["LT2502-0310", 3, "2027-01-30"], ["LT2604-0561", 9, "2027-12-12"]] },
+    { "code": "BI-DES-4028", "name": "BeCor DES 4.0 × 28 mm", "category": "Coronary stents", "unitPrice": 1250, "recommended": 8, "lots": [["LT2508-0145", 5, "2027-04-18"], ["LT2611-0090", 7, "2028-05-09"]] },
+    { "code": "BI-BMS-3015", "name": "BeFlex BMS 3.0 × 15 mm", "category": "Coronary stents", "unitPrice": 640, "recommended": 10, "lots": [["LT2603-0702", 10, "2028-09-30"]] },
+    { "code": "BI-PSE-0660", "name": "BePeri SE Stent 6 × 60 mm", "category": "Peripheral stents", "unitPrice": 1390, "recommended": 10, "lots": [["LT2506-0388", 4, "2027-03-05"], ["LT2602-0415", 6, "2027-11-20"]] },
+    { "code": "BI-PSE-0880", "name": "BePeri SE Stent 8 × 80 mm", "category": "Peripheral stents", "unitPrice": 1420, "recommended": 6, "lots": [["LT2512-0026", 9, "2027-08-14"]] },
+    { "code": "BI-CVG-0737", "name": "BeGraft Covered 7 × 37 mm", "category": "Peripheral stents", "unitPrice": 1650, "recommended": 6, "lots": [["LT2501-0551", 2, "2026-12-18"], ["LT2608-0204", 4, "2028-03-01"]] },
+    { "code": "BI-PTC-2515", "name": "BeCross PTCA Balloon 2.5 × 15 mm", "category": "Balloon catheters", "unitPrice": 210, "recommended": 30, "lots": [["LT2509-1180", 14, "2027-09-01"]] },
+    { "code": "BI-ACC-SH06", "name": "BeSheath Introducer 6F", "category": "Accessories", "unitPrice": 45, "recommended": 40, "lots": [] }
+  ],
+  "requests": [
+    { "type": "replenishment", "productCode": "BI-PTC-2515", "quantity": 16, "reason": "", "notes": "", "status": "Completed", "createdAt": "2026-10-02T09:14:00Z" },
+    { "type": "usage", "productCode": "BI-DES-2515", "quantity": 2, "reason": "Used in procedure", "notes": "Procedures 28.10.", "status": "Approved", "createdAt": "2026-10-29T15:40:00Z" },
+    { "type": "return", "productCode": "BI-PSE-0880", "quantity": 3, "reason": "Overstock", "notes": "", "status": "Submitted", "createdAt": "2026-11-05T11:02:00Z" },
+    { "type": "replenishment", "productCode": "BI-ACC-SH06", "quantity": 40, "reason": "", "notes": "Urgent, out of stock", "status": "Submitted", "createdAt": "2026-11-08T08:30:00Z" }
+  ],
+  "removals": [
+    { "productCode": "BI-DES-3018", "quantity": 2, "detectedAt": "2026-11-04", "status": "open" },
+    { "productCode": "BI-PSE-0660", "quantity": 1, "detectedAt": "2026-11-06", "status": "open" },
+    { "productCode": "BI-PTC-2515", "quantity": 3, "detectedAt": "2026-11-08", "status": "open" },
+    { "productCode": "BI-DES-3523", "quantity": 1, "detectedAt": "2026-10-21", "status": "explained", "reason": "Damaged", "note": "Packaging opened, sent back." }
+  ]
+}
