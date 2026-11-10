@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · Smart Stock</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Lora:wght@400;500&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- S1 Sign in (FR-01) -->
+  <main>
+    <div class="login">
+      <img src="img/bentley-logo.png" alt="Bentley">
+      <h1>Smart Stock</h1>
+      <div id="banner"></div>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="username">
+          <div class="field-error" id="email-error"></div>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password">
+          <div class="field-error" id="password-error"></div>
+        </div>
+        <button type="submit" class="primary" id="submit">Sign in</button>
+      </form>
+
+      <p class="motto muted small">Consistency. Courage. Care</p>
+    </div>
+  </main>
+  <script src="js/api.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

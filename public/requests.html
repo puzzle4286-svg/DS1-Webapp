@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Requests · Smart Stock</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Lora:wght@400;500&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <!-- S5 Requests list (FR-07, FR-09) -->
+  <main>
+    <div id="banner"></div>
+    <h1>Requests</h1>
+
+    <div class="toolbar">
+      <label for="status" class="sr-only">Status</label>
+      <select id="status">
+        <option value="">All statuses</option>
+        <option>Submitted</option>
+        <option>Approved</option>
+        <option>Rejected</option>
+        <option>Completed</option>
+      </select>
+
+      <label for="type" class="sr-only">Type</label>
+      <select id="type">
+        <option value="">All types</option>
+        <option value="replenishment">Replenishment</option>
+        <option value="usage">Usage report</option>
+        <option value="return">Return</option>
+      </select>
+
+      <a class="button primary push" href="request-form.html">+ New request</a>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>#</th><th>Type</th><th>Product</th><th class="number">Qty</th><th>Status</th><th>Actions</th></tr>
+      </thead>
+      <tbody id="requests"></tbody>
+    </table>
+  </main>
+
+  <!-- Confirm dialog for "Withdraw" (FR-09) -->
+  <dialog id="withdraw-dialog">
+    <h2 id="withdraw-title">Withdraw request?</h2>
+    <p>This cannot be undone.</p>
+    <div class="form-buttons">
+      <button type="button" id="withdraw-cancel">Cancel</button>
+      <button type="button" class="danger" id="withdraw-confirm">Withdraw</button>
+    </div>
+  </dialog>
+
+  <script src="js/api.js"></script>
+  <script src="js/requests.js"></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Request · Smart Stock</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Lora:wght@400;500&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <!-- S6 Request form: create + edit (FR-06, FR-08) -->
+  <main>
+    <div id="banner"></div>
+    <h1 id="form-title">New request</h1>
+    <p id="loading" class="muted">Loading…</p>
+
+    <!-- novalidate: we show our own messages instead of the browser's pop-ups -->
+    <form id="request-form" class="form hidden" novalidate>
+      <fieldset class="field">
+        <legend class="label">Type</legend>
+        <div class="radio-row">
+          <label><input type="radio" name="type" value="replenishment" checked> Replenishment</label>
+          <label><input type="radio" name="type" value="usage"> Usage report</label>
+          <label><input type="radio" name="type" value="return"> Return</label>
+        </div>
+        <div class="field-error" id="type-error"></div>
+      </fieldset>
+
+      <div class="field">
+        <label for="productId">Product</label>
+        <select id="productId"><option value="">Choose a product…</option></select>
+        <div class="muted small" id="stock-info"></div>
+        <div class="field-error" id="productId-error"></div>
+      </div>
+
+      <div class="field">
+        <label for="quantity">Quantity</label>
+        <input id="quantity" type="number" min="1" max="100" step="1">
+        <div class="muted small">Enter a whole number from 1 to 100.</div>
+        <div class="field-error" id="quantity-error"></div>
+      </div>
+
+      <div class="field" id="reason-field">
+        <label for="reason">Reason</label>
+        <select id="reason"></select>
+        <div class="field-error" id="reason-error"></div>
+      </div>
+
+      <div class="field">
+        <label for="notes">Notes (optional)</label>
+        <textarea id="notes"></textarea>
+        <div class="muted small"><span id="notes-count">0</span> / 500</div>
+        <div class="field-error" id="notes-error"></div>
+      </div>
+
+      <div class="form-buttons">
+        <a class="button" href="requests.html">Cancel</a>
+        <button type="submit" class="primary" id="save">Save request</button>
+      </div>
+    </form>
+  </main>
+  <script src="js/api.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/request-form.js"></script>
+</body>
+</html>

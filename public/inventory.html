@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inventory · Smart Stock</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Lora:wght@400;500&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <!-- S3 Inventory (FR-03) -->
+  <main>
+    <div id="banner"></div>
+    <h1>Inventory</h1>
+
+    <div class="toolbar">
+      <label for="search" class="sr-only">Search</label>
+      <input id="search" type="search" placeholder="Search name or code…">
+
+      <label for="category" class="sr-only">Category</label>
+      <select id="category">
+        <option value="">All categories</option>
+        <option>Coronary stents</option>
+        <option>Peripheral stents</option>
+        <option>Balloon catheters</option>
+        <option>Accessories</option>
+      </select>
+
+      <label for="status" class="sr-only">Stock status</label>
+      <select id="status">
+        <option value="">All stock statuses</option>
+        <option value="out">Out of stock</option>
+        <option value="below">Below</option>
+        <option value="on">On target</option>
+        <option value="above">Above</option>
+      </select>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th><th class="number">In stock</th><th class="number">Recomm.</th>
+          <th>Status</th><th>Next expiry</th>
+        </tr>
+      </thead>
+      <tbody id="products"></tbody>
+    </table>
+  </main>
+  <script src="js/api.js"></script>
+  <script src="js/inventory.js"></script>
+</body>
+</html>

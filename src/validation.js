@@ -1,6 +1,7 @@
 // Input validation (README "Validation"). The server is the source of truth.
 // Each validator returns an object of field errors, e.g. { quantity: '...' }.
 // An empty object {} means the input is valid.
+// Plain functions only (no require), so the browser can load this file too.
 
 const REQUEST_TYPES = ['replenishment', 'usage', 'return'];
 const TYPES_THAT_NEED_A_REASON = ['usage', 'return'];
@@ -73,4 +74,9 @@ function isTooLong(text, maxLength) {
   return typeof text === 'string' && text.length > maxLength;
 }
 
-module.exports = { validateRequest, validateExplanation, REQUEST_TYPES, REMOVAL_REASONS };
+// This same file also runs in the browser (served as /js/validation.js), so the
+// request form checks exactly the same rules before sending. The browser has no
+// "module", so we only export when running in Node.
+if (typeof module !== 'undefined') {
+  module.exports = { validateRequest, validateExplanation, REQUEST_TYPES, REMOVAL_REASONS };
+}

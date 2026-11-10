@@ -29,6 +29,11 @@ function createApp(db) {
   // Serve the frontend files (HTML, CSS, JS) from public/.
   app.use(express.static(PUBLIC_FOLDER));
 
+  // The browser uses the same validation rules as the server (FR-06, FR-11).
+  app.get('/js/validation.js', (req, res) => {
+    res.sendFile(path.join(__dirname, 'validation.js'));
+  });
+
   // Infrastructure (no FR): quick check that the server is running. Public on purpose.
   app.get('/api/health', (req, res) => {
     res.json({ ok: true });
