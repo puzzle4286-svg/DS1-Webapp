@@ -4,6 +4,9 @@ const express = require('express');
 const session = require('express-session');
 const { requireLogin } = require('./auth');
 const { createAuthRoutes } = require('./routes/auth');
+const { createDashboardRoutes } = require('./routes/dashboard');
+const { createProductRoutes } = require('./routes/products');
+const { createRemovalRoutes } = require('./routes/removals');
 
 const PUBLIC_FOLDER = path.join(__dirname, '..', 'public');
 const SESSION_SECRET = process.env.SESSION_SECRET || 'dev-only-secret-change-me';
@@ -35,6 +38,11 @@ function createApp(db) {
 
   // FR-01: every other /api route needs a signed-in user.
   app.use('/api', requireLogin);
+
+  // Routes below only run for signed-in users.
+  app.use('/api', createDashboardRoutes(db));
+  app.use('/api', createProductRoutes(db));
+  app.use('/api', createRemovalRoutes(db));
 
   return app;
 }

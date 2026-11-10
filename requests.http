@@ -1,0 +1,47 @@
+# Ready-made API calls for manual testing.
+# VS Code: install the "REST Client" extension, then click "Send Request" above a call.
+# Start the server first (npm start). Run "Sign in" first: REST Client keeps the cookie.
+
+@base = http://localhost:3000
+
+### Health check (public)
+GET {{base}}/api/health
+
+### FR-01 Sign in with a wrong password → 401
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "anna@stelisabeth.de", "password": "wrong" }
+
+### FR-01 Sign in → 200 and a session cookie
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "anna@stelisabeth.de", "password": "demo1234" }
+
+### FR-01 Who is signed in?
+GET {{base}}/api/auth/me
+
+### FR-02 Dashboard KPIs, nearest expiry, latest requests
+GET {{base}}/api/dashboard
+
+### FR-03 Products: search, category and stock status filters
+GET {{base}}/api/products?search=becor&category=Coronary stents&status=below
+
+### FR-04 One product with lots and suggested quantity
+GET {{base}}/api/products/2
+
+### FR-04 Unknown product → 404
+GET {{base}}/api/products/999
+
+### FR-05 Mark lot 1 as "use first"
+PATCH {{base}}/api/lots/1
+Content-Type: application/json
+
+{ "useFirst": true }
+
+### FR-10 Open removals
+GET {{base}}/api/removals?status=open
+
+### FR-01 Sign out → 204
+POST {{base}}/api/auth/logout

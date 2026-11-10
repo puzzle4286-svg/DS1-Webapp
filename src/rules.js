@@ -52,4 +52,11 @@ function canChangeRequest(status) {
   return status === 'Submitted';
 }
 
-module.exports = { stockStatus, expiryTier, daysBetween, suggestedQuantity, canChangeRequest };
+// Today's date as 'YYYY-MM-DD' (UTC). Routes pass this to expiryTier.
+function todayDate() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+module.exports = {
+  stockStatus, expiryTier, daysBetween, suggestedQuantity, canChangeRequest, todayDate,
+};
