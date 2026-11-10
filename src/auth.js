@@ -20,4 +20,14 @@ function checkPassword(password, storedHash) {
   return crypto.timingSafeEqual(expected, actual);
 }
 
-module.exports = { hashPassword, checkPassword };
+// FR-01: middleware that lets a request through only when someone is signed in.
+// The login route stores userId in the session; without it we answer 401.
+function requireLogin(req, res, next) {
+  if (req.session.userId) {
+    next();
+    return;
+  }
+  res.status(401).json({ error: 'Please sign in.' });
+}
+
+module.exports = { hashPassword, checkPassword, requireLogin };
