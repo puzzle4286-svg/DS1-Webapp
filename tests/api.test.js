@@ -173,3 +173,171 @@ test('A16 removals?status=open only returns open removals', async () => {
     assert.equal(removal.status, 'open');
   }
 });
+
+// ---- Step 5: requests CRUD + removal explanation ----
+// Seed requests: #1 Completed, #2 Approved, #3 and #4 Submitted.
+// Seed removals: #1–#3 open, #4 explained.
+const APPROVED_REQUEST_ID = 2;
+const SUBMITTED_REQUEST_ID = 3;
+
+function newRequest(changes) {
+  return { type: 'replenishment', productId: 2, quantity: 10, reason: '', notes: '', ...changes };
+}
+
+test('A9 creating a valid request returns 201, status Submitted and an id', async () => {
+  const agent = await signedInAgent();
+  const response = await agent.post('/api/requests').send(newRequest({ notes: 'For next week' }));
+  assert.equal(response.status, 201);
+  assert.equal(response.body.status, 'Submitted');
+  assert.ok(Number.isInteger(response.body.id));
+  assert.equal(response.body.createdBy, 1);
+
+  // The new request is first in the list (newest first).
+  const list = await agent.get('/api/requests');
+  assert.equal(list.body[0].id, response.body.id);
+});
+
+test('A10 quantity 0 returns 400 with fields.quantity and saves nothing', async () => {
+  const agent = await signedInAgent();
+  const before = await agent.get('/api/requests');
+
+  const response = await agent.post('/api/requests').send(newRequest({ quantity: 0 }));
+  assert.equal(response.status, 400);
+  assert.ok(response.body.fields.quantity);
+
+  const after = await agent.get('/api/requests');
+  assert.equal(after.body.length, before.body.length);
+});
+
+test('creating a request for an unknown product returns 400 with fields.productId', async () => {
+  const agent = await signedInAgent();
+  const response = await agent.post('/api/requests').send(newRequest({ productId: 999 }));
+  assert.equal(response.status, 400);
+  assert.ok(response.body.fields.productId);
+});
+
+test('A11 status=Approved only returns Approved requests', async () => {
+  const agent = await signedInAgent();
+  const response = await agent.get('/api/requests?status=Approved');
+  assert.equal(response.status, 200);
+  assert.ok(response.body.length > 0);
+  for (const request of response.body) {
+    assert.equal(request.status, 'Approved');
+  }
+
+  const byType = await agent.get('/api/requests?type=return');
+  assert.ok(byType.body.every((r) => r.type === 'return'));
+
+  const unknown = await agent.get('/api/requests?status=Lost');
+  assert.equal(unknown.status, 400);
+});
+
+test('GET one request: found and not found', async () => {
+  const agent = await signedInAgent();
+  const found = await agent.get('/api/requests/' + SUBMITTED_REQUEST_ID);
+  assert.equal(found.status, 200);
+  assert.equal(found.body.id, SUBMITTED_REQUEST_ID);
+
+  const missing = await agent.get('/api/requests/999');
+  assert.equal(missing.status, 404);
+});
+
+test('A12 editing a Submitted request changes the quantity', async () => {
+  const agent = await signedInAgent();
+  const response = await agent.put('/api/requests/' + SUBMITTED_REQUEST_ID)
+    .send(newRequest({ type: 'return', productId: 7, quantity: 2, reason: 'Overstock' }));
+  assert.equal(response.status, 200);
+  assert.equal(response.body.quantity, 2);
+
+  const reloaded = await agent.get('/api/requests/' + SUBMITTED_REQUEST_ID);
+  assert.equal(reloaded.body.quantity, 2);
+});
+
+test('A13 editing an Approved request returns 409', async () => {
+  const agent = await signedInAgent();
+  const response = await agent.put('/api/requests/' + APPROVED_REQUEST_ID).send(newRequest({}));
+  assert.equal(response.status, 409);
+  assert.equal(response.body.error, 'This request can no longer be changed.');
+});
+
+test('editing: invalid input is 400, unknown id is 404', async () => {
+  const agent = await signedInAgent();
+  const invalid = await agent.put('/api/requests/' + SUBMITTED_REQUEST_ID).send(newRequest({ quantity: 101 }));
+  assert.equal(invalid.status, 400);
+  assert.ok(invalid.body.fields.quantity);
+
+  const missing = await agent.put('/api/requests/999').send(newRequest({}));
+  assert.equal(missing.status, 404);
+});
+
+test('A14 withdrawing a Submitted request returns 204, then it is gone', async () => {
+  const agent = await signedInAgent();
+  const response = await agent.delete('/api/requests/' + SUBMITTED_REQUEST_ID);
+  assert.equal(response.status, 204);
+
+  const reloaded = await agent.get('/api/requests/' + SUBMITTED_REQUEST_ID);
+  assert.equal(reloaded.status, 404);
+});
+
+test('A15 withdrawing an Approved request returns 409 and it still exists', async () => {
+  const agent = await signedInAgent();
+  const response = await agent.delete('/api/requests/' + APPROVED_REQUEST_ID);
+  assert.equal(response.status, 409);
+
+  const reloaded = await agent.get('/api/requests/' + APPROVED_REQUEST_ID);
+  assert.equal(reloaded.status, 200);
+
+  const missing = await agent.delete('/api/requests/999');
+  assert.equal(missing.status, 404);
+});
+
+test('A17 explaining an open removal returns 200 and status explained', async () => {
+  const agent = await signedInAgent();
+  const response = await agent.patch('/api/removals/1').send({ reason: 'Other', note: 'Found in room 2' });
+  assert.equal(response.status, 200);
+  assert.equal(response.body.status, 'explained');
+  assert.equal(response.body.note, 'Found in room 2');
+  assert.ok(response.body.explainedAt);
+
+  const open = await agent.get('/api/removals?status=open');
+  assert.equal(open.body.length, 2);
+});
+
+test('A18 explaining the same removal again returns 409', async () => {
+  const agent = await signedInAgent();
+  await agent.patch('/api/removals/1').send({ reason: 'Damaged' });
+  const again = await agent.patch('/api/removals/1').send({ reason: 'Damaged' });
+  assert.equal(again.status, 409);
+});
+
+test('explaining: "Other" without a note is 400, unknown removal is 404', async () => {
+  const agent = await signedInAgent();
+  const noNote = await agent.patch('/api/removals/1').send({ reason: 'Other' });
+  assert.equal(noNote.status, 400);
+  assert.ok(noNote.body.fields.note);
+
+  const missing = await agent.patch('/api/removals/999').send({ reason: 'Damaged' });
+  assert.equal(missing.status, 404);
+});
+
+test('unknown /api route returns JSON 404, broken JSON returns 400', async () => {
+  const agent = await signedInAgent();
+  const unknown = await agent.get('/api/nothing-here');
+  assert.equal(unknown.status, 404);
+  assert.equal(unknown.body.error, 'Not found.');
+
+  const broken = await agent.post('/api/requests').set('Content-Type', 'application/json').send('{ not json');
+  assert.equal(broken.status, 400);
+});
+
+test('central error handler returns 500 with a generic message', async (t) => {
+  const db = openDatabase(':memory:');
+  const app = createApp(db);
+  db.close(); // every query now throws, like a broken database
+  t.mock.method(console, 'error', () => {}); // keep the test output clean
+
+  const response = await request(app).post('/api/auth/login').send({ email: EMAIL, password: PASSWORD });
+  assert.equal(response.status, 500);
+  assert.equal(response.body.error, 'Something went wrong on the server. Please try again.');
+  assert.equal(console.error.mock.callCount(), 1); // the real error was logged
+});

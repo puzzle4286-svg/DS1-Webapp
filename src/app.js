@@ -7,6 +7,7 @@ const { createAuthRoutes } = require('./routes/auth');
 const { createDashboardRoutes } = require('./routes/dashboard');
 const { createProductRoutes } = require('./routes/products');
 const { createRemovalRoutes } = require('./routes/removals');
+const { createRequestRoutes } = require('./routes/requests');
 
 const PUBLIC_FOLDER = path.join(__dirname, '..', 'public');
 const SESSION_SECRET = process.env.SESSION_SECRET || 'dev-only-secret-change-me';
@@ -43,8 +44,28 @@ function createApp(db) {
   app.use('/api', createDashboardRoutes(db));
   app.use('/api', createProductRoutes(db));
   app.use('/api', createRemovalRoutes(db));
+  app.use('/api', createRequestRoutes(db));
+
+  // Any other /api address: answer in JSON, not with an HTML page.
+  app.use('/api', (req, res) => {
+    res.status(404).json({ error: 'Not found.' });
+  });
+
+  // Central error handler: Express calls it when a route throws or calls next(error).
+  app.use(handleError);
 
   return app;
+}
+
+// Broken JSON from the client → 400. Anything else is our fault → 500.
+// The full error goes to the server log; the client only gets a generic message.
+function handleError(error, req, res, next) {
+  if (error.type === 'entity.parse.failed') {
+    res.status(400).json({ error: 'The request body is not valid JSON.' });
+    return;
+  }
+  console.error(error);
+  res.status(500).json({ error: 'Something went wrong on the server. Please try again.' });
 }
 
 module.exports = { createApp };

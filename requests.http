@@ -43,5 +43,53 @@ Content-Type: application/json
 ### FR-10 Open removals
 GET {{base}}/api/removals?status=open
 
+### FR-07 Requests list, newest first (filters optional)
+GET {{base}}/api/requests?status=Submitted&type=replenishment
+
+### FR-07 One request
+GET {{base}}/api/requests/3
+
+### FR-06 Create a request → 201 (remember the new id for the next calls)
+POST {{base}}/api/requests
+Content-Type: application/json
+
+{ "type": "replenishment", "productId": 2, "quantity": 10, "reason": "", "notes": "For next week" }
+
+### FR-06 Invalid request (quantity 0) → 400 with fields
+POST {{base}}/api/requests
+Content-Type: application/json
+
+{ "type": "usage", "productId": 2, "quantity": 0 }
+
+### FR-08 Edit a Submitted request → 200 (change 3 to your new id if you like)
+PUT {{base}}/api/requests/3
+Content-Type: application/json
+
+{ "type": "return", "productId": 7, "quantity": 2, "reason": "Overstock", "notes": "" }
+
+### FR-08 Edit an Approved request → 409
+PUT {{base}}/api/requests/2
+Content-Type: application/json
+
+{ "type": "usage", "productId": 1, "quantity": 2, "reason": "Used in procedure", "notes": "" }
+
+### FR-09 Withdraw a Submitted request → 204
+DELETE {{base}}/api/requests/3
+
+### FR-09 Withdraw an Approved request → 409
+DELETE {{base}}/api/requests/2
+
+### FR-11 Explain an open removal → 200
+PATCH {{base}}/api/removals/1
+Content-Type: application/json
+
+{ "reason": "Other", "note": "Moved to room 2 for an emergency" }
+
+### FR-11 Explain the same removal again → 409
+PATCH {{base}}/api/removals/1
+Content-Type: application/json
+
+{ "reason": "Damaged" }
+
 ### FR-01 Sign out → 204
 POST {{base}}/api/auth/logout
