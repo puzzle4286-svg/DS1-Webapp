@@ -37,30 +37,60 @@ async function api(method, url, body) {
   return data;
 }
 
-// Draw the shared header (logo, navigation, user, log out) into <header id="site-header">.
+// Draw the shared sidebar (logo, navigation, user, sign out) into <aside id="site-header">.
 // It also checks the session: /api/auth/me answers 401 → redirect to login.
+// Returns the signed-in user, so a page can use the name (e.g. the dashboard greeting).
 async function renderHeader(activePage) {
   const pages = [
-    ['index.html', 'Dashboard'],
-    ['inventory.html', 'Inventory'],
-    ['requests.html', 'Requests'],
-    ['removals.html', 'Removals'],
+    ['Dashboard', 'index.html', 'Dashboard', 'layout-dashboard'],
+    ['Inventory', 'inventory.html', 'Inventory', 'boxes'],
+    ['Requests', 'requests.html', 'Requests', 'clipboard-list'],
+    ['Removals', 'removals.html', 'Unreported removals', 'triangle-alert'],
   ];
-  const links = pages.map(([href, label]) => {
-    const active = label === activePage ? ' class="active"' : '';
-    return `<a href="${href}"${active}>${label}</a>`;
+  const links = pages.map(([key, href, label, icon]) => {
+    const active = key === activePage ? ' class="active" aria-current="page"' : '';
+    const badge = key === 'Removals' ? '<span class="badge hidden" id="removals-badge"></span>' : '';
+    return `<a href="${href}"${active} title="${label}"><i data-lucide="${icon}"></i><span class="text">${label}</span>${badge}</a>`;
   }).join('');
 
-  const header = document.getElementById('site-header');
-  header.innerHTML = `
-    <a href="index.html" class="brand"><img src="img/bentley-logo.png" alt="Bentley"> Smart Stock</a>
-    <nav>${links}</nav>
-    <span class="user"><span id="user-name"></span> · <button type="button" class="link" id="logout">Log out</button></span>`;
+  const sidebar = document.getElementById('site-header');
+  sidebar.innerHTML = `
+    <a href="index.html" class="brand" title="Smart Stock">
+      <img class="mark" src="img/bentley-blue-mark.png" alt="Bentley">
+      <span class="words"><img class="wordmark" src="img/bentley-wordmark.png" alt=""><span class="label">Smart Stock</span></span>
+    </a>
+    <nav class="nav" aria-label="Main">${links}</nav>
+    <div class="user-box">
+      <span class="initials" id="user-initials"></span>
+      <div class="who"><div id="user-name"></div><div class="muted" id="user-email"></div></div>
+      <button type="button" class="btn ghost small" id="logout" title="Sign out"><i data-lucide="log-out"></i><span class="sr-only">Sign out</span></button>
+    </div>`;
 
   document.getElementById('logout').addEventListener('click', logOut);
 
   const user = await api('GET', '/api/auth/me');
   document.getElementById('user-name').textContent = shortName(user.name);
+  document.getElementById('user-email').textContent = user.email || '';
+  document.getElementById('user-initials').textContent = initials(user.name);
+  loadRemovalsBadge();
+  return user;
+}
+
+// Red count next to "Unreported removals". Uses the dashboard numbers; if that fails, no badge.
+async function loadRemovalsBadge() {
+  try {
+    const { openRemovals } = await api('GET', '/api/dashboard');
+    const badge = document.getElementById('removals-badge');
+    badge.textContent = openRemovals;
+    badge.classList.toggle('hidden', !openRemovals);
+  } catch (error) {
+    // The badge is only a hint; the page itself shows any real error.
+  }
+}
+
+// "Anna Keller" → "AK"
+function initials(fullName) {
+  return fullName.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase();
 }
 
 async function logOut() {
@@ -82,16 +112,17 @@ function shortName(fullName) {
 // Green message at the top of the page.
 function showSuccess(text) {
   const banner = document.getElementById('banner');
-  banner.innerHTML = `<div class="success">✓ ${escapeHtml(text)}</div>`;
+  banner.innerHTML = `<div class="alert success" role="status"><i data-lucide="circle-check"></i><span class="text">${escapeHtml(text)}</span></div>`;
 }
 
 // Red message at the top of the page, with an optional "Try again" button.
 function showError(text, retry) {
   const banner = document.getElementById('banner');
-  banner.innerHTML = `<div class="error">${escapeHtml(text)} </div>`;
+  banner.innerHTML = `<div class="alert error" role="alert"><i data-lucide="circle-alert"></i><span class="text">${escapeHtml(text)}</span></div>`;
   if (retry) {
     const button = document.createElement('button');
     button.type = 'button';
+    button.className = 'btn small';
     button.textContent = 'Try again';
     button.addEventListener('click', () => {
       clearBanner();
@@ -136,15 +167,19 @@ function formatDate(isoText) {
   return `${day}.${month}.${year}`;
 }
 
-// A coloured label. kind is one of: critical, warning, ok, neutral.
+// A coloured label with a small icon. kind is one of: critical, warning, ok, neutral.
+const TAG_ICONS = { critical: 'circle-alert', warning: 'clock', ok: 'circle-check', neutral: 'minus' };
+
 function tag(text, kind) {
-  return `<span class="tag ${kind}">${escapeHtml(text)}</span>`;
+  return `<span class="tag ${kind}"><i data-lucide="${TAG_ICONS[kind]}"></i>${escapeHtml(text)}</span>`;
 }
 
-const STOCK_LABELS = { out: 'Out of stock', below: 'Below', on: 'On target', above: 'Above' };
-const STOCK_TAG_KINDS = { out: 'warning', below: 'warning', on: 'ok', above: 'neutral' };
+const STOCK_LABELS = { out: 'Out of stock', below: 'Below target', on: 'On target', above: 'Above target' };
+const STOCK_TAG_KINDS = { out: 'critical', below: 'warning', on: 'ok', above: 'neutral' };
 const STATUS_TAG_KINDS = { Submitted: 'warning', Approved: 'ok', Rejected: 'critical', Completed: 'neutral' };
 const TYPE_LABELS = { replenishment: 'Replenishment', usage: 'Usage report', return: 'Return' };
+// Expiry tiers from the server: critical ≤ 90 days, warning ≤ 180 days, ok later.
+const EXPIRY_LABELS = { critical: 'Expires < 3 mo', warning: 'Expires < 6 mo', ok: '6+ months' };
 
 function stockTag(status) {
   return tag(STOCK_LABELS[status], STOCK_TAG_KINDS[status]);
@@ -153,6 +188,33 @@ function stockTag(status) {
 function requestStatusTag(status) {
   return tag(status, STATUS_TAG_KINDS[status]);
 }
+
+function expiryTag(tier) {
+  return tag(EXPIRY_LABELS[tier] || tier, tier);
+}
+
+// Grey pulsing blocks while data loads.
+function skeleton(blocks = 3, text = 'Loading…') {
+  return `<div class="skeleton" aria-busy="true">${'<div class="block"></div>'.repeat(blocks)}
+    <div class="loading"><i data-lucide="loader"></i>${escapeHtml(text)}</div></div>`;
+}
+
+// Centred "nothing here" box. buttonHtml is optional.
+function emptyState(icon, title, text, buttonHtml = '') {
+  return `<div class="empty"><i data-lucide="${icon}"></i><h3>${escapeHtml(title)}</h3><p>${escapeHtml(text)}</p>${buttonHtml}</div>`;
+}
+
+// ---- Icons (Lucide) ----
+// Pages put <i data-lucide="name"></i> in their HTML. Instead of calling lucide.createIcons()
+// after every render by hand, we call it whenever the page content changes.
+// MutationObserver already groups changes, so this runs once per render, not once per element.
+function drawIcons() {
+  if (window.lucide && document.querySelector('i[data-lucide]')) {
+    lucide.createIcons();
+  }
+}
+new MutationObserver(drawIcons).observe(document.documentElement, { childList: true, subtree: true });
+drawIcons();
 
 // Read one value from the page URL, e.g. urlParam('id') for product.html?id=3.
 function urlParam(name) {

@@ -24,6 +24,9 @@ renderHeader('Requests');
 setUpForm();
 
 async function setUpForm() {
+  const loading = document.getElementById('loading');
+  loading.innerHTML = skeleton(4, 'Loading…');
+  loading.classList.remove('hidden');
   try {
     products = await api('GET', '/api/products');
     fillProductOptions();

@@ -4,52 +4,60 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Requests · Smart Stock</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Lora:wght@400;500&display=swap">
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 </head>
-<body>
-  <header id="site-header"></header>
+<body class="app">
+  <aside id="site-header" class="sidebar"></aside>
   <!-- S5 Requests list (FR-07, FR-09) -->
-  <main>
-    <div id="banner"></div>
-    <h1>Requests</h1>
+  <div class="main">
+    <header class="topbar"><div>
+      <h1>Requests</h1>
+    </div></header>
+    <main class="content">
+      <div id="banner"></div>
+      <div class="stack">
+        <div class="row">
+          <div class="segmented" id="status" role="group" aria-label="Status">
+            <button type="button" class="btn active" data-status="">All</button>
+            <button type="button" class="btn" data-status="Submitted">Submitted</button>
+            <button type="button" class="btn" data-status="Approved">Approved</button>
+            <button type="button" class="btn" data-status="Rejected">Rejected</button>
+            <button type="button" class="btn" data-status="Completed">Completed</button>
+          </div>
 
-    <div class="toolbar">
-      <label for="status" class="sr-only">Status</label>
-      <select id="status">
-        <option value="">All statuses</option>
-        <option>Submitted</option>
-        <option>Approved</option>
-        <option>Rejected</option>
-        <option>Completed</option>
-      </select>
+          <label for="type" class="sr-only">Type</label>
+          <select id="type">
+            <option value="">All types</option>
+            <option value="replenishment">Replenishment</option>
+            <option value="usage">Usage report</option>
+            <option value="return">Return</option>
+          </select>
 
-      <label for="type" class="sr-only">Type</label>
-      <select id="type">
-        <option value="">All types</option>
-        <option value="replenishment">Replenishment</option>
-        <option value="usage">Usage report</option>
-        <option value="return">Return</option>
-      </select>
+          <span class="spacer"></span>
+          <a class="btn primary" href="request-form.html"><i data-lucide="plus"></i>New request</a>
+        </div>
 
-      <a class="button primary push" href="request-form.html">+ New request</a>
-    </div>
-
-    <table>
-      <thead>
-        <tr><th>#</th><th>Type</th><th>Product</th><th class="number">Qty</th><th>Status</th><th>Actions</th></tr>
-      </thead>
-      <tbody id="requests"></tbody>
-    </table>
-  </main>
+        <div class="card table-card" id="table-card">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Type</th><th>Product</th><th class="number">Qty</th><th>Status</th><th class="actions">Actions</th></tr>
+            </thead>
+            <tbody id="requests"></tbody>
+          </table>
+        </div>
+        <div id="empty"></div>
+      </div>
+    </main>
+  </div>
 
   <!-- Confirm dialog for "Withdraw" (FR-09) -->
   <dialog id="withdraw-dialog">
     <h2 id="withdraw-title">Withdraw request?</h2>
-    <p>This cannot be undone.</p>
+    <p class="muted">This cannot be undone.</p>
     <div class="form-buttons">
-      <button type="button" id="withdraw-cancel">Cancel</button>
-      <button type="button" class="danger" id="withdraw-confirm">Withdraw</button>
+      <button type="button" class="btn danger" id="withdraw-confirm"><i data-lucide="trash-2"></i>Withdraw</button>
+      <button type="button" class="btn" id="withdraw-cancel">Cancel</button>
     </div>
   </dialog>
 

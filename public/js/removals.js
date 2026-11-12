@@ -32,7 +32,7 @@ function switchTab(tab) {
 
 // Load both lists: the open one is needed for the count on the "Open" tab.
 async function loadRemovals() {
-  container.innerHTML = '<p class="muted">Loading removals…</p>';
+  container.innerHTML = skeleton(3, 'Loading removals…');
   try {
     const [open, explained] = await Promise.all([
       api('GET', '/api/removals?status=open'),
@@ -49,33 +49,42 @@ async function loadRemovals() {
 function showRemovals(removals) {
   if (removals.length === 0) {
     container.innerHTML = activeTab === 'open'
-      ? '<p class="muted">No open removals — every unit is accounted for.</p>'
-      : '<p class="muted">No explained removals yet.</p>';
+      ? emptyState('circle-check', 'All removals are reported',
+        'Nothing needs your attention. Thank you for keeping the count accurate.')
+      : emptyState('history', 'No explained removals yet', 'Removals you report or explain appear here.');
     return;
   }
-  container.innerHTML = `<ul class="list">${removals.map(removalItem).join('')}</ul>`;
+  const lastColumn = activeTab === 'open' ? 'Action' : 'Explanation';
+  container.innerHTML = `
+    <div class="card table-card">
+      <table>
+        <thead><tr><th>Product</th><th class="number">Qty</th><th>Detected</th><th>Status</th>
+          <th class="${activeTab === 'open' ? 'actions' : ''}">${lastColumn}</th></tr></thead>
+        <tbody>${removals.map(removalRow).join('')}</tbody>
+      </table>
+    </div>`;
   for (const button of container.querySelectorAll('button.explain')) {
     const removal = removals.find((r) => r.id === Number(button.dataset.id));
     button.addEventListener('click', () => openExplainDialog(removal));
   }
 }
 
-function removalItem(removal) {
+function removalRow(removal) {
+  const open = removal.status === 'open';
   return `
-    <li>
-      <div class="grow">
-        <strong>${escapeHtml(removal.productName)}</strong>
-        <span class="muted small">${escapeHtml(removal.productCode)}</span><br>
-        ${removal.quantity} ${removal.quantity === 1 ? 'unit' : 'units'} · detected ${formatDate(removal.detectedAt)}
-        ${removal.status === 'explained' ? explanationText(removal) : ''}
-      </div>
-      ${removal.status === 'open' ? openActions(removal) : tag('explained', 'ok')}
-    </li>`;
+    <tr>
+      <td><a href="product.html?id=${removal.productId}">${escapeHtml(removal.productName)}</a>
+        <span class="sub num">${escapeHtml(removal.productCode)}</span></td>
+      <td class="number">${removal.quantity}</td>
+      <td>${formatDate(removal.detectedAt)}</td>
+      <td>${open ? tag('Not reported', 'warning') : tag('Explained', 'ok')}</td>
+      ${open ? `<td class="actions">${openActions(removal)}</td>` : `<td>${explanationText(removal)}</td>`}
+    </tr>`;
 }
 
 function explanationText(removal) {
   const note = removal.note ? ` – ${escapeHtml(removal.note)}` : '';
-  return `<br><span class="muted small">${escapeHtml(removal.reason)}${note} · explained ${formatDate(removal.explainedAt)}</span>`;
+  return `${escapeHtml(removal.reason)}${note}<span class="sub">explained ${formatDate(removal.explainedAt)}</span>`;
 }
 
 // "Report usage" opens the request form prefilled (saving it also explains the removal);
@@ -85,8 +94,8 @@ function openActions(removal) {
     type: 'usage', productId: removal.productId, quantity: removal.quantity, removalId: removal.id,
   });
   return `
-    <a class="button" href="request-form.html?${query}">Report usage</a>
-    <button type="button" class="primary explain" data-id="${removal.id}">Explain</button>`;
+    <a class="btn primary small" href="request-form.html?${query}"><i data-lucide="clipboard-check"></i>Report usage</a>
+    <button type="button" class="btn small explain" data-id="${removal.id}"><i data-lucide="flag"></i>Explain</button>`;
 }
 
 // ---- Explain dialog (FR-11) ----

@@ -3,6 +3,9 @@ const searchInput = document.getElementById('search');
 const categorySelect = document.getElementById('category');
 const statusSelect = document.getElementById('status');
 const tableBody = document.getElementById('products');
+const tableCard = document.getElementById('table-card');
+const emptyBox = document.getElementById('empty');
+const clearToolbarButton = document.getElementById('clear-toolbar');
 
 const SEARCH_DELAY_MS = 300;
 let searchTimer = null;
@@ -19,9 +22,14 @@ searchInput.addEventListener('input', () => {
 });
 categorySelect.addEventListener('change', loadProducts);
 statusSelect.addEventListener('change', loadProducts);
+clearToolbarButton.addEventListener('click', clearFilters);
 
 async function loadProducts() {
-  tableBody.innerHTML = '<tr><td colspan="5" class="muted">Loading products…</td></tr>';
+  tableCard.classList.remove('hidden');
+  emptyBox.innerHTML = '';
+  tableBody.innerHTML = `<tr><td colspan="6">${skeleton(4, 'Loading products…')}</td></tr>`;
+  const filtersOn = searchInput.value.trim() !== '' || categorySelect.value !== '' || statusSelect.value !== '';
+  clearToolbarButton.classList.toggle('hidden', !filtersOn);
   const query = new URLSearchParams({
     search: searchInput.value.trim(),
     category: categorySelect.value,
@@ -37,12 +45,16 @@ async function loadProducts() {
 }
 
 function showProducts(products) {
-  if (products.length === 0) {
-    tableBody.innerHTML = `
-      <tr><td colspan="5">
-        No products match your filters.
-        <button type="button" id="clear-filters">Clear filters</button>
-      </td></tr>`;
+  showSummary(products);
+  const empty = products.length === 0;
+  tableCard.classList.toggle('hidden', empty);
+  emptyBox.innerHTML = empty
+    ? emptyState('package-search', 'No products match these filters',
+      'Check the spelling of the product name or code, or clear the filters to see your full inventory.',
+      '<button type="button" class="btn primary" id="clear-filters"><i data-lucide="x"></i>Clear filters</button>')
+    : '';
+  if (empty) {
+    tableBody.innerHTML = '';
     document.getElementById('clear-filters').addEventListener('click', clearFilters);
     return;
   }
@@ -55,16 +67,30 @@ function showProducts(products) {
   }
 }
 
+// Numbers between the toolbar and the table, for the products shown.
+function showSummary(products) {
+  const units = products.reduce((sum, product) => sum + product.inStock, 0);
+  const below = products.filter((product) => product.status === 'out' || product.status === 'below').length;
+  document.getElementById('summary').innerHTML = `
+    <div><span class="big">${products.length}</span> <span class="muted">products</span></div>
+    <div><span class="big">${units}</span> <span class="muted">units in stock</span></div>
+    <div><span class="big">${below}</span> <span class="muted">below target</span></div>`;
+  document.getElementById('showing').textContent = products.length
+    ? `Showing 1–${products.length} of ${products.length} products`
+    : '';
+}
+
 function productRow(product) {
   const expiry = product.nextExpiry
-    ? `${formatDate(product.nextExpiry)} ${tag(product.nextExpiryTier, product.nextExpiryTier)}`
+    ? `${formatDate(product.nextExpiry)}<span class="sub">${expiryTag(product.nextExpiryTier)}</span>`
     : '<span class="muted">–</span>';
   return `
     <tr class="clickable" data-id="${product.id}">
       <td>
-        <a href="product.html?id=${product.id}">${escapeHtml(product.name)}</a><br>
-        <span class="muted small">${escapeHtml(product.code)}</span>
+        <a href="product.html?id=${product.id}">${escapeHtml(product.name)}</a>
+        <span class="sub num">${escapeHtml(product.code)}</span>
       </td>
+      <td class="small">${escapeHtml(product.category)}</td>
       <td class="number">${product.inStock}</td>
       <td class="number">${product.recommended}</td>
       <td>${stockTag(product.status)}</td>

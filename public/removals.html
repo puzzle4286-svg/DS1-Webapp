@@ -3,30 +3,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Removals · Smart Stock</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Lora:wght@400;500&display=swap">
+  <title>Unreported removals · Smart Stock</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 </head>
-<body>
-  <header id="site-header"></header>
+<body class="app">
+  <aside id="site-header" class="sidebar"></aside>
   <!-- S7 Unreported removals (FR-10, FR-11) -->
-  <main>
-    <div id="banner"></div>
-    <h1>Unreported removals</h1>
+  <div class="main">
+    <header class="topbar"><div>
+      <h1>Unreported removals</h1>
+    </div></header>
+    <main class="content">
+      <div id="banner"></div>
+      <div class="stack">
+        <p class="muted" style="max-width: 800px">Each night the RFID count compares yesterday’s stock with today’s.
+          Units that left the shelf without a usage report appear here. Report the usage, or explain what happened.</p>
 
-    <div class="tabs">
-      <button type="button" id="tab-open" class="active">Open</button>
-      <button type="button" id="tab-explained">Explained</button>
-    </div>
+        <div class="tabs" role="tablist">
+          <button type="button" id="tab-open" class="active">Open</button>
+          <button type="button" id="tab-explained">Explained</button>
+        </div>
 
-    <div id="removals"><p class="muted">Loading removals…</p></div>
-  </main>
+        <div id="removals"></div>
+      </div>
+    </main>
+  </div>
 
   <!-- Explain dialog (FR-11) -->
   <dialog id="explain-dialog">
-    <form id="explain-form" novalidate>
-      <h2>Explain removal</h2>
-      <p class="muted" id="explain-summary"></p>
+    <form id="explain-form" class="form" novalidate>
+      <div>
+        <h2>Explain removal</h2>
+        <p class="muted small" id="explain-summary"></p>
+      </div>
       <div class="field">
         <label for="reason">Reason</label>
         <select id="reason">
@@ -41,13 +51,13 @@
       <div class="field">
         <label for="note">Note</label>
         <textarea id="note"></textarea>
-        <div class="muted small"><span id="note-count">0</span> / 300 · required when the reason is "Other"</div>
+        <div class="hint"><span id="note-count">0</span> / 300 · required when the reason is "Other"</div>
         <div class="field-error" id="note-error"></div>
       </div>
       <div class="field-error" id="explain-error"></div>
       <div class="form-buttons">
-        <button type="button" id="explain-cancel">Cancel</button>
-        <button type="submit" class="primary" id="explain-send">Send</button>
+        <button type="submit" class="btn primary" id="explain-send">Send</button>
+        <button type="button" class="btn" id="explain-cancel">Cancel</button>
       </div>
     </form>
   </dialog>

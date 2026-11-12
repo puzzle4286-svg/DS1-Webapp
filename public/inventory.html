@@ -4,49 +4,65 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Inventory · Smart Stock</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Lora:wght@400;500&display=swap">
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 </head>
-<body>
-  <header id="site-header"></header>
+<body class="app">
+  <aside id="site-header" class="sidebar"></aside>
   <!-- S3 Inventory (FR-03) -->
-  <main>
-    <div id="banner"></div>
-    <h1>Inventory</h1>
+  <div class="main">
+    <header class="topbar"><div>
+      <h1>Inventory</h1>
+    </div></header>
+    <main class="content">
+      <div id="banner"></div>
+      <div class="stack">
+        <div class="row">
+          <div class="search">
+            <i data-lucide="search"></i>
+            <label for="search" class="sr-only">Search</label>
+            <input id="search" type="search" placeholder="Search name or code…">
+          </div>
 
-    <div class="toolbar">
-      <label for="search" class="sr-only">Search</label>
-      <input id="search" type="search" placeholder="Search name or code…">
+          <label for="category" class="sr-only">Category</label>
+          <select id="category">
+            <option value="">All categories</option>
+            <option>Coronary stents</option>
+            <option>Peripheral stents</option>
+            <option>Balloon catheters</option>
+            <option>Accessories</option>
+          </select>
 
-      <label for="category" class="sr-only">Category</label>
-      <select id="category">
-        <option value="">All categories</option>
-        <option>Coronary stents</option>
-        <option>Peripheral stents</option>
-        <option>Balloon catheters</option>
-        <option>Accessories</option>
-      </select>
+          <label for="status" class="sr-only">Stock status</label>
+          <select id="status">
+            <option value="">All stock statuses</option>
+            <option value="out">Out of stock</option>
+            <option value="below">Below target</option>
+            <option value="on">On target</option>
+            <option value="above">Above target</option>
+          </select>
 
-      <label for="status" class="sr-only">Stock status</label>
-      <select id="status">
-        <option value="">All stock statuses</option>
-        <option value="out">Out of stock</option>
-        <option value="below">Below</option>
-        <option value="on">On target</option>
-        <option value="above">Above</option>
-      </select>
-    </div>
+          <button type="button" class="btn ghost hidden" id="clear-toolbar"><i data-lucide="x"></i>Clear filters</button>
+        </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Product</th><th class="number">In stock</th><th class="number">Recomm.</th>
-          <th>Status</th><th>Next expiry</th>
-        </tr>
-      </thead>
-      <tbody id="products"></tbody>
-    </table>
-  </main>
+        <div class="summary" id="summary"></div>
+
+        <div class="card table-card" id="table-card">
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th><th>Category</th><th class="number">In stock</th><th class="number">Recomm.</th>
+                <th>Status</th><th>Next expiry</th>
+              </tr>
+            </thead>
+            <tbody id="products"></tbody>
+          </table>
+        </div>
+        <div id="empty"></div>
+        <p class="muted small" id="showing"></p>
+      </div>
+    </main>
+  </div>
   <script src="js/api.js"></script>
   <script src="js/inventory.js"></script>
 </body>

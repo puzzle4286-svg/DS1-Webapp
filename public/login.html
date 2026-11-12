@@ -4,20 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sign in · Smart Stock</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Lora:wght@400;500&display=swap">
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 </head>
 <body>
   <!-- S1 Sign in (FR-01) -->
-  <main>
-    <div class="login">
-      <img src="img/bentley-logo.png" alt="Bentley">
-      <h1>Smart Stock</h1>
-      <div id="banner"></div>
+  <main class="login-page">
+    <div class="login-side">
+      <div class="login-logo"><img src="img/bentley-logo.png" alt="Bentley"><span>Smart Stock</span></div>
 
-      <form id="login-form" novalidate>
+      <form id="login-form" class="form" novalidate>
+        <h1>Sign in</h1>
+        <div id="banner"></div>
         <div class="field">
-          <label for="email">Email</label>
+          <label for="email">Email address</label>
           <input id="email" name="email" type="email" autocomplete="username">
           <div class="field-error" id="email-error"></div>
         </div>
@@ -26,10 +26,18 @@
           <input id="password" name="password" type="password" autocomplete="current-password">
           <div class="field-error" id="password-error"></div>
         </div>
-        <button type="submit" class="primary" id="submit">Sign in</button>
+        <button type="submit" class="btn primary" id="submit">Sign in</button>
       </form>
 
-      <p class="motto muted small">Consistency. Courage. Care</p>
+      <p class="muted small">© 2026 Bentley InnoMed GmbH · Demonstration data</p>
+    </div>
+
+    <div class="login-art" aria-hidden="true">
+      <img src="img/bentley-blue-mark.png" alt="">
+      <div class="motto">
+        <p class="kicker">Bentley Smart Stock</p>
+        <div>Consistency. Courage. Care.</div>
+      </div>
     </div>
   </main>
   <script src="js/api.js"></script>

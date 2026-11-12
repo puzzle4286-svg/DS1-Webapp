@@ -4,17 +4,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dashboard · Smart Stock</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Lora:wght@400;500&display=swap">
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 </head>
-<body>
-  <header id="site-header"></header>
+<body class="app">
+  <aside id="site-header" class="sidebar"></aside>
   <!-- S2 Dashboard (FR-02) -->
-  <main>
-    <div id="banner"></div>
-    <h1>Dashboard</h1>
-    <div id="dashboard"><p class="muted">Loading dashboard…</p></div>
-  </main>
+  <div class="main">
+    <header class="topbar"><div>
+      <h1>Dashboard</h1>
+    </div></header>
+    <main class="content">
+      <div id="banner"></div>
+      <div id="dashboard"></div>
+    </main>
+  </div>
   <script src="js/api.js"></script>
   <script src="js/dashboard.js"></script>
 </body>

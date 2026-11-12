@@ -4,17 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Product · Smart Stock</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Lora:wght@400;500&display=swap">
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 </head>
-<body>
-  <header id="site-header"></header>
+<body class="app">
+  <aside id="site-header" class="sidebar"></aside>
   <!-- S4 Product detail (FR-04, FR-05) -->
-  <main>
-    <p><a href="inventory.html">← Back to inventory</a></p>
-    <div id="banner"></div>
-    <div id="product"><p class="muted">Loading product…</p></div>
-  </main>
+  <div class="main">
+    <header class="topbar"><div>
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="inventory.html">Inventory</a><i data-lucide="chevron-right" width="13" height="13"></i></nav>
+      <h1 id="page-title">Product</h1>
+    </div></header>
+    <main class="content">
+      <div id="banner"></div>
+      <div id="product"></div>
+    </main>
+  </div>
   <script src="js/api.js"></script>
   <script src="js/product.js"></script>
 </body>

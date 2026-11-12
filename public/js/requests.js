@@ -1,7 +1,10 @@
 // S5 Requests list (FR-07 read, FR-09 withdraw).
-const statusSelect = document.getElementById('status');
+const statusButtons = document.querySelectorAll('#status button');
+let activeStatus = ''; // '' = all statuses
 const typeSelect = document.getElementById('type');
 const tableBody = document.getElementById('requests');
+const tableCard = document.getElementById('table-card');
+const emptyBox = document.getElementById('empty');
 const dialog = document.getElementById('withdraw-dialog');
 
 let requestToWithdraw = null; // the id the dialog is asking about
@@ -10,14 +13,25 @@ renderHeader('Requests');
 showMessageFromUrl();
 loadRequests();
 
-statusSelect.addEventListener('change', loadRequests);
+for (const button of statusButtons) {
+  button.addEventListener('click', () => {
+    activeStatus = button.dataset.status;
+    for (const other of statusButtons) {
+      other.classList.toggle('active', other === button);
+      other.setAttribute('aria-pressed', other === button);
+    }
+    loadRequests();
+  });
+}
 typeSelect.addEventListener('change', loadRequests);
 document.getElementById('withdraw-cancel').addEventListener('click', () => dialog.close());
 document.getElementById('withdraw-confirm').addEventListener('click', withdrawRequest);
 
 async function loadRequests() {
-  tableBody.innerHTML = '<tr><td colspan="6" class="muted">Loading requests…</td></tr>';
-  const query = new URLSearchParams({ status: statusSelect.value, type: typeSelect.value });
+  tableCard.classList.remove('hidden');
+  emptyBox.innerHTML = '';
+  tableBody.innerHTML = `<tr><td colspan="6">${skeleton(3, 'Loading requests…')}</td></tr>`;
+  const query = new URLSearchParams({ status: activeStatus, type: typeSelect.value });
   try {
     const requests = await api('GET', '/api/requests?' + query);
     showRequests(requests);
@@ -28,10 +42,13 @@ async function loadRequests() {
 }
 
 function showRequests(requests) {
+  tableCard.classList.toggle('hidden', requests.length === 0);
   if (requests.length === 0) {
-    const filtered = statusSelect.value !== '' || typeSelect.value !== '';
-    const text = filtered ? 'No requests match your filters.' : 'No requests yet.';
-    tableBody.innerHTML = `<tr><td colspan="6">${text} <a href="request-form.html">New request</a></td></tr>`;
+    const filtered = activeStatus !== '' || typeSelect.value !== '';
+    tableBody.innerHTML = '';
+    emptyBox.innerHTML = emptyState('clipboard-list', filtered ? 'No requests found' : 'No requests yet',
+      filtered ? 'No requests match your filters.' : 'Requests you send to Bentley appear here.',
+      '<a class="btn primary" href="request-form.html"><i data-lucide="plus"></i>New request</a>');
     return;
   }
   tableBody.innerHTML = requests.map(requestRow).join('');
@@ -43,9 +60,9 @@ function showRequests(requests) {
 function requestRow(request) {
   return `
     <tr>
-      <td>${request.id}</td>
+      <td class="num">${request.id}</td>
       <td>${TYPE_LABELS[request.type]}</td>
-      <td>${escapeHtml(request.productName)}</td>
+      <td>${escapeHtml(request.productName)}<span class="sub">${formatDate(request.createdAt)}</span></td>
       <td class="number">${request.quantity}</td>
       <td>${requestStatusTag(request.status)}</td>
       <td class="actions">${actionButtons(request)}</td>
@@ -58,8 +75,8 @@ function actionButtons(request) {
     return '';
   }
   return `
-    <a href="request-form.html?id=${request.id}">Edit</a>
-    <button type="button" class="link withdraw" data-id="${request.id}">Withdraw</button>`;
+    <a class="btn small" href="request-form.html?id=${request.id}"><i data-lucide="pencil"></i>Edit</a>
+    <button type="button" class="btn ghost small withdraw" data-id="${request.id}"><i data-lucide="trash-2"></i>Withdraw</button>`;
 }
 
 function askToWithdraw(id) {
